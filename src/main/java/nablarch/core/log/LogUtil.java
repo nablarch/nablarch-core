@@ -1,5 +1,6 @@
 package nablarch.core.log;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -265,12 +266,12 @@ public final class LogUtil {
                 return getNullValue();
             } else if (value.getClass().isArray()) {
                 StringBuilder sb = new StringBuilder();
-                Object[] values = (Object[]) value;
-                for (int i = 0; i < values.length; i++) {
+                final int length = Array.getLength(value);
+                for (int i = 0; i < length; i++) {
                     if (i != 0) {
                         sb.append(", ");
                     }
-                    sb.append(editValue(key, values[i]));
+                    sb.append(editValue(key, Array.get(value, i)));
                 }
                 return sb.toString();
             } else if (value instanceof Collection) {
