@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nablarch.core.util.StringUtil;
+import nablarch.core.util.annotation.Published;
 
 /**
  * ログ出力の実装を助けるユーティリティ。
@@ -311,6 +312,7 @@ public final class LogUtil {
      * マップの値をマスキングするクラス。
      * @author Kiyohito Itoh
      */
+    @Published(tag = "architect")
     public static class MaskingMapValueEditor extends BasicMapValueEditor {
         /** マスク文字 */
         private final String maskingString;
