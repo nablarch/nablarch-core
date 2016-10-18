@@ -1,5 +1,5 @@
 group = 'com.nablarch.framework'
-version = '1.2.2'
+version = '1.2.3'
 description = 'FW自体の基盤(ハンドラなど)およびコア機能(ログ、リポジトリなど）'
 
 buildscript {
