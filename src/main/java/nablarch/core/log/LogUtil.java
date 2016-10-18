@@ -1,5 +1,6 @@
 package nablarch.core.log;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nablarch.core.util.StringUtil;
+import nablarch.core.util.annotation.Published;
 
 /**
  * ログ出力の実装を助けるユーティリティ。
@@ -265,12 +267,22 @@ public final class LogUtil {
                 return getNullValue();
             } else if (value.getClass().isArray()) {
                 StringBuilder sb = new StringBuilder();
-                Object[] values = (Object[]) value;
-                for (int i = 0; i < values.length; i++) {
-                    if (i != 0) {
-                        sb.append(", ");
+                if (value instanceof Object[]) {
+                    Object[] values = (Object[]) value;
+                    for (int i = 0; i < values.length; i++) {
+                        if (i != 0) {
+                            sb.append(", ");
+                        }
+                        sb.append(editValue(key, values[i]));
                     }
-                    sb.append(editValue(key, values[i]));
+                } else {
+                    final int length = Array.getLength(value);
+                    for (int i = 0; i < length; i++) {
+                        if (i != 0) {
+                            sb.append(", ");
+                        }
+                        sb.append(editValue(key, Array.get(value, i)));
+                    }
                 }
                 return sb.toString();
             } else if (value instanceof Collection) {
@@ -310,6 +322,7 @@ public final class LogUtil {
      * マップの値をマスキングするクラス。
      * @author Kiyohito Itoh
      */
+    @Published(tag = "architect")
     public static class MaskingMapValueEditor extends BasicMapValueEditor {
         /** マスク文字 */
         private final String maskingString;

@@ -64,13 +64,18 @@ public class LogUtilTest extends LogTestSupport {
                 put("$test$", new LogItem<String>() {
                     public String get(String context) {
                         return context;
-                    }});
+                    }
+                });
             }
         };
 
-        Pattern pattern = LogUtil.createReplacementsPattern(new HashSet<String>() {{ add("$test$"); add("$notFound$"); }});
+        Pattern pattern = LogUtil.createReplacementsPattern(new HashSet<String>() {{
+            add("$test$");
+            add("$notFound$");
+        }});
 
-        LogItem<String>[] formattedLogItems = LogUtil.createFormattedLogItems(logItems, "begin $test$ $notFound$ end", pattern);
+        LogItem<String>[] formattedLogItems = LogUtil.createFormattedLogItems(logItems, "begin $test$ $notFound$ end",
+                pattern);
 
         String context = "bbb";
         assertThat(formattedLogItems.length, is(5));
@@ -99,14 +104,20 @@ public class LogUtilTest extends LogTestSupport {
         map.put("", "bbb");
         map.put("test", "ccc");
         map.put("test_array", new String[] {"ddd1", "ddd2", null, "ddd3"});
-        map.put("test_collection", new ArrayList<String>() {{ add("eee1"); add(null); add("eee2"); add("eee3"); }});
+        map.put("test_collection", new ArrayList<String>() {{
+            add("eee1");
+            add(null);
+            add("eee2");
+            add("eee3");
+        }});
         map.put("test_null", null);
         dump = LogUtil.dumpMap(map, "@");
 
         int entrySize = 6;
         int entryCount = 0;
 
-        dump = dump.replace("{", "").replace("}", "");
+        dump = dump.replace("{", "")
+                   .replace("}", "");
 
         String[] splitDump = dump.split("@");
 
@@ -139,7 +150,8 @@ public class LogUtilTest extends LogTestSupport {
         entrySize = 3;
         entryCount = 0;
 
-        dump = dump.replace("{", "").replace("}", "");
+        dump = dump.replace("{", "")
+                   .replace("}", "");
 
         splitDump = dump.split("@");
 
@@ -173,6 +185,7 @@ public class LogUtilTest extends LogTestSupport {
 
     /**
      * ダンプ対象のMapに{@link java.math.BigDecimal}が含まれている場合も、指数表現にならずにダンプされること
+     *
      * @throws Exception
      */
     @Test
@@ -208,5 +221,32 @@ public class LogUtilTest extends LogTestSupport {
                 + "key2 = [あいうえお], "
                 + "mask = [*****], "
                 + "mask_ = [*****]}"));
+    }
+
+    /**
+     * プリミティブの配列を持つMapをダンプできること
+     */
+    @Test
+    public void testDumpMapWithPrimitiveArray() throws Exception {
+        final TreeMap<String, Object> input = new TreeMap<String, Object>();
+        input.put("object", "12345");
+        input.put("objectArray", new BigDecimal[] {BigDecimal.ONE, new BigDecimal("0.1")});
+        input.put("int", 100);
+        input.put("intArray", new int[] {1, 2, 3});
+        input.put("long", 101L);
+        input.put("longArray", new long[] {4, 5, 6});
+        input.put("byte", 0x00);
+        input.put("byteArray", new byte[] {0x00, 0x01, 0x30});
+
+        final String actual = LogUtil.dumpMap(input, " ");
+        assertThat(actual,
+                is("{byte = [0],"
+                        + " byteArray = [0, 1, 48],"
+                        + " int = [100],"
+                        + " intArray = [1, 2, 3],"
+                        + " long = [101],"
+                        + " longArray = [4, 5, 6],"
+                        + " object = [12345]," 
+                        + " objectArray = [1, 0.1]}"));
     }
 }
