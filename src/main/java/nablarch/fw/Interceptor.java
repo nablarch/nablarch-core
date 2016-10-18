@@ -95,6 +95,10 @@ public @interface Interceptor {
     public abstract static class Impl<TData, TResult, T extends Annotation>
             implements HandlerWrapper<TData, TResult> {
 
+        @Published(tag = "architect")
+        public Impl() {
+        }
+
         /**
          * 処理対象の{@link Interceptor}を設定する。
          *
@@ -110,6 +114,7 @@ public @interface Interceptor {
          *
          * @return 処理対象の{@link Interceptor}を取得する。
          */
+        @Published(tag = "architect")
         public T getInterceptor() {
             return interceptor;
         }
@@ -122,6 +127,7 @@ public @interface Interceptor {
          *
          * @return インターセプト対象のリクエストハンドラ
          */
+        @Published(tag = "architect")
         public Handler<TData, TResult> getOriginalHandler() {
             return originalHandler;
         }
