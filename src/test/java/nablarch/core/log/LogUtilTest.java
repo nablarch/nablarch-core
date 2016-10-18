@@ -230,6 +230,7 @@ public class LogUtilTest extends LogTestSupport {
     public void testDumpMapWithPrimitiveArray() throws Exception {
         final TreeMap<String, Object> input = new TreeMap<String, Object>();
         input.put("object", "12345");
+        input.put("objectArray", new BigDecimal[] {BigDecimal.ONE, new BigDecimal("0.1")});
         input.put("int", 100);
         input.put("intArray", new int[] {1, 2, 3});
         input.put("long", 101L);
@@ -245,6 +246,7 @@ public class LogUtilTest extends LogTestSupport {
                         + " intArray = [1, 2, 3],"
                         + " long = [101],"
                         + " longArray = [4, 5, 6],"
-                        + " object = [12345]}"));
+                        + " object = [12345]," 
+                        + " objectArray = [1, 0.1]}"));
     }
 }

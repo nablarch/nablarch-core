@@ -267,12 +267,22 @@ public final class LogUtil {
                 return getNullValue();
             } else if (value.getClass().isArray()) {
                 StringBuilder sb = new StringBuilder();
-                final int length = Array.getLength(value);
-                for (int i = 0; i < length; i++) {
-                    if (i != 0) {
-                        sb.append(", ");
+                if (value instanceof Object[]) {
+                    Object[] values = (Object[]) value;
+                    for (int i = 0; i < values.length; i++) {
+                        if (i != 0) {
+                            sb.append(", ");
+                        }
+                        sb.append(editValue(key, values[i]));
                     }
-                    sb.append(editValue(key, Array.get(value, i)));
+                } else {
+                    final int length = Array.getLength(value);
+                    for (int i = 0; i < length; i++) {
+                        if (i != 0) {
+                            sb.append(", ");
+                        }
+                        sb.append(editValue(key, Array.get(value, i)));
+                    }
                 }
                 return sb.toString();
             } else if (value instanceof Collection) {
