@@ -119,5 +119,18 @@ public class ThreadContextTest {
         ThreadContext.setConcurrentNumber(100);
         assertThat(ThreadContext.getConcurrentNumber(), is(100));
     }
+
+    @Test
+    public void clearAndSet() throws Exception {
+        ThreadContext.setExecutionId("executionId");
+
+        assertThat(ThreadContext.getExecutionId(), is("executionId"));
+        ThreadContext.clear();
+
+        assertThat(ThreadContext.getExecutionId(), is(nullValue()));
+        
+        ThreadContext.setUserId("userId");
+        assertThat(ThreadContext.getUserId(), is("userId"));
+    }
 }
 
