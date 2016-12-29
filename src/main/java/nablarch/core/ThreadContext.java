@@ -187,7 +187,7 @@ public final class ThreadContext {
      * スレッドコンテキストの内容をクリアする。
      */
     public static void clear() {
-        ThreadContext.genericObjects.get().clear();
+        genericObjects.remove();
     }
  
     /**
