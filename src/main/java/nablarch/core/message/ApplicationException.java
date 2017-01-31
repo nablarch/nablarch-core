@@ -3,6 +3,7 @@ package nablarch.core.message;
 import java.util.ArrayList;
 import java.util.List;
 
+import nablarch.core.exception.ValidationErrorException;
 import nablarch.core.util.annotation.Published;
 
 /**
@@ -14,7 +15,7 @@ import nablarch.core.util.annotation.Published;
  *
  */
 @Published
-public class ApplicationException extends RuntimeException {
+public class ApplicationException extends ValidationErrorException {
 
     /**
      * 処理結果メッセージのリスト。
