@@ -35,6 +35,10 @@ dependencies {
   // Cobertura
   cobertura ("net.sourceforge.cobertura:cobertura:1.9.4.1")
 
+  testRuntime('com.nablarch.integration:nablarch-slf4j-adaptor:1.0.0') {
+    exclude module: 'nablarch-core'
+  }
+  testRuntime 'org.slf4j:slf4j-simple:1.7.24'
 }
 
 // カバレッジを取るための設定
