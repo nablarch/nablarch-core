@@ -1,6 +1,8 @@
 package nablarch.core.util;
 
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -11,13 +13,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * {@link StringUtil}のテストクラス。
@@ -43,11 +40,11 @@ public class StringUtilTest {
     /** {@link StringUtil#lpad(String, int, char)}のテスト。 */
     @Test
     public void lpad() {
-        assertEquals("指定桁数まで、指定文字がパディングされること。", "0000000001", StringUtil.lpad("1", 10, '0'));
-        assertEquals("指定桁数より1文字短い文字列を指定", "01", StringUtil.lpad("1", 2, '0'));
-        assertEquals("指定桁数と同じ文字列を指定", "1111111111", StringUtil.lpad("1111111111", 10, 'a'));
-        assertEquals("指定桁数より１文字長い文字列を指定", "123456", StringUtil.lpad("123456", 5, '0'));
-        assertEquals("指定文字に全角文字を指定", "００００1", StringUtil.lpad("1", 5, '０'));
+        assertThat("指定桁数まで、指定文字がパディングされること。", StringUtil.lpad("1", 10, '0'), is("0000000001"));
+        assertThat("指定桁数より1文字短い文字列を指定", StringUtil.lpad("1", 2, '0'), is("01"));
+        assertThat("指定桁数と同じ文字列を指定", StringUtil.lpad("1111111111", 10, 'a'), is("1111111111"));
+        assertThat("指定桁数より１文字長い文字列を指定", StringUtil.lpad("123456", 5, '0'), is("123456"));
+        assertThat("指定文字に全角文字を指定", StringUtil.lpad("1", 5, '０'), is("００００1"));
     }
 
     /**
@@ -63,11 +60,11 @@ public class StringUtilTest {
     /** {@link StringUtil#rpad(String, int, char)}のテスト。 */
     @Test
     public void rpad() {
-        assertEquals("指定桁数まで、指定文字がパディングされること。", "1000000000", StringUtil.rpad("1", 10, '0'));
-        assertEquals("指定桁数より1文字短い文字列を指定", "10", StringUtil.rpad("1", 2, '0'));
-        assertEquals("指定桁数と同じ文字列を指定", "1111111111", StringUtil.rpad("1111111111", 10, 'a'));
-        assertEquals("指定桁数より１文字長い文字列を指定", "123456", StringUtil.rpad("123456", 5, '0'));
-        assertEquals("指定文字に全角文字を指定", "1００００", StringUtil.rpad("1", 5, '０'));
+        assertThat("指定桁数まで、指定文字がパディングされること。", StringUtil.rpad("1", 10, '0'), is("1000000000"));
+        assertThat("指定桁数より1文字短い文字列を指定", StringUtil.rpad("1", 2, '0'), is("10"));
+        assertThat("指定桁数と同じ文字列を指定", StringUtil.rpad("1111111111", 10, 'a'), is("1111111111"));
+        assertThat("指定桁数より１文字長い文字列を指定", StringUtil.rpad("123456", 5, '0'), is("123456"));
+        assertThat("指定文字に全角文字を指定", StringUtil.rpad("1", 5, '０'), is("1００００"));
     }
 
     /**
@@ -83,55 +80,55 @@ public class StringUtilTest {
     /** {@link StringUtil#isNullOrEmpty(String)} のテスト。 */
     @Test
     public void isNullOrEmpty() {
-        assertTrue(StringUtil.isNullOrEmpty((String) null));
-        assertTrue(StringUtil.isNullOrEmpty(""));
-        assertFalse(StringUtil.isNullOrEmpty(" "));
-        assertFalse(StringUtil.isNullOrEmpty("null"));
+        assertThat(StringUtil.isNullOrEmpty((String) null), is(true));
+        assertThat(StringUtil.isNullOrEmpty(""), is(true));
+        assertThat(StringUtil.isNullOrEmpty(" "), is(false));
+        assertThat(StringUtil.isNullOrEmpty("null"), is(false));
     }
 
     /** {@link StringUtil#isNullOrEmpty(String...)} のテスト。 */
     @Test
     public void isNullOrEmptyVararg() {
-        assertTrue(StringUtil.isNullOrEmpty((String[]) null));
-        assertTrue(StringUtil.isNullOrEmpty(new String[0]));
-        assertTrue(StringUtil.isNullOrEmpty("", null));
-        assertFalse(StringUtil.isNullOrEmpty("", null, "not empty"));
+        assertThat(StringUtil.isNullOrEmpty((String[]) null), is(true));
+        assertThat(StringUtil.isNullOrEmpty(new String[0]), is(true));
+        assertThat(StringUtil.isNullOrEmpty("", null), is(true));
+        assertThat(StringUtil.isNullOrEmpty("", null, "not empty"), is(false));
     }
 
     /** {@link StringUtil#isNullOrEmpty(Collection)} のテスト。 */
     @Test
     public void isNullOrEmptyCollection() {
-        assertTrue(StringUtil.isNullOrEmpty((Collection) null));
-        assertTrue(StringUtil.isNullOrEmpty(Collections.<String>emptyList()));
-        assertTrue(StringUtil.isNullOrEmpty(Arrays.asList("", "")));
-        assertFalse(StringUtil.isNullOrEmpty(Arrays.asList("", null, "not empty")));
+        assertThat(StringUtil.isNullOrEmpty((Collection) null), is(true));
+        assertThat(StringUtil.isNullOrEmpty(Collections.<String>emptyList()), is(true));
+        assertThat(StringUtil.isNullOrEmpty(Arrays.asList("", "")), is(true));
+        assertThat(StringUtil.isNullOrEmpty(Arrays.asList("", null, "not empty")), is(false));
     }
 
     /** {@link StringUtil#isNullOrEmpty(String)} のテスト。 */
     @Test
     public void hasValue() {
-        assertFalse(StringUtil.hasValue((String) null));
-        assertFalse(StringUtil.hasValue(""));
-        assertTrue(StringUtil.hasValue(" "));
-        assertTrue(StringUtil.hasValue("null"));
+        assertThat(StringUtil.hasValue((String) null), is(false));
+        assertThat(StringUtil.hasValue(""), is(false));
+        assertThat(StringUtil.hasValue(" "), is(true));
+        assertThat(StringUtil.hasValue("null"), is(true));
     }
 
     /** {@link StringUtil#isNullOrEmpty(String...)} のテスト。 */
     @Test
     public void testHasValueVararg() {
-        assertTrue(StringUtil.hasValue("", null, "not empty"));
-        assertFalse(StringUtil.hasValue("", null));
-        assertFalse(StringUtil.hasValue(new String[0]));
-        assertFalse(StringUtil.hasValue((String[]) null));
+        assertThat(StringUtil.hasValue("", null, "not empty"), is(true));
+        assertThat(StringUtil.hasValue("", null), is(false));
+        assertThat(StringUtil.hasValue(new String[0]), is(false));
+        assertThat(StringUtil.hasValue((String[]) null), is(false));
     }
 
     /** {@link StringUtil#isNullOrEmpty(Collection)} のテスト。 */
     @Test
     public void testHasValueCollection() {
-        assertTrue(StringUtil.hasValue(Arrays.asList("", null, "not empty")));
-        assertFalse(StringUtil.hasValue(Arrays.asList("", null)));
-        assertFalse(StringUtil.hasValue(Collections.<String>emptyList()));
-        assertFalse(StringUtil.hasValue((Collection) null));
+        assertThat(StringUtil.hasValue(Arrays.asList("", null, "not empty")), is(true));
+        assertThat(StringUtil.hasValue(Arrays.asList("", null)), is(false));
+        assertThat(StringUtil.hasValue(Collections.<String>emptyList()), is(false));
+        assertThat(StringUtil.hasValue((Collection) null), is(false));
     }
 
 
@@ -151,14 +148,14 @@ public class StringUtilTest {
         for (String charsetName : new String[]{"UTF-8", "Shift_JIS"}) {
             Charset charset = Charset.forName(charsetName);
             String expected = new String(bytes, charsetName);
-            assertEquals(expected, StringUtil.toString(bytes, charset));
+            assertThat(StringUtil.toString(bytes, charset), is(expected));
         }
 
         // 対象バイト配列がnullの場合、nullが返却されること
-        assertEquals(null, StringUtil.toString(null, UTF8));
+        assertThat(StringUtil.toString(null, UTF8), is(nullValue()));
 
         // 対象バイト配列が要素数0の場合、空文字が返却されること
-        assertEquals("", StringUtil.toString(new byte[0], UTF8));
+        assertThat(StringUtil.toString(new byte[0], UTF8), is(""));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -201,14 +198,14 @@ public class StringUtilTest {
         for (String charsetName : new String[]{"UTF-8", "Shift_JIS"}) {
             Charset charset = Charset.forName(charsetName);
             byte[] expected = string.getBytes(charsetName);
-            assertArrayEquals(expected, StringUtil.getBytes(string, charset));
+            assertThat(StringUtil.getBytes(string, charset), is(expected));
         }
 
         // 対象文字列がnullの場合、nullが返却されること
-        assertEquals(null, StringUtil.getBytes(null, UTF8));
+        assertThat(StringUtil.getBytes(null, UTF8), is(nullValue()));
 
         // 対象文字列が空文字の場合、要素数0のバイト配列が返却されること
-        assertArrayEquals(new byte[0], StringUtil.getBytes("", UTF8));
+        assertThat(StringUtil.getBytes("", UTF8), is(new byte[0]));
     }
 
     /**
@@ -410,7 +407,7 @@ public class StringUtilTest {
     @Test
     public void testToArray() {
         List<String> list = Arrays.asList("foo", "bar");
-        assertArrayEquals(new String[]{"foo", "bar"}, StringUtil.toArray(list));
+        assertThat(StringUtil.toArray(list), is(new String[] {"foo", "bar"}));
     }
 
     /** nullが許容されないこと */
@@ -443,15 +440,12 @@ public class StringUtilTest {
     /** 配列が結合されること。 */
     @Test
     public void testMerge() {
-        assertArrayEquals(
-                new String[]{"1", "2", "3", "4", "5"},
-                StringUtil.merge(
-                        new String[]{"1", "2"},
-                        new String[]{"3", "4"},
-                        new String[]{"5"},
-                        new String[0])
-        );
-        assertArrayEquals(new String[0], StringUtil.merge(new String[0]));
+        assertThat(StringUtil.merge(
+                new String[] {"1", "2"},
+                new String[] {"3", "4"},
+                new String[] {"5"},
+                new String[0]), is(new String[] {"1", "2", "3", "4", "5"}));
+        assertThat(StringUtil.merge(new String[0]), is(new String[0]));
     }
 
     /** nullが許容されないこと。 */

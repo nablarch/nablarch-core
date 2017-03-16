@@ -1,12 +1,9 @@
 package nablarch.core.util;
 
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.text.ParseException;
@@ -16,8 +13,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.hamcrest.CoreMatchers;
+
 import nablarch.core.ThreadContext;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,15 +46,14 @@ public class DateUtilTest {
         } catch (ParseException e) {
             fail();
         }
-        assertEquals("正常系", expected, DateUtil.getDate(testDate));
+        assertThat("正常系", DateUtil.getDate(testDate), CoreMatchers.is(expected));
 
         try {
             DateUtil.getDate("2010/11/10");
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("例外発生",
-                    "the string was not formatted yyyyMMdd. date = 2010/11/10.",
-                    e.getMessage());
+            assertThat("例外発生", e.getMessage(),
+                    CoreMatchers.is("the string was not formatted yyyyMMdd. date = 2010/11/10."));
         }
 
     }
@@ -80,127 +79,118 @@ public class DateUtilTest {
     /** {@link DateUtil#formatDate}のテスト。 */
     @Test
     public void testFormatDate() {
-        assertEquals("正常系", "2010年01月01日", DateUtil.formatDate("20100101",
-                "yyyy年MM月dd日"));
+        assertThat("正常系", DateUtil.formatDate("20100101",
+                "yyyy年MM月dd日"), CoreMatchers.is("2010年01月01日"));
 
         try {
             DateUtil.formatDate("2010/11/10", "yyyyMMdd");
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("例外発生",
-                    "the string was not formatted yyyyMMdd. date = 2010/11/10.",
-                    e.getMessage());
+            assertThat("例外発生", e.getMessage(),
+                    CoreMatchers.is("the string was not formatted yyyyMMdd. date = 2010/11/10."));
         }
     }
     
     /** {@link nablarch.core.util.DateUtil#addDay}のテスト。 */
     @Test
     public void testAddDay() {
-        assertEquals("1日後", "20101111", DateUtil.addDay("20101110", 1));
-        assertEquals("2日後", "20101112", DateUtil.addDay("20101110", 2));
-        assertEquals("月跨ぎ(翌月)", "20101201", DateUtil.addDay("20101130", 1));
-        assertEquals("年跨ぎ(翌年)", "20110101", DateUtil.addDay("20101231", 1));
-        assertEquals("1日前", "20101109", DateUtil.addDay("20101110", -1));
-        assertEquals("2日前", "20101108", DateUtil.addDay("20101110", -2));
-        assertEquals("月跨ぎ(前月)", "20101031", DateUtil.addDay("20101101", -1));
-        assertEquals("年跨ぎ(前年)", "20091231", DateUtil.addDay("20100101", -1));
-        assertEquals("閏年", "20080229", DateUtil.addDay("20080228", 1));
-        assertEquals("閏年", "20080301", DateUtil.addDay("20080229", 1));
+        assertThat("1日後", DateUtil.addDay("20101110", 1), CoreMatchers.is("20101111"));
+        assertThat("2日後", DateUtil.addDay("20101110", 2), CoreMatchers.is("20101112"));
+        assertThat("月跨ぎ(翌月)", DateUtil.addDay("20101130", 1), CoreMatchers.is("20101201"));
+        assertThat("年跨ぎ(翌年)", DateUtil.addDay("20101231", 1), CoreMatchers.is("20110101"));
+        assertThat("1日前", DateUtil.addDay("20101110", -1), CoreMatchers.is("20101109"));
+        assertThat("2日前", DateUtil.addDay("20101110", -2), CoreMatchers.is("20101108"));
+        assertThat("月跨ぎ(前月)", DateUtil.addDay("20101101", -1), CoreMatchers.is("20101031"));
+        assertThat("年跨ぎ(前年)", DateUtil.addDay("20100101", -1), CoreMatchers.is("20091231"));
+        assertThat("閏年", DateUtil.addDay("20080228", 1), CoreMatchers.is("20080229"));
+        assertThat("閏年", DateUtil.addDay("20080229", 1), CoreMatchers.is("20080301"));
     }
 
     /** {@link nablarch.core.util.DateUtil#addMonth(String, int)}のテスト。 */
     @Test
     public void testAddMonth() {
         // 年月日
-        assertEquals("加算", "20101030", DateUtil.addMonth("20100930", 1));
-        assertEquals("減算", "20100830", DateUtil.addMonth("20100930", -1));
-        assertEquals("閏年", "20040229", DateUtil.addMonth("20030429", 10));
+        assertThat("加算", DateUtil.addMonth("20100930", 1), CoreMatchers.is("20101030"));
+        assertThat("減算", DateUtil.addMonth("20100930", -1), CoreMatchers.is("20100830"));
+        assertThat("閏年", DateUtil.addMonth("20030429", 10), CoreMatchers.is("20040229"));
 
         // 年月
-        assertEquals("加算", "201010", DateUtil.addMonth("201009", 1));
-        assertEquals("減算", "201008", DateUtil.addMonth("201009", -1));
-        assertEquals("閏年", "200402", DateUtil.addMonth("200304", 10));
+        assertThat("加算", DateUtil.addMonth("201009", 1), CoreMatchers.is("201010"));
+        assertThat("減算", DateUtil.addMonth("201009", -1), CoreMatchers.is("201008"));
+        assertThat("閏年", DateUtil.addMonth("200304", 10), CoreMatchers.is("200402"));
     }
 
     /** {@link nablarch.core.util.DateUtil#getDays}のテスト */
     @Test
     public void testGetDays() {
-        assertEquals("同日", 0, DateUtil.getDays("20101110", "20101110"));
-        assertEquals("1日(from < to)", 1, DateUtil.getDays("20101110",
-                "20101111"));
-        assertEquals("2日(from < to)", 2, DateUtil.getDays("20101110",
-                "20101112"));
-        assertEquals("月跨ぎ(from < to)", 1, DateUtil.getDays("20101130",
-                "20101201"));
-        assertEquals("年跨ぎ(from < to)", 1, DateUtil.getDays("20101231",
-                "20110101"));
-        assertEquals("1日(from > to)", -1, DateUtil.getDays("20101110",
-                "20101109"));
-        assertEquals("2日(from > to)", -2, DateUtil.getDays("20101110",
-                "20101108"));
-        assertEquals("月跨ぎ(from > to)", -1, DateUtil.getDays("20101101",
-                "20101031"));
-        assertEquals("年跨ぎ(from > to)", -1, DateUtil.getDays("20100101",
-                "20091231"));
+        assertThat("同日", DateUtil.getDays("20101110", "20101110"), is(0L));
+        assertThat("1日(from < to)", DateUtil.getDays("20101110", "20101111"), is(1L));
+        assertThat("2日(from < to)", DateUtil.getDays("20101110", "20101112"), is(2L));
+        assertThat("月跨ぎ(from < to)", DateUtil.getDays("20101130", "20101201"), is(1L));
+        assertThat("年跨ぎ(from < to)", DateUtil.getDays("20101231", "20110101"), is(1L));
+        assertThat("1日(from > to)", DateUtil.getDays("20101110", "20101109"), is(-1L));
+        assertThat("2日(from > to)", DateUtil.getDays("20101110", "20101108"), is(-2L));
+        assertThat("月跨ぎ(from > to)", DateUtil.getDays("20101101", "20101031"), is(-1L));
+        assertThat("年跨ぎ(from > to)", DateUtil.getDays("20100101", "20091231"), is(-1L));
     }
 
     /** {@link DateUtil#getMonths(String, String)}のテスト。 */
     @Test
     public void testGetMonths() {
-        assertEquals("同じ月(年月)", 0, DateUtil.getMonths("201102", "201102"));
-        assertEquals("同じ月(年月日:日付は同じ)", 0, DateUtil.getMonths("20110201",
-                "20110201"));
-        assertEquals("同じ月(年月日:日付は異なる)", 0, DateUtil.getMonths("20110201",
-                "20110228"));
+        assertThat("同じ月(年月)", DateUtil.getMonths("201102", "201102"), CoreMatchers.is(0));
+        assertThat("同じ月(年月日:日付は同じ)", DateUtil.getMonths("20110201",
+                "20110201"), CoreMatchers.is(0));
+        assertThat("同じ月(年月日:日付は異なる)", DateUtil.getMonths("20110201",
+                "20110228"), CoreMatchers.is(0));
 
-        assertEquals("1ヶ月後(年月)", 1, DateUtil.getMonths("201102", "201103"));
-        assertEquals("1ヶ月後(年月日)", 1, DateUtil.getMonths("20110201",
-                "20110301"));
+        assertThat("1ヶ月後(年月)", DateUtil.getMonths("201102", "201103"), CoreMatchers.is(1));
+        assertThat("1ヶ月後(年月日)", DateUtil.getMonths("20110201",
+                "20110301"), CoreMatchers.is(1));
 
-        assertEquals("1ヶ月前(年月)", -1, DateUtil.getMonths("201102", "201101"));
-        assertEquals("1ヶ月前(年月日)", -1, DateUtil.getMonths("20110201",
-                "20110101"));
+        assertThat("1ヶ月前(年月)", DateUtil.getMonths("201102", "201101"), CoreMatchers.is(-1));
+        assertThat("1ヶ月前(年月日)", DateUtil.getMonths("20110201",
+                "20110101"), CoreMatchers.is(-1));
 
-        assertEquals("１年後(年月)", 12, DateUtil.getMonths("201102", "201202"));
-        assertEquals("１年後(年月日)", 12, DateUtil.getMonths("20110201",
-                "20120228"));
+        assertThat("１年後(年月)", DateUtil.getMonths("201102", "201202"), CoreMatchers.is(12));
+        assertThat("１年後(年月日)", DateUtil.getMonths("20110201",
+                "20120228"), CoreMatchers.is(12));
 
-        assertEquals("１年前(年月)", -12, DateUtil.getMonths("201102", "201002"));
-        assertEquals("１年前(年月日)", -12, DateUtil.getMonths("20110201",
-                "20100228"));
+        assertThat("１年前(年月)", DateUtil.getMonths("201102", "201002"), CoreMatchers.is(-12));
+        assertThat("１年前(年月日)", DateUtil.getMonths("20110201",
+                "20100228"), CoreMatchers.is(-12));
 
-        assertEquals("１年＋1ヶ月後(年月)", 13, DateUtil.getMonths("201102", "201203"));
-        assertEquals("１年＋1ヶ月後(年月日)", 13, DateUtil.getMonths("20110201",
-                "20120315"));
+        assertThat("１年＋1ヶ月後(年月)", DateUtil.getMonths("201102", "201203"), CoreMatchers.is(13));
+        assertThat("１年＋1ヶ月後(年月日)", DateUtil.getMonths("20110201",
+                "20120315"), CoreMatchers.is(13));
 
-        assertEquals("１年＋1ヶ月前(年月)", -13, DateUtil.getMonths("201102",
-                "201001"));
-        assertEquals("１年＋1ヶ月前(年月日)", -13, DateUtil.getMonths("20111231",
-                "20101125"));
+        assertThat("１年＋1ヶ月前(年月)", DateUtil.getMonths("201102",
+                "201001"), CoreMatchers.is(-13));
+        assertThat("１年＋1ヶ月前(年月日)", DateUtil.getMonths("20111231",
+                "20101125"), CoreMatchers.is(-13));
 
-        assertEquals("フォーマットが異なる場合", 1, DateUtil.getMonths("20110331",
-                "201104"));
-        assertEquals("フォーマットが異なる場合", -12, DateUtil.getMonths("201103",
-                "20100315"));
+        assertThat("フォーマットが異なる場合", DateUtil.getMonths("20110331",
+                "201104"), CoreMatchers.is(1));
+        assertThat("フォーマットが異なる場合", DateUtil.getMonths("201103",
+                "20100315"), CoreMatchers.is(-12));
     }
 
 
     /** {@link DateUtil#getMonthEndDate(String)}のテスト。 */
     @Test
     public void testGetMonthEndDate() {
-        assertEquals("年月指定", "20110331", DateUtil.getMonthEndDate("201103"));
-        assertEquals("年月指定", "20110430", DateUtil.getMonthEndDate("201104"));
-        assertEquals("年月指定(閏年2月)", "20080229", DateUtil.getMonthEndDate(
-                "200802"));
-        assertEquals("年月指定(閏年以外2月)", "20110228", DateUtil.getMonthEndDate(
-                "201102"));
+        assertThat("年月指定", DateUtil.getMonthEndDate("201103"), CoreMatchers.is("20110331"));
+        assertThat("年月指定", DateUtil.getMonthEndDate("201104"), CoreMatchers.is("20110430"));
+        assertThat("年月指定(閏年2月)", DateUtil.getMonthEndDate(
+                "200802"), CoreMatchers.is("20080229"));
+        assertThat("年月指定(閏年以外2月)", DateUtil.getMonthEndDate(
+                "201102"), CoreMatchers.is("20110228"));
 
-        assertEquals("年月日指定", "20110331", DateUtil.getMonthEndDate("20110303"));
-        assertEquals("年月指定", "20110430", DateUtil.getMonthEndDate("20110429"));
-        assertEquals("年月日指定(閏年2月)", "20080229", DateUtil.getMonthEndDate(
-                "20080205"));
-        assertEquals("年月日指定(閏年以外2月)", "20110228", DateUtil.getMonthEndDate(
-                "20110201"));
+        assertThat("年月日指定", DateUtil.getMonthEndDate("20110303"), CoreMatchers.is("20110331"));
+        assertThat("年月指定", DateUtil.getMonthEndDate("20110429"), CoreMatchers.is("20110430"));
+        assertThat("年月日指定(閏年2月)", DateUtil.getMonthEndDate(
+                "20080205"), CoreMatchers.is("20080229"));
+        assertThat("年月日指定(閏年以外2月)", DateUtil.getMonthEndDate(
+                "20110201"), CoreMatchers.is("20110228"));
     }
 
     /**
@@ -217,54 +207,54 @@ public class DateUtilTest {
             DateUtil.isValid(null, null);
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("format mustn't be null or empty. format=null", e.getMessage());
+            assertThat(e.getMessage(), CoreMatchers.is("format mustn't be null or empty. format=null"));
         }
         try {
             DateUtil.isValid(null, "yyyy/MM/dd");
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("date mustn't be null.", e.getMessage());
+            assertThat(e.getMessage(), CoreMatchers.is("date mustn't be null."));
         }
 
         try {
             DateUtil.isValid("20110909", null);
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("format mustn't be null or empty. format=null", e.getMessage());
+            assertThat(e.getMessage(), CoreMatchers.is("format mustn't be null or empty. format=null"));
         }
 
         try {
             DateUtil.isValid("", "");
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("format mustn't be null or empty. format=", e.getMessage());
+            assertThat(e.getMessage(), CoreMatchers.is("format mustn't be null or empty. format="));
         }
 
-        assertFalse(DateUtil.isValid("", "yyyy/MM/dd"));
+        assertThat(DateUtil.isValid("", "yyyy/MM/dd"), CoreMatchers.is(false));
 
         try {
             DateUtil.isValid("20110909", "");
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("format mustn't be null or empty. format=", e.getMessage());
+            assertThat(e.getMessage(), CoreMatchers.is("format mustn't be null or empty. format="));
         }
 
         // フォーマット通り
-        assertTrue(DateUtil.isValid("20110909", "yyyyMMdd"));
-        assertTrue(DateUtil.isValid("14 11 2012", "dd MMM yyyy"));
-        assertTrue(DateUtil.isValid("14 Nov 2012", "dd MMM yyyy", Locale.ENGLISH));
+        assertThat(DateUtil.isValid("20110909", "yyyyMMdd"), CoreMatchers.is(true));
+        assertThat(DateUtil.isValid("14 11 2012", "dd MMM yyyy"), CoreMatchers.is(true));
+        assertThat(DateUtil.isValid("14 Nov 2012", "dd MMM yyyy", Locale.ENGLISH), CoreMatchers.is(true));
 
         // フォーマット通りではない
-        assertFalse(DateUtil.isValid("20110909", "yyyy/MM/dd"));
-        assertFalse(DateUtil.isValid("2011/09/09a", "yyyy/MM/dd"));
-        assertFalse(DateUtil.isValid("2011/09/09aaa", "yyyy/MM/dd"));
-        assertFalse(DateUtil.isValid("2011/09/09 ", "yyyy/MM/dd"));
-        assertFalse(DateUtil.isValid("2011/09/012", "yyyy/MM/dd"));
-        assertFalse(DateUtil.isValid("14 Nov 2012", "dd MMM yyyy"));
-        assertFalse(DateUtil.isValid("14 11 2012", "dd MMM yyyy", Locale.ENGLISH));
+        assertThat(DateUtil.isValid("20110909", "yyyy/MM/dd"), CoreMatchers.is(false));
+        assertThat(DateUtil.isValid("2011/09/09a", "yyyy/MM/dd"), CoreMatchers.is(false));
+        assertThat(DateUtil.isValid("2011/09/09aaa", "yyyy/MM/dd"), CoreMatchers.is(false));
+        assertThat(DateUtil.isValid("2011/09/09 ", "yyyy/MM/dd"), CoreMatchers.is(false));
+        assertThat(DateUtil.isValid("2011/09/012", "yyyy/MM/dd"), CoreMatchers.is(false));
+        assertThat(DateUtil.isValid("14 Nov 2012", "dd MMM yyyy"), CoreMatchers.is(false));
+        assertThat(DateUtil.isValid("14 11 2012", "dd MMM yyyy", Locale.ENGLISH), CoreMatchers.is(false));
 
         // 実在しない日
-        assertFalse(DateUtil.isValid("2011/09/32", "yyyy/MM/dd"));
+        assertThat(DateUtil.isValid("2011/09/32", "yyyy/MM/dd"), CoreMatchers.is(false));
     }
 
     /**

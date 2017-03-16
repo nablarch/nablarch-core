@@ -2,13 +2,15 @@ package nablarch.core.util.map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hamcrest.CoreMatchers;
+
 import nablarch.core.util.StringUtil;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -68,12 +70,12 @@ public class MultipleKeyCaseMapTest {
         assertThat(map.get("USERWEIGHT").toString(), is("test5"));
         assertThat(map.get("USERWAS NOT FOUNDINTHE DEPARTMENT.").toString(), is("test6"));
 
-        assertTrue(map.containsKey("USERID"));
-        assertTrue(map.containsKey("USERNAME"));
-        assertTrue(map.containsKey("USERNO"));
-        assertTrue(map.containsKey("USERAGE"));
-        assertTrue(map.containsKey("USERWEIGHT"));
-        assertTrue(map.containsKey("USERWAS NOT FOUNDINTHE DEPARTMENT."));
+        assertThat(map.containsKey("USERID"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USERNAME"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USERNO"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USERAGE"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USERWEIGHT"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USERWAS NOT FOUNDINTHE DEPARTMENT."), CoreMatchers.is(true));
 
         // すべて大文字＋アンスコ区切りの場合
         assertThat(map.get("USER_ID").toString(), is("test1"));
@@ -83,12 +85,12 @@ public class MultipleKeyCaseMapTest {
         assertThat(map.get("USER_WEIGHT").toString(), is("test5"));
         assertThat(map.get("USER_WAS NOT FOUND_IN_THE DEPARTMENT.").toString(), is("test6"));
 
-        assertTrue(map.containsKey("USER_ID"));
-        assertTrue(map.containsKey("USER_NAME"));
-        assertTrue(map.containsKey("USER_NO"));
-        assertTrue(map.containsKey("USER_AGE"));
-        assertTrue(map.containsKey("USER_WEIGHT"));
-        assertTrue(map.containsKey("USER_WAS NOT FOUND_IN_THE DEPARTMENT."));
+        assertThat(map.containsKey("USER_ID"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USER_NAME"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USER_NO"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USER_AGE"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USER_WEIGHT"), CoreMatchers.is(true));
+        assertThat(map.containsKey("USER_WAS NOT FOUND_IN_THE DEPARTMENT."), CoreMatchers.is(true));
 
         // キャメルケースの場合
         assertThat(map.get("userId").toString(), is("test1"));
@@ -98,11 +100,11 @@ public class MultipleKeyCaseMapTest {
         assertThat(map.get("userWeight").toString(), is("test5"));
         assertThat(map.get("userWas not foundInThe department.").toString(), is("test6"));
 
-        assertTrue(map.containsKey("userId"));
-        assertTrue(map.containsKey("userName"));
-        assertTrue(map.containsKey("userNo"));
-        assertTrue(map.containsKey("userAge"));
-        assertTrue(map.containsKey("userWeight"));
-        assertTrue(map.containsKey("userWas not foundInThe department."));
+        assertThat(map.containsKey("userId"), CoreMatchers.is(true));
+        assertThat(map.containsKey("userName"), CoreMatchers.is(true));
+        assertThat(map.containsKey("userNo"), CoreMatchers.is(true));
+        assertThat(map.containsKey("userAge"), CoreMatchers.is(true));
+        assertThat(map.containsKey("userWeight"), CoreMatchers.is(true));
+        assertThat(map.containsKey("userWas not foundInThe department."), CoreMatchers.is(true));
     }
 }

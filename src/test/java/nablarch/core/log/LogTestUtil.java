@@ -1,6 +1,6 @@
 package nablarch.core.log;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nablarch.core.log.basic.LogLevel;
+
+import org.junit.Assert;
 
 /**
  * ログ出力のテスト用ユーティリティ。<br>
@@ -118,25 +120,35 @@ public class LogTestUtil {
      */
     public static void assertLog(String log, LogLevel[] enabled, LogLevel[] disabled, boolean isOptionCheck, boolean isStackTraceCheck) {
         for (LogLevel level : enabled) {
-            assertTrue("[[[" + level.name() + "メッセージ]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "メッセージ]]]") != -1);
+            Assert.assertThat("[[[" + level.name() + "メッセージ]]]" + Logger.LS + log,
+                    log.indexOf("[[[" + level.name() + "メッセージ]]]"), not(is(-1)));
             if (isOptionCheck) {
-                assertTrue("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "オプション情報]]]") != -1);
-                assertTrue("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "オプション情報]]]") != -1);
+                Assert.assertThat("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log,
+                        log.indexOf("[[[" + level.name() + "オプション情報]]]"), not(is(-1)));
+                Assert.assertThat("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log,
+                        log.indexOf("[[[" + level.name() + "オプション情報]]]"), not(is(-1)));
             }
-            assertTrue("[[[" + level.name() + "例外メッセージ]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "例外メッセージ]]]") != -1);
+            Assert.assertThat("[[[" + level.name() + "例外メッセージ]]]" + Logger.LS + log,
+                    log.indexOf("[[[" + level.name() + "例外メッセージ]]]"), not(is(-1)));
             if (isStackTraceCheck) {
-                assertTrue("[[[" + level.name() + "例外]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "例外]]]") != -1);
+                Assert.assertThat("[[[" + level.name() + "例外]]]" + Logger.LS + log,
+                        log.indexOf("[[[" + level.name() + "例外]]]"), not(is(-1)));
             }
         }
         for (LogLevel level : disabled) {
-            assertTrue("[[[" + level.name() + "メッセージ]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "メッセージ]]]") == -1);
+            Assert.assertThat("[[[" + level.name() + "メッセージ]]]" + Logger.LS + log,
+                    log.indexOf("[[[" + level.name() + "メッセージ]]]"), is(-1));
             if (!isOptionCheck) {
-                assertTrue("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "オプション情報]]]") == -1);
-                assertTrue("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "オプション情報]]]") == -1);
+                Assert.assertThat("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log,
+                        log.indexOf("[[[" + level.name() + "オプション情報]]]"), is(-1));
+                Assert.assertThat("[[[" + level.name() + "オプション情報]]]" + Logger.LS + log,
+                        log.indexOf("[[[" + level.name() + "オプション情報]]]"), is(-1));
             }
-            assertTrue("[[[" + level.name() + "例外メッセージ]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "例外メッセージ]]]") == -1);
+            Assert.assertThat("[[[" + level.name() + "例外メッセージ]]]" + Logger.LS + log,
+                    log.indexOf("[[[" + level.name() + "例外メッセージ]]]"), is(-1));
             if (!isStackTraceCheck) {
-                assertTrue("[[[" + level.name() + "例外]]]" + Logger.LS + log, log.indexOf("[[[" + level.name() + "例外]]]") == -1);
+                Assert.assertThat("[[[" + level.name() + "例外]]]" + Logger.LS + log,
+                        log.indexOf("[[[" + level.name() + "例外]]]"), is(-1));
             }
         }
     }

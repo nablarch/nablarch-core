@@ -1,12 +1,8 @@
 package nablarch.core.util;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -27,8 +23,6 @@ import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import junit.framework.Assert;
-
 
 /**
  * FileUtilのテストケース。
@@ -48,7 +42,7 @@ public class FileUtilTest {
         // InputStreamを利用する場合
         InputStream mock = new InputStream() {
             @Override
-            public int read() throws IOException {
+            public int read() {
                 return 0;
             }
 
@@ -60,7 +54,7 @@ public class FileUtilTest {
         };
 
         FileUtil.closeQuietly(mock);
-        assertTrue(closed.value);
+        assertThat(closed.value, is(true));
     }
 
     @Test
@@ -76,12 +70,12 @@ public class FileUtilTest {
             }
 
             @Override
-            public void write(int b) throws IOException {
+            public void write(int b) {
             }
         };
 
         FileUtil.closeQuietly(mock);
-        assertTrue(closed.value);
+        assertThat(closed.value, is(true));
     }
 
 
@@ -92,7 +86,7 @@ public class FileUtilTest {
         // Readerを利用する場合
         Reader mock = new Reader() {
             @Override
-            public int read(char[] cbuf, int off, int len) throws IOException {
+            public int read(char[] cbuf, int off, int len) {
                 return 0;
             }
 
@@ -104,7 +98,7 @@ public class FileUtilTest {
         };
 
         FileUtil.closeQuietly(mock);
-        assertTrue(closed.value);
+        assertThat(closed.value, is(true));
     }
 
     @Test
@@ -120,16 +114,16 @@ public class FileUtilTest {
             }
 
             @Override
-            public void flush() throws IOException {
+            public void flush() {
             }
 
             @Override
-            public void write(char[] cbuf, int off, int len) throws IOException {
+            public void write(char[] cbuf, int off, int len) {
             }
         };
 
         FileUtil.closeQuietly(mock);
-        assertTrue(closed.value);
+        assertThat(closed.value, is(true));
     }
 
     @Test
@@ -162,8 +156,8 @@ public class FileUtilTest {
         file2.deleteOnExit();
         file3.deleteOnExit();
 
-        assertEquals(1, files.length);
-        assertEquals(file1, files[0]);
+        assertThat(files.length, is(1));
+        assertThat(files[0], is(file1));
 
         file1.delete();
         file2.delete();
@@ -176,16 +170,16 @@ public class FileUtilTest {
         // Writerを利用する場合
         Writer mock = new Writer() {
             @Override
-            public void close() throws IOException {
+            public void close() {
                 throw new RuntimeException();
             }
 
             @Override
-            public void flush() throws IOException {
+            public void flush() {
             }
 
             @Override
-            public void write(char[] cbuf, int off, int len) throws IOException {
+            public void write(char[] cbuf, int off, int len) {
             }
         };
 
@@ -195,24 +189,26 @@ public class FileUtilTest {
 
     @Test
     public void testCloseQuietly7() {
-        final boolean[] closed = new boolean[]{false, false};
+        final boolean[] closed = {false, false};
         Closeable c0 = null;
 
         Closeable c1 = new Closeable() {
-            public void close() throws IOException {
+            @Override
+            public void close() {
                 closed[0] = true;
             }
         };
 
         Closeable c2 = new Closeable() {
-            public void close() throws IOException {
+            @Override
+            public void close() {
                 closed[1] = true;
             }
         };
 
         FileUtil.closeQuietly(c0, c1, c2);
-        assertTrue(closed[0]);
-        assertTrue(closed[1]);
+        assertThat(closed[0], is(true));
+        assertThat(closed[1], is(true));
     }
 
     @Test
@@ -237,10 +233,10 @@ public class FileUtilTest {
         file3.deleteOnExit();
 
         Arrays.sort(files);
-        assertEquals(3, files.length);
-        assertEquals(file1, files[0]);
-        assertEquals(file2, files[1]);
-        assertEquals(file4, files[2]);
+        assertThat(files.length, is(3));
+        assertThat(files[0], is(file1));
+        assertThat(files[1], is(file2));
+        assertThat(files[2], is(file4));
 
         file1.delete();
         file2.delete();
@@ -267,8 +263,8 @@ public class FileUtilTest {
         file2.deleteOnExit();
         file3.deleteOnExit();
 
-        assertEquals(1, files.length);
-        assertEquals(file1, files[0]);
+        assertThat(files.length, is(1));
+        assertThat(files[0], is(file1));
 
         file1.delete();
         file2.delete();
@@ -294,11 +290,11 @@ public class FileUtilTest {
             FileUtil.closeQuietly(in);
         }
 
-        assertTrue(contents.indexOf("This") != -1);
-        assertTrue(contents.indexOf("file") != -1);
-        assertTrue(contents.indexOf("is") != -1);
-        assertTrue(contents.indexOf("using") != -1);
-        assertTrue(contents.indexOf("FileUtilTest") != -1);
+        assertThat(contents.indexOf("This"), not(is(-1)));
+        assertThat(contents.indexOf("file"), not(is(-1)));
+        assertThat(contents.indexOf("is"), not(is(-1)));
+        assertThat(contents.indexOf("using"), not(is(-1)));
+        assertThat(contents.indexOf("FileUtilTest"), not(is(-1)));
 
         in = FileUtil.getResource("classpath:nablarch/core/util/test.txt");
         try {
@@ -307,11 +303,11 @@ public class FileUtilTest {
             FileUtil.closeQuietly(in);
         }
 
-        assertTrue(contents.indexOf("This") != -1);
-        assertTrue(contents.indexOf("file") != -1);
-        assertTrue(contents.indexOf("is") != -1);
-        assertTrue(contents.indexOf("using") != -1);
-        assertTrue(contents.indexOf("FileUtilTest") != -1);
+        assertThat(contents.indexOf("This"), not(is(-1)));
+        assertThat(contents.indexOf("file"), not(is(-1)));
+        assertThat(contents.indexOf("is"), not(is(-1)));
+        assertThat(contents.indexOf("using"), not(is(-1)));
+        assertThat(contents.indexOf("FileUtilTest"), not(is(-1)));
     }
 
     /**
@@ -368,11 +364,11 @@ public class FileUtilTest {
             FileUtil.closeQuietly(in);
         }
 
-        assertTrue(contents.indexOf("This") != -1);
-        assertTrue(contents.indexOf("file") != -1);
-        assertTrue(contents.indexOf("is") != -1);
-        assertTrue(contents.indexOf("using") != -1);
-        assertTrue(contents.indexOf("FileUtilTest") != -1);
+        assertThat(contents.indexOf("This"), not(is(-1)));
+        assertThat(contents.indexOf("file"), not(is(-1)));
+        assertThat(contents.indexOf("is"), not(is(-1)));
+        assertThat(contents.indexOf("using"), not(is(-1)));
+        assertThat(contents.indexOf("FileUtilTest"), not(is(-1)));
     }
 
     /**
@@ -416,9 +412,9 @@ public class FileUtilTest {
         // 念のためファイルが存在するかチェックする
         if (!(file.exists())) throw new RuntimeException();
 
-        Assert.assertTrue(FileUtil.deleteFile(file));
+        assertThat(FileUtil.deleteFile(file), is(true));
 
-        Assert.assertFalse(file.exists());
+        assertThat(file.exists(), is(false));
     }
 
     @Test
@@ -426,9 +422,9 @@ public class FileUtilTest {
 
         try {
             FileUtil.deleteFile(null);
-            Assert.fail();
+            fail();
         } catch (IllegalArgumentException e) {
-            Assert.assertTrue(true);
+            assertThat(true, is(true));
         }
     }
 
@@ -439,7 +435,7 @@ public class FileUtilTest {
         // 念のためファイルが存在しないことをチェックする
         if ((file.exists())) throw new RuntimeException();
 
-        Assert.assertTrue(FileUtil.deleteFile(file));
+        assertThat(FileUtil.deleteFile(file), is(true));
     }
 
 
@@ -484,7 +480,7 @@ public class FileUtilTest {
         // 移動先ファイルの準備
         File dest = new File(tempDir.newFile("to.txt").getPath());
         if (dest.exists()) {
-            assertTrue("ファイル削除に失敗", dest.delete());
+            assertThat("ファイル削除に失敗", dest.delete(), is(true));
         }
 
         // 実行
@@ -517,7 +513,7 @@ public class FileUtilTest {
         // 移動先ファイルの準備
         File dest = new File(tempDir.newFile("to.txt").getPath());
         if (dest.exists()) {
-            assertTrue("ファイル削除に失敗", dest.delete());
+            assertThat("ファイル削除に失敗", dest.delete(), is(true));
         }
         // 実行
         FileUtil.copy(src, dest);

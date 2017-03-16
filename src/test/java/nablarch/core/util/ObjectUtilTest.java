@@ -1,10 +1,10 @@
 package nablarch.core.util;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.number.OrderingComparison.lessThan;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
@@ -14,6 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsArrayContainingInOrder;
+import org.hamcrest.number.OrderingComparison;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -33,7 +38,7 @@ public class ObjectUtilTest {
         
         String className = ObjectUtilTest.class.getName();
         ObjectUtilTest test = ObjectUtil.createInstance(className);
-        assertTrue(test != null);
+        Assert.assertThat(test, not(sameInstance(null)));
     }
     
     /**
@@ -47,7 +52,7 @@ public class ObjectUtilTest {
             ObjectUtil.createInstance("hoge.Dummy");
             fail("must be thrown the IllegalArgumentException");
         } catch (IllegalArgumentException e) {
-            assertEquals(e.getCause().getClass(), ClassNotFoundException.class);
+            assertThat(e.getCause(), instanceOf(ClassNotFoundException.class));
         }
     }
 
@@ -63,7 +68,7 @@ public class ObjectUtilTest {
             ObjectUtil.createInstance(className);
             fail("must be thrown the IllegalArgumentException");
         } catch (IllegalArgumentException e) {
-            assertEquals(e.getCause().getClass(), InstantiationException.class);
+            assertThat(e.getCause(), instanceOf(InstantiationException.class));
         }
     }
 
@@ -79,7 +84,7 @@ public class ObjectUtilTest {
             ObjectUtil.createInstance(className);
             fail("must be thrown the IllegalArgumentException");
         } catch (IllegalArgumentException e) {
-            assertEquals(e.getCause().getClass(), IllegalAccessException.class);
+            assertThat(e.getCause(), instanceOf(IllegalAccessException.class));
         }
     }
     
@@ -102,7 +107,7 @@ public class ObjectUtilTest {
         TargetClass target = new TargetClass();
         ObjectUtil.setProperty(target, "prop1", "test01");
 
-        assertEquals("test01", target.prop1);
+        Assert.assertThat(target.prop1, is("test01"));
     }
 
     /**
@@ -117,7 +122,7 @@ public class ObjectUtilTest {
             target.setProp1("test01");
             String actual = ObjectUtil.getProperty(target, "prop1").toString();
 
-            assertEquals("test01", actual);
+            Assert.assertThat(actual, is("test01"));
         }
         { 
             try {
@@ -140,7 +145,8 @@ public class ObjectUtilTest {
                 ObjectUtil.getProperty(new TargetClass(), "noExists");
                 fail("例外が発生するはず");
             } catch (IllegalArgumentException e) {
-                assertEquals("property noExists not found on class " + TargetClass.class.getName(), e.getMessage());
+                Assert.assertThat(e.getMessage(),
+                        is("property noExists not found on class " + TargetClass.class.getName()));
             }
         }
         
@@ -153,7 +159,7 @@ public class ObjectUtilTest {
             target.setProp1("test01");
             String actual = ObjectUtil.getPropertyIfExists(target, "prop1").toString();
 
-            assertEquals("test01", actual);
+            Assert.assertThat(actual, is("test01"));
         }
         { 
             try {
@@ -173,7 +179,7 @@ public class ObjectUtilTest {
         }
         { 
             // 存在しないプロパティ
-            assertNull(ObjectUtil.getPropertyIfExists(new TargetClass(), "noExists"));
+            Assert.assertThat(ObjectUtil.getPropertyIfExists(new TargetClass(), "noExists"), nullValue());
         }
         
     }
@@ -188,7 +194,7 @@ public class ObjectUtilTest {
         target.put("prop1", "test01");
         String actual = ObjectUtil.getProperty(target, "prop1").toString();
 
-        assertEquals("test01", actual);
+        Assert.assertThat(actual, is("test01"));
     }
     
     /**
@@ -250,7 +256,7 @@ public class ObjectUtilTest {
         
         ObjectUtil.setProperty(target, "prop1", prop);
 
-        assertEquals(prop, target.prop1);
+        Assert.assertThat(target.prop1, is(prop));
     }
     
     /**
@@ -270,14 +276,14 @@ public class ObjectUtilTest {
         ObjectUtil.setProperty(target, "doubleProp", 2.0);
         
 
-        assertEquals(true, target.boolProp);
-        assertEquals('x', target.charProp);
-        assertEquals((byte) 1, target.byteProp);
-        assertEquals((short) 2, target.shortProp);
-        assertEquals(3, target.intProp);
-        assertEquals(4l, target.longProp);
-        assertTrue(1.0f - target.floatProp < 0.1);
-        assertTrue(2.0 - target.doubleProp < 0.1);
+        Assert.assertThat(target.boolProp, is(true));
+        Assert.assertThat(target.charProp, is('x'));
+        Assert.assertThat(target.byteProp, is((byte) 1));
+        Assert.assertThat(target.shortProp, is((short) 2));
+        Assert.assertThat(target.intProp, is(3));
+        Assert.assertThat(target.longProp, is(4l));
+        Assert.assertThat(1.0f - target.floatProp, lessThan(0.1F));
+        Assert.assertThat(2.0 - target.doubleProp, lessThan(0.1));
     }
 
     /**
@@ -288,11 +294,11 @@ public class ObjectUtilTest {
     @Test
     public void testGetAncesterClasses() {
         List<Class<?>> classes = ObjectUtil.getAncestorClasses(TargetClass3.class);
-        assertEquals(TargetClass2.class, classes.get(0));
-        assertEquals(TargetClass.class, classes.get(1));
+        Assert.assertThat(classes.get(0), CoreMatchers.<Class<?>>is(TargetClass2.class));
+        Assert.assertThat(classes.get(1), CoreMatchers.<Class<?>>is(TargetClass.class));
 
         classes = ObjectUtil.getAncestorClasses(Object.class);
-        assertTrue(classes.isEmpty());
+        Assert.assertThat(classes.isEmpty(), is(true));
         
     }
 
@@ -305,9 +311,9 @@ public class ObjectUtilTest {
         Class<?> charPropType = ObjectUtil.getPropertyType(TargetClass6.class, "charProp");
         Class<?> strPropType = ObjectUtil.getPropertyType(TargetClass.class, "prop1");
         
-        assertEquals(boolean.class, boolPropType);
-        assertEquals(char.class, charPropType);
-        assertEquals(String.class, strPropType);
+        assertThat(boolPropType, CoreMatchers.<Class<?>>is(boolean.class));
+        assertThat(charPropType, CoreMatchers.<Class<?>>is(char.class));
+        assertThat(strPropType, CoreMatchers.<Class<?>>is(String.class));
     }
 
     /**
@@ -319,8 +325,8 @@ public class ObjectUtilTest {
         Class<?> boolPropType = ObjectUtil.getPropertyType(TargetClass7.class, "boolProp");
         Class<?> charPropType = ObjectUtil.getPropertyType(TargetClass7.class, "charProp");
         
-        assertEquals(boolean.class, boolPropType);
-        assertEquals(char.class, charPropType);
+        Assert.assertThat(boolPropType, CoreMatchers.<Class<?>>is(boolean.class));
+        Assert.assertThat(charPropType, CoreMatchers.<Class<?>>is(char.class));
         
     }
     /**
@@ -330,16 +336,15 @@ public class ObjectUtilTest {
     public void testGetWritablePropertyNames() {
         List<String> writablePropertyNames = ObjectUtil.getWritablePropertyNames(TargetClass6.class);
         Collections.sort(writablePropertyNames);
-        assertArrayEquals(new String[] {"boolProp",
-                        "byteProp",
-                        "charProp",
-                        "doubleProp",
-                        "floatProp",
-                        "intProp",
-                        "longProp",
-                        "shortProp",
-                        }, 
-                        writablePropertyNames.toArray());
+        Assert.assertThat(writablePropertyNames, contains(
+                "boolProp",
+                "byteProp",
+                "charProp",
+                "doubleProp",
+                "floatProp",
+                "intProp",
+                "longProp",
+                "shortProp"));
     }
 
     /**
@@ -348,7 +353,7 @@ public class ObjectUtilTest {
     @Test
     public void testGetPropertyNameFromSetter() throws Throwable {
         String name = ObjectUtil.getPropertyNameFromSetter(TargetClass6.class.getMethod("setBoolProp", new Class<?>[] {boolean.class}));
-        assertEquals("boolProp", name);
+        Assert.assertThat(name, is("boolProp"));
         
         try {
             ObjectUtil.getPropertyNameFromSetter(TargetClass6.class.getMethod("testBoolProp", new Class<?>[] {boolean.class}));
@@ -364,7 +369,7 @@ public class ObjectUtilTest {
     @Test
     public void testGetPropertyNameFromGetter() throws Throwable {
         String name = ObjectUtil.getPropertyNameFromGetter(TargetClass.class.getMethod("getProp1"));
-        assertEquals("prop1", name);
+        Assert.assertThat(name, is("prop1"));
         
         try {
             ObjectUtil.getPropertyNameFromGetter(TargetClass.class.getMethod("setProp1", new Class<?>[] {String.class}));
@@ -378,27 +383,31 @@ public class ObjectUtilTest {
     public void testGetSetterMethods() throws Exception {
         List<Method> setterMethods = ObjectUtil.getSetterMethods(TargetClass8.class);
         
-        assertEquals(1, setterMethods.size());
-        assertEquals("setProp1", setterMethods.get(0).getName()); 
+        Assert.assertThat(setterMethods.size(), is(1));
+        Assert.assertThat(setterMethods.get(0)
+                                       .getName(), is("setProp1")); 
     }
     
     @Test
     public void testGetGetterMethods() throws Exception {
         List<Method> getterMethods = ObjectUtil.getGetterMethods(TargetClass.class);
         
-        assertEquals(1, getterMethods.size());
-        assertEquals("getProp1", getterMethods.get(0).getName()); 
+        Assert.assertThat(getterMethods.size(), is(1));
+        Assert.assertThat(getterMethods.get(0)
+                                       .getName(), is("getProp1")); 
     }
 
     @Test
     public void testFindMatchMethodFail() {
-        assertNull(ObjectUtil.findMatchMethod(TargetClass.class, "setProp1", new Class<?>[]{int.class}));
-        assertNull(ObjectUtil.findMatchMethod(TargetClass.class, "setProp1", new Class<?>[]{}));
+        Assert.assertThat(ObjectUtil.findMatchMethod(TargetClass.class, "setProp1", new Class<?>[] {int.class}),
+                nullValue());
+        Assert.assertThat(ObjectUtil.findMatchMethod(TargetClass.class, "setProp1", new Class<?>[] {}), nullValue());
     }
 
     @Test
     public void testGetSetterMethod() throws Exception {
-        assertEquals(TargetClass.class.getMethod("setProp1", new Class<?>[] {String.class}) , ObjectUtil.getSetterMethod(TargetClass.class, "prop1"));
+        Assert.assertThat(ObjectUtil.getSetterMethod(TargetClass.class, "prop1"),
+                is(TargetClass.class.getMethod("setProp1", new Class<?>[] {String.class})));
     }
 
     @Test
@@ -412,9 +421,11 @@ public class ObjectUtilTest {
             }
         };
         Method method1 = ObjectUtil.getGetterMethod(o.getClass(), "method1");
-        assertEquals(o.getClass().getMethod("getMethod1"), method1);
+        Assert.assertThat(method1, is(o.getClass()
+                                       .getMethod("getMethod1")));
         Method method2 = ObjectUtil.getGetterMethod(o.getClass(), "method2");
-        assertEquals(o.getClass().getMethod("getMethod2"), method2);
+        Assert.assertThat(method2, is(o.getClass()
+                                       .getMethod("getMethod2")));
     }
 
     @Test
@@ -423,7 +434,7 @@ public class ObjectUtilTest {
             ObjectUtil.getGetterMethod(Object.class, "");
             fail("例外が発生するはず");
         } catch (IllegalArgumentException e) {
-            assertEquals("propertyName must not null or empty.", e.getMessage());
+            Assert.assertThat(e.getMessage(), is("propertyName must not null or empty."));
         }
     }
 
@@ -463,7 +474,7 @@ public class ObjectUtilTest {
     @Test
     public void testGetPropertyPropertySignatureIsInvalid() {
     	List<String> names = ObjectUtil.getWritablePropertyNames(TargetClass9.class);
-    	assertFalse(names.contains("property"));
+    	Assert.assertThat(names, not(hasItem("property")));
     }
 
     /**

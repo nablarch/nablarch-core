@@ -1,15 +1,14 @@
 package nablarch.core.util.map;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class CaseInsensitiveMapTest {
@@ -28,19 +27,19 @@ public class CaseInsensitiveMapTest {
             put(null, "nullKey");
         }};
 
-        assertEquals("val1", map.get("key1"));
-        assertEquals("val1", map.get("KEY1"));
-        assertEquals("val1", map.get("keY1"));
+        assertThat(map.get("key1"), is("val1"));
+        assertThat(map.get("KEY1"), is("val1"));
+        assertThat(map.get("keY1"), is("val1"));
 
-        assertEquals("val2", map.get("key2"));
-        assertEquals("val2", map.get("KEY2"));
-        assertEquals("val2", map.get("keY2"));
+        assertThat(map.get("key2"), is("val2"));
+        assertThat(map.get("KEY2"), is("val2"));
+        assertThat(map.get("keY2"), is("val2"));
 
-        assertEquals("val3", map.put("KEY3", "val3_updated"));
-        assertEquals(4, map.size());
-        assertEquals("val3_updated", map.get("key3"));
+        assertThat(map.put("KEY3", "val3_updated"), is("val3"));
+        assertThat(map.size(), is(4));
+        assertThat(map.get("key3"), is("val3_updated"));
 
-        assertEquals("nullKey", map.get(null));
+        assertThat(map.get(null), is("nullKey"));
     }
 
     @Test
@@ -52,7 +51,7 @@ public class CaseInsensitiveMapTest {
         }};
 
         map.putAll(map);
-        assertTrue( map.equals(map) );
+        assertThat(map, is(map));
 
         Map<String, String> map2 = new CaseInsensitiveMap<String>() {{
             put("key5", "val5");
@@ -61,9 +60,9 @@ public class CaseInsensitiveMapTest {
         }};
 
         map.putAll(map2);
-        assertEquals(5, map.size());
-        assertEquals("val5", map.get("key5"));
-        assertEquals("val1", map.get("key1"));
+        assertThat(map.size(), is(5));
+        assertThat(map.get("key5"), is("val5"));
+        assertThat(map.get("key1"), is("val1"));
     }
 
     @Test
@@ -106,11 +105,13 @@ public class CaseInsensitiveMapTest {
             put("KeY3", "val3");
         }};
 
-        assertTrue(map.toString().startsWith("{"));
-        assertTrue(map.toString().contains("key1=val1"));
-        assertTrue(map.toString().contains("key2=val2"));
-        assertTrue(map.toString().contains("key3=val3"));
-        assertTrue(map.toString().endsWith("}"));
+        assertThat(map.toString()
+                             .startsWith("{"), is(true));
+        assertThat(map.toString(), containsString("key1=val1"));
+        assertThat(map.toString(), containsString("key2=val2"));
+        assertThat(map.toString(), containsString("key3=val3"));
+        assertThat(map.toString()
+                             .endsWith("}"), is(true));
 
         Map<String, String> map2 = new CaseInsensitiveMap<String>() {{
             put("key1", "val1");
@@ -118,6 +119,6 @@ public class CaseInsensitiveMapTest {
             put("key3", "val3");
         }};
 
-        assertEquals(map, map2);
+        assertThat(map2, is(map));
     }
 }

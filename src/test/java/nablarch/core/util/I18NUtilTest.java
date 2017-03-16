@@ -1,8 +1,7 @@
 package nablarch.core.util;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -13,8 +12,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.hamcrest.CoreMatchers;
+
 import nablarch.core.ThreadContext;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -25,22 +27,22 @@ public class I18NUtilTest {
         {
             Locale locale = I18NUtil.createLocale("ja");
 
-            assertEquals("ja", locale.getLanguage());
+            assertThat(locale.getLanguage(), CoreMatchers.is("ja"));
         }
 
         {
             Locale locale = I18NUtil.createLocale("ja_JP");
 
-            assertEquals("ja", locale.getLanguage());
-            assertEquals("JP", locale.getCountry());
+            assertThat(locale.getLanguage(), CoreMatchers.is("ja"));
+            assertThat(locale.getCountry(), CoreMatchers.is("JP"));
         }
 
         {
             Locale locale = I18NUtil.createLocale("ja_JP_VARIANT");
 
-            assertEquals("ja", locale.getLanguage());
-            assertEquals("JP", locale.getCountry());
-            assertEquals("VARIANT", locale.getVariant());
+            assertThat(locale.getLanguage(), CoreMatchers.is("ja"));
+            assertThat(locale.getCountry(), CoreMatchers.is("JP"));
+            assertThat(locale.getVariant(), CoreMatchers.is("VARIANT"));
         }
     }
 

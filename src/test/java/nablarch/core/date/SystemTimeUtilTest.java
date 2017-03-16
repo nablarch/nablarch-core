@@ -1,12 +1,6 @@
 package nablarch.core.date;
 
-import nablarch.core.repository.ObjectLoader;
-import nablarch.core.repository.SystemRepository;
-import nablarch.util.FixedSystemTimeProvider;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -14,7 +8,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import nablarch.core.repository.ObjectLoader;
+import nablarch.core.repository.SystemRepository;
+import nablarch.util.FixedSystemTimeProvider;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * {@link SystemTimeUtil}のテストクラス
@@ -53,7 +55,7 @@ public class SystemTimeUtilTest {
     public void testGetDate() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         Date expected = sdf.parse("20110107123456000");
-        assertEquals(expected, SystemTimeUtil.getDate());
+        Assert.assertThat(SystemTimeUtil.getDate(), is(expected));
     }
 
     /**
@@ -77,7 +79,7 @@ public class SystemTimeUtilTest {
     @Test
     public void testGetTimestamp() {
         Timestamp expected = Timestamp.valueOf("2011-01-07 12:34:56.000000000");
-        assertEquals(expected, SystemTimeUtil.getTimestamp());
+        Assert.assertThat(SystemTimeUtil.getTimestamp(), is(expected));
     }
 
     /**
@@ -85,7 +87,7 @@ public class SystemTimeUtilTest {
      */
     @Test
     public void testGetCurrentDateString() {
-        assertEquals("20110107", SystemTimeUtil.getDateString());
+        Assert.assertThat(SystemTimeUtil.getDateString(), is("20110107"));
     }
 
     /**
@@ -93,7 +95,7 @@ public class SystemTimeUtilTest {
      */
     @Test
     public void testGetDateTimeString() {
-       assertEquals("20110107123456", SystemTimeUtil.getDateTimeString()); 
+       Assert.assertThat(SystemTimeUtil.getDateTimeString(), is("20110107123456")); 
     }
     
     /**
@@ -101,7 +103,7 @@ public class SystemTimeUtilTest {
      */
     @Test
     public void testGetDateTimeMillisString() {
-        assertEquals("20110107123456000", SystemTimeUtil.getDateTimeMillisString());         
+        Assert.assertThat(SystemTimeUtil.getDateTimeMillisString(), is("20110107123456000"));         
     }
     
 }
