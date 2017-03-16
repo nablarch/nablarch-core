@@ -1,19 +1,21 @@
 package nablarch.core.date;
 
-import nablarch.core.repository.ObjectLoader;
-import nablarch.core.repository.SystemRepository;
-import nablarch.util.FixedBusinessDateProvider;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import nablarch.core.repository.ObjectLoader;
+import nablarch.core.repository.SystemRepository;
+import nablarch.util.FixedBusinessDateProvider;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * {@link BusinessDateUtil}クラスのテストクラス
@@ -56,7 +58,7 @@ public class BusinessDateUtilTest {
     @Test
     public void testGetDate() {
         String actual = BusinessDateUtil.getDate();
-        assertEquals("20110101", actual);
+        Assert.assertThat(actual, is("20110101"));
     }
     
     /**
@@ -65,7 +67,7 @@ public class BusinessDateUtilTest {
     @Test
     public void testGetDateBySegment() {
         String actual = BusinessDateUtil.getDate("01");
-        assertEquals("20110201", actual);
+        Assert.assertThat(actual, is("20110201"));
     }
 
     /**
@@ -78,7 +80,7 @@ public class BusinessDateUtilTest {
             BusinessDateUtil.getDate("03");
             fail();
         } catch (IllegalStateException e) {
-            assertEquals("segment was not found. segment:03.", e.getMessage());
+            Assert.assertThat(e.getMessage(), is("segment was not found. segment:03."));
         }
             
     }
@@ -110,6 +112,6 @@ public class BusinessDateUtilTest {
         expected.put("02", "20110301");
         
         Map<String, String> actual = BusinessDateUtil.getAllDate();
-        assertEquals(expected, actual);
+        Assert.assertThat(actual, is(expected));
     }
 }

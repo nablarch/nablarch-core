@@ -21,15 +21,18 @@ apply plugin: 'com.nablarch.dev.nablarch-version'
 apply plugin: 'cobertura'
 
 // ビルド時のJavaバージョンを指定する
-sourceCompatibility=JavaVersion.VERSION_1_6
-targetCompatibility=JavaVersion.VERSION_1_6
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
 
 configurations {
-  testCompile.exclude group:'*', module: 'hamcrest-core'
+  all*.exclude module: 'nablarch-test-support'
+  all*.exclude module: 'h2'
+  jmockit
 }
 
 dependencies {
-  testCompile 'org.jmockit:jmockit:1.21'
+  jmockit 'org.jmockit:jmockit:1.21'
+  testCompile configurations.jmockit.dependencies
   testCompile 'junit:junit:4.12'
   testCompile 'org.hamcrest:hamcrest-all:1.3'
   // Cobertura
@@ -48,13 +51,13 @@ File nabSourcesDir = new File(nabDir, 'sources')
 String coberturaReportFormat = 'xml'
 
 test {
-  jvmArgs (
-          '-Xms16m',
-          '-Xmx32m',
-          '-XX:PermSize=32m',
-          '-XX:+UseParallelGC',
-          '-Dfile.encoding=UTF-8',
-          '-XX:-UseSplitVerifier'
+  jvmArgs(
+      '-Xms16m',
+      '-Xmx32m',
+      '-XX:PermSize=32m',
+      '-XX:+UseParallelGC',
+      '-Dfile.encoding=UTF-8',
+      '-XX:-UseSplitVerifier',
   )
 
   ignoreFailures = true
@@ -74,7 +77,6 @@ test {
   cobertura {
     coberturaVersion = '1.9.4.1'
     coverageSourceDirs = ["${projectDir}/src/main/java/"]
-//    coverageIgnoreTrivial = true      1系では使えない(´・ω・｀)
     coverageFormats = ['xml']
     coverageDirs = [project.sourceSets.main.output.classesDir]
     auxiliaryClasspath = files('src/main/resources') + configurations.testRuntime.asFileTree

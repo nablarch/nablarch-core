@@ -1,13 +1,15 @@
 package nablarch.core.log.operation;
 
-import mockit.Mocked;
-import mockit.Verifications;
 import nablarch.core.log.LogTestSupport;
 import nablarch.core.log.MockLogger;
 import nablarch.core.log.basic.LogLevel;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import mockit.Mocked;
+import mockit.Verifications;
 
 /**
  * {@link OperationLogger}のテストクラス

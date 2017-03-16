@@ -1,8 +1,6 @@
 package nablarch.core.message;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
@@ -14,6 +12,7 @@ import nablarch.core.repository.ObjectLoader;
 import nablarch.core.repository.SystemRepository;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,9 +35,9 @@ public class MessageTest {
         StringResource message = new RightMessage("1001", "{0},{1}");
         Message resultMessage = new Message(MessageLevel.INFO, message, new Object[]{"test", innerMessage});
 
-        assertEquals("1001", resultMessage.getMessageId());
-        assertEquals("test,testInner", resultMessage.formatMessage());
-        assertEquals(MessageLevel.INFO, resultMessage.getLevel());
+        assertThat(resultMessage.getMessageId(), is("1001"));
+        assertThat(resultMessage.formatMessage(), is("test,testInner"));
+        assertThat(resultMessage.getLevel(), is(MessageLevel.INFO));
     }
 
     @Test
@@ -46,9 +45,9 @@ public class MessageTest {
         StringResource message = new RightMessage("1001", "test message");
         Message resultMessage = new Message(MessageLevel.WARN, message);
 
-        assertEquals("1001", resultMessage.getMessageId());
-        assertEquals("test message", resultMessage.formatMessage());
-        assertEquals(MessageLevel.WARN, resultMessage.getLevel());
+        assertThat(resultMessage.getMessageId(), is("1001"));
+        assertThat(resultMessage.formatMessage(), is("test message"));
+        assertThat(resultMessage.getLevel(), is(MessageLevel.WARN));
     }
 
 
@@ -57,9 +56,9 @@ public class MessageTest {
         StringResource message = new RightMessage("1001", "test message");
         Message resultMessage = new Message(MessageLevel.ERROR, message);
 
-        assertEquals("1001", resultMessage.getMessageId());
-        assertEquals("test message", resultMessage.formatMessage());
-        assertEquals(MessageLevel.ERROR, resultMessage.getLevel());
+        assertThat(resultMessage.getMessageId(), is("1001"));
+        assertThat(resultMessage.formatMessage(), is("test message"));
+        assertThat(resultMessage.getLevel(), is(MessageLevel.ERROR));
     }
 
 
@@ -78,16 +77,16 @@ public class MessageTest {
         Message resultMessage = new Message(MessageLevel.ERROR, rightMessage, new Object[]{ innerMessage });
 
         // ja (default locale)
-        assertEquals("1001", resultMessage.getMessageId());
-        assertEquals("テスト テストインナー", resultMessage.formatMessage());
-        assertEquals(MessageLevel.ERROR, resultMessage.getLevel());
+        assertThat(resultMessage.getMessageId(), is("1001"));
+        assertThat(resultMessage.formatMessage(), is("テスト テストインナー"));
+        assertThat(resultMessage.getLevel(), is(MessageLevel.ERROR));
 
         // en
         ThreadContext.setLanguage(Locale.ENGLISH);
 
-        assertEquals("1001", resultMessage.getMessageId());
-        assertEquals("test testInner", resultMessage.formatMessage());
-        assertEquals(MessageLevel.ERROR, resultMessage.getLevel());
+        assertThat(resultMessage.getMessageId(), is("1001"));
+        assertThat(resultMessage.formatMessage(), is("test testInner"));
+        assertThat(resultMessage.getLevel(), is(MessageLevel.ERROR));
     }
 
     @Test
@@ -97,20 +96,20 @@ public class MessageTest {
 
         one = new Message(MessageLevel.ERROR, new RightMessage("0001", ""));
         another = one;
-        assertEquals("same object.", one, another);
+        assertThat("same object.", another, is(one));
 
 
         one = new Message(MessageLevel.ERROR, new RightMessage("0001", ""));
         another = new Message(MessageLevel.ERROR, new RightMessage("0001", ""));
-        assertEquals("equal object.", one, another);
+        assertThat("equal object.", another, is(one));
 
         one = new Message(MessageLevel.ERROR, null);
         another = new Message(MessageLevel.ERROR, null);
-        assertEquals("equal object. (without StringResource)", one, another);
+        assertThat("equal object. (without StringResource)", another, is(one));
 
         one = new Message(null, new RightMessage("0001", ""));
         another = new Message(null, new RightMessage("0001", ""));
-        assertEquals("equal object. (without level)", one, another);
+        assertThat("equal object. (without level)", another, is(one));
 
     }
 
@@ -118,11 +117,11 @@ public class MessageTest {
     public void testNotEqualsAndHashCode() {
         Message one, another;
 
-        assertFalse("compare to null", new Message(null, null).equals(null));
+        assertThat("compare to null", new Message(null, null), notNullValue());
 
         one = new Message(MessageLevel.ERROR, null);
         another = new Message(MessageLevel.ERROR, null) {}; // anonymous subclass
-        assertFalse("Class differs", one.equals(another));
+        assertThat("Class differs", one, not(is(another)));
 
         one = new Message(MessageLevel.ERROR, null);
         another = new Message(MessageLevel.WARN, null);
@@ -179,8 +178,8 @@ public class MessageTest {
     }
 
     private void assertNotEquals(String msg, Message one, Message another) {
-        assertFalse(msg, one.equals(another));
-        assertFalse(msg + "(hashCode)", one.hashCode() == another.hashCode()); // optional when not equal
+        assertThat(msg, one, not(is(another)));
+        assertThat(msg + "(hashCode)", one.hashCode() == another.hashCode(), is(false)); // optional when not equal
     }
 
 

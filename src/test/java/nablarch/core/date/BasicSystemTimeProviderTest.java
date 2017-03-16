@@ -1,6 +1,7 @@
 package nablarch.core.date;
 
-import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Date;
 
@@ -26,7 +27,8 @@ public class BasicSystemTimeProviderTest {
         long start = System.currentTimeMillis();
         Date date = time.getDate();
         long end = System.currentTimeMillis();
-        assertTrue("getDate()呼び出し前の時間と、呼び出し後の時間の間であること。", start <= date.getTime() && date.getTime() <= end);
+        assertThat("getDate()呼び出し前の時間と、呼び出し後の時間の間であること。", start <= date.getTime() && date.getTime() <= end,
+                is(true));
     }
 
     /**
@@ -41,6 +43,7 @@ public class BasicSystemTimeProviderTest {
         long start = System.currentTimeMillis();
         Date date = time.getTimestamp();
         long end = System.currentTimeMillis();
-        assertTrue("getTimestamp()呼び出し前の時間と、呼び出し後の時間の間であること。", start <= date.getTime() && date.getTime() <= end);
+        assertThat("getTimestamp()呼び出し前の時間と、呼び出し後の時間の間であること。", start <= date.getTime() && date.getTime() <= end,
+                is(true));
     }
 }

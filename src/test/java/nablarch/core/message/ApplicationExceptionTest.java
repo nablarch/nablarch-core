@@ -1,11 +1,12 @@
 package nablarch.core.message;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -22,9 +23,9 @@ public class ApplicationExceptionTest {
 
         ApplicationException ae1 = new ApplicationException(msg1);
 
-        assertEquals("MSG00001", ae1.getMessages()
-                                    .get(0)
-                                    .getMessageId());
+        Assert.assertThat(ae1.getMessages()
+                             .get(0)
+                             .getMessageId(), is("MSG00001"));
 
         List<Message> messages1 = new ArrayList<Message>();
         messages1.add(msg1);
@@ -37,39 +38,39 @@ public class ApplicationExceptionTest {
 
         ApplicationException ae2 = new ApplicationException(messages1);
 
-        assertEquals("MSG00001", ae2.getMessages()
-                                    .get(0)
-                                    .getMessageId());
-        assertEquals("MSG00002", ae2.getMessages()
-                                    .get(1)
-                                    .getMessageId());
-        assertEquals("MSG00003", ae2.getMessages()
-                                    .get(2)
-                                    .getMessageId());
+        Assert.assertThat(ae2.getMessages()
+                             .get(0)
+                             .getMessageId(), is("MSG00001"));
+        Assert.assertThat(ae2.getMessages()
+                             .get(1)
+                             .getMessageId(), is("MSG00002"));
+        Assert.assertThat(ae2.getMessages()
+                             .get(2)
+                             .getMessageId(), is("MSG00003"));
 
-        assertEquals("message1\nmessage2\nmessage3\n", ae2.getMessage());
+        Assert.assertThat(ae2.getMessage(), is("message1\nmessage2\nmessage3\n"));
 
 
         ApplicationException ae3 = new ApplicationException(messages1);
         ae3.addMessages(messages2);
 
-        assertEquals("MSG00001", ae3.getMessages()
-                                    .get(0)
-                                    .getMessageId());
-        assertEquals("MSG00002", ae3.getMessages()
-                                    .get(1)
-                                    .getMessageId());
-        assertEquals("MSG00003", ae3.getMessages()
-                                    .get(2)
-                                    .getMessageId());
-        assertEquals("MSG00004", ae3.getMessages()
-                                    .get(3)
-                                    .getMessageId());
-        assertEquals("MSG00005", ae3.getMessages()
-                                    .get(4)
-                                    .getMessageId());
+        Assert.assertThat(ae3.getMessages()
+                             .get(0)
+                             .getMessageId(), is("MSG00001"));
+        Assert.assertThat(ae3.getMessages()
+                             .get(1)
+                             .getMessageId(), is("MSG00002"));
+        Assert.assertThat(ae3.getMessages()
+                             .get(2)
+                             .getMessageId(), is("MSG00003"));
+        Assert.assertThat(ae3.getMessages()
+                             .get(3)
+                             .getMessageId(), is("MSG00004"));
+        Assert.assertThat(ae3.getMessages()
+                             .get(4)
+                             .getMessageId(), is("MSG00005"));
 
-        assertEquals("message1\nmessage2\nmessage3\nmessage4\nmessage5\n", ae3.getMessage());
+        Assert.assertThat(ae3.getMessage(), is("message1\nmessage2\nmessage3\nmessage4\nmessage5\n"));
     }
 
     private static class MockMessage implements StringResource {
