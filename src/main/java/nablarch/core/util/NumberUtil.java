@@ -2,6 +2,7 @@ package nablarch.core.util;
 
 import java.math.BigDecimal;
 
+import nablarch.core.exception.IllegalConfigurationException;
 import nablarch.core.repository.SystemRepository;
 
 /**
@@ -50,9 +51,17 @@ public final class NumberUtil {
             return MAX_SCALE;
         } else {
             try {
-                return Integer.valueOf(maxScale.toString());
-            } catch (NumberFormatException ignored) {
-                return MAX_SCALE;
+                final int value = Integer.valueOf(maxScale.toString());
+                if (value <= 0) {
+                    throw new IllegalConfigurationException(
+                            "Must set Greater than 0 to nablarch.max_scale of SystemRepository."
+                                    + " configuration value:" + maxScale);
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                throw new IllegalConfigurationException(
+                        "Must set numeric value to nablarch.max_scale of SystemRepository."
+                                + " configuration value:" + maxScale, e);
             }
         }
     }

@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import nablarch.core.exception.IllegalConfigurationException;
 import nablarch.core.repository.ObjectLoader;
 import nablarch.core.repository.SystemRepository;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -20,6 +22,11 @@ import org.junit.runner.RunWith;
 public class NumberUtilTest {
 
     public static class VerifyBigDecimalScale {
+
+        @Before
+        public void setUp() throws Exception {
+            SystemRepository.clear();
+        }
         
         @Rule
         public ExpectedException expectedException = ExpectedException.none();
@@ -117,11 +124,25 @@ public class NumberUtilTest {
                 }
             });
 
-            // scale->11
-            final BigDecimal decimal = new BigDecimal("1e-100000");
-            expectedException.expect(IllegalArgumentException.class);
-            expectedException.expectMessage("Illegal scale(100000): needs to be between(-9999, 9999)");
-            NumberUtil.verifyBigDecimalScale(decimal);
+            expectedException.expect(IllegalConfigurationException.class);
+            expectedException.expectMessage("Must set numeric value to nablarch.max_scale of SystemRepository. configuration value:10あ");
+            NumberUtil.verifyBigDecimalScale(new BigDecimal("1e-100000"));
+        }
+        
+        @Test
+        public void scaleの許容範囲に0以下を設定した場合例外が送出されること() throws Exception {
+            SystemRepository.load(new ObjectLoader() {
+                @Override
+                public Map<String, Object> load() {
+                    final Map<String, Object> result = new HashMap<String, Object>();
+                    result.put("nablarch.max_scale", 0);
+                    return result;
+                }
+            });
+
+            expectedException.expect(IllegalConfigurationException.class);
+            expectedException.expectMessage("Must set Greater than 0 to nablarch.max_scale of SystemRepository. configuration value:0");
+            NumberUtil.verifyBigDecimalScale(new BigDecimal("0"));
         }
     }
 }
