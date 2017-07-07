@@ -78,7 +78,7 @@ public class RequestHandlerEntryTest {
 
         assertThat(entry1.getDelegate(), sameInstance(handlerA));
         assertThat(entry1.getDelegates(new MockRequest("/baseUriA/1"), new ExecutionContext()),
-                (Matcher<? super List<Object>>) contains(sameInstance(handlerA)));
+                contains(sameInstance((Object)handlerA)));
 
         assertThat(entry1.getDelegates(new MockRequest("/baseUriB/1"), new ExecutionContext()),
                 hasSize(0));
