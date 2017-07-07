@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/travis-nab/nablarch-core.svg?branch=master)](https://travis-ci.org/travis-nab/nablarch-core)
+[![Build Status](https://travis-ci.org/travis-nab/nablarch-core.svg?branch=develop)](https://travis-ci.org/travis-nab/nablarch-core)
 
 
    このモジュールはApache License, Version 2.0のソースコードを一部利用している。
