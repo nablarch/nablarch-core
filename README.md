@@ -9,5 +9,3 @@
    取り込み先ソースコード
      src/main/java/nablarch/core/util/ClassTraversal.java
      src/main/java/nablarch/core/util/ResourceUtil.java
-     
-     test
