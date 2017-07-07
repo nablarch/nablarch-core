@@ -21,7 +21,6 @@ cache:
 before_script:
   
 script:
-  - "curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/travis-nab/travis-tools/master/common/travis-build.sh"
   - "source <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/travis-nab/travis-tools/master/common/travis-build.sh)"
 
 before_cache:
