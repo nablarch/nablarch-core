@@ -9,6 +9,7 @@ jdk:
   
 before_install:
   - chmod +x gradlew
+  - "git clone -b feature-travis https://github.com/travis-nab/nablarch-gradle-plugin.git;pushd nablarch-gradle-plugin;chmod +x gradlew;./gradlew install"
 
 # For Skip [`gradle assemble` by travis.]
 # install: true
