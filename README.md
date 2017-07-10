@@ -11,3 +11,4 @@
      src/main/java/nablarch/core/util/ResourceUtil.java
 test
 test
+conflict1
