@@ -1,8 +1,6 @@
 package nablarch.core;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
@@ -14,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -29,27 +28,27 @@ public class ThreadContextTest {
 
         Locale language = new Locale("ja");
         ThreadContext.setLanguage(language);
-        assertEquals(language, ThreadContext.getLanguage());
+        assertThat(ThreadContext.getLanguage(), is(language));
 
         String userId = "userId";
         ThreadContext.setUserId(userId);
-        assertEquals(userId, ThreadContext.getUserId());
+        assertThat(ThreadContext.getUserId(), is(userId));
 
         String requestId = "requestId";
         ThreadContext.setRequestId(requestId);
-        assertEquals(requestId, ThreadContext.getRequestId());
+        assertThat(ThreadContext.getRequestId(), is(requestId));
 
         String objectKey = "object";
         Object object = new Object();
         ThreadContext.setObject(objectKey, object);
-        assertEquals(object, ThreadContext.getObject(objectKey));
+        assertThat(ThreadContext.getObject(objectKey), is(object));
 
         ThreadContext.clear();
 
-        assertNull(ThreadContext.getLanguage());
-        assertNull(ThreadContext.getUserId());
-        assertNull(ThreadContext.getRequestId());
-        assertNull(ThreadContext.getObject(objectKey));
+        assertThat(ThreadContext.getLanguage(), nullValue());
+        assertThat(ThreadContext.getUserId(), nullValue());
+        assertThat(ThreadContext.getRequestId(), nullValue());
+        assertThat(ThreadContext.getObject(objectKey), nullValue());
     }
 
     /** 子スレッドへの引き継ぎ確認のテスト。 */

@@ -1,12 +1,7 @@
 package nablarch.core.util;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -18,6 +13,7 @@ import nablarch.core.repository.ObjectLoader;
 import nablarch.core.repository.SystemRepository;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,7 +53,7 @@ public class FilePathSettingTest {
         FilePathSetting setting = FilePathSetting.getInstance();
         setting.addBasePathSetting("classPathBase", "classpath:nablarch/core/util/test");
         File fileOnclassPath = setting.getFileIfExists("classPathBase", "classpathFile.dat");
-        assertTrue(fileOnclassPath.exists());
+        assertThat(fileOnclassPath.exists(), is(true));
     }
     
     /**
@@ -72,13 +68,10 @@ public class FilePathSettingTest {
             setting.addBasePathSetting("classPathBase", "classpath:java/util/Map.class");
             fail();
         } catch (Exception e) {
-            assertTrue(e instanceof IllegalStateException);
-            assertEquals(
-                "invalid base path was specified. a base path can not be "
-              + "a JAR interior path.base path=[classpath:java/util/Map.class], "
-              + "base path name=[classPathBase]."
-              , e.getMessage()
-            );
+            assertThat(e instanceof IllegalStateException, is(true));
+            assertThat(e.getMessage(), is("invalid base path was specified. a base path can not be "
+                    + "a JAR interior path.base path=[classpath:java/util/Map.class], "
+                    + "base path name=[classPathBase]."));
         }
         
         // クラスパスの参照先がJarアーカイブの内部ディレクトリであった場合
@@ -86,12 +79,10 @@ public class FilePathSettingTest {
             setting.addBasePathSetting("classPathBase", "classpath:java/util/");
             fail();
         } catch (Exception e) {
-            assertTrue(e instanceof IllegalStateException);
-            assertEquals(
-                "invalid base path was specified. "
-              + "the assigned path couldn't be found or was inside in a JAR archive."
-              + "base path=[classpath:java/util/], base path name=[classPathBase].", e.getMessage()
-            );
+            assertThat(e instanceof IllegalStateException, is(true));
+            assertThat(e.getMessage(), is("invalid base path was specified. "
+                    + "the assigned path couldn't be found or was inside in a JAR archive."
+                    + "base path=[classpath:java/util/], base path name=[classPathBase]."));
         }
         
         // パスのプロトコル指定が無い場合
@@ -100,11 +91,8 @@ public class FilePathSettingTest {
             fail();
             
         } catch (Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
-            assertEquals(
-                "illegal url was specified. path=[/java/util/]"
-              , e.getMessage()
-            );
+            assertThat(e instanceof IllegalArgumentException, is(true));
+            assertThat(e.getMessage(), is("illegal url was specified. path=[/java/util/]"));
         }
     }
     
@@ -138,12 +126,16 @@ public class FilePathSettingTest {
         FilePathSetting setting = FilePathSetting.getInstance();
 
         // 拡張子の設定が有効になっていることの確認
-        assertEquals("fmt", setting.getFileExtensions().get("format"));
-        assertEquals("fmt", setting.getFileExtensions().get("format"));
+        assertThat(setting.getFileExtensions()
+                                 .get("format"), is("fmt"));
+        assertThat(setting.getFileExtensions()
+                                 .get("format"), is("fmt"));
 
         // ベースパスの設定が有効になっていることの確認 
-        assertEquals("file:in",  setting.getBasePathUrl("input").toExternalForm());
-        assertEquals("file:out", setting.getBasePathUrl("output").toExternalForm());
+        assertThat(setting.getBasePathUrl("input")
+                                 .toExternalForm(), is("file:in"));
+        assertThat(setting.getBasePathUrl("output")
+                                 .toExternalForm(), is("file:out"));
     }
     
     /**
@@ -156,7 +148,7 @@ public class FilePathSettingTest {
             FilePathSetting.getInstance().getFile("nonExist", "test");
             fail();
         } catch (IllegalArgumentException e) {
-            assertTrue(true);
+            assertThat(true, is(true));
         }
     }    
     
@@ -168,11 +160,11 @@ public class FilePathSettingTest {
     public void testNotCreateNew() throws Exception {
         FilePathSetting.getInstance().addBasePathSetting("input",  "file:./");
         File fileIfExists = FilePathSetting.getInstance().getFileIfExists("input", "notExists.dat");
-        assertNull(fileIfExists);
+        assertThat(fileIfExists, nullValue());
 
         // ファイルが生成されない
         File file = new File("./", "notExists.dat");
-        assertFalse(file.exists());
+        assertThat(file.exists(), is(false));
     }
 
     
@@ -240,7 +232,7 @@ public class FilePathSettingTest {
             FilePathSetting.getInstance().getFile("input", illegalPath);
             fail();
         } catch(RuntimeException e) {
-            assertTrue(true); // IOException
+            assertThat(true, is(true)); // IOException
         }
     }
     /**
@@ -309,13 +301,13 @@ public class FilePathSettingTest {
         file.createNewFile();
 
         File dir = filePathSetting.getBaseDirectory("dir");
-        assertEquals(testDir.getName(), dir.getName());
+        assertThat(dir.getName(), is(testDir.getName()));
 
         try {
             filePathSetting.getBaseDirectory("file");
             fail();
         } catch (Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
+            assertThat(e instanceof IllegalArgumentException, is(true));
         }
     }
 
@@ -324,16 +316,19 @@ public class FilePathSettingTest {
         FilePathSetting filePathSetting = FilePathSetting.getInstance();
         filePathSetting.addFileExtensions("hoge", "fuga");
 
-        assertEquals("fuga", filePathSetting.getFileExtensions().get("hoge"));
+        assertThat(filePathSetting.getFileExtensions()
+                                         .get("hoge"), is("fuga"));
     }
 
     @Test
     public void testGetBasePathSettings() {
         FilePathSetting filePathSetting = FilePathSetting.getInstance();
-        assertEquals(0, filePathSetting.getBasePathSettings().size());
+        assertThat(filePathSetting.getBasePathSettings()
+                                         .size(), is(0));
 
         filePathSetting.addBasePathSetting("hoge", "file:.");
-        assertEquals(1, filePathSetting.getBasePathSettings().size());
+        assertThat(filePathSetting.getBasePathSettings()
+                                         .size(), is(1));
     }
 
     @Test
@@ -341,10 +336,10 @@ public class FilePathSettingTest {
         FilePathSetting filePathSetting = FilePathSetting.getInstance();
 
         filePathSetting.addBasePathSetting("root", "file:.");
-        assertEquals("filename", filePathSetting.getFileNameJoinExtension("root", "filename"));
+        assertThat(filePathSetting.getFileNameJoinExtension("root", "filename"), is("filename"));
 
         filePathSetting.addFileExtensions("root", "hoge");
-        assertEquals("filename.hoge", filePathSetting.getFileNameJoinExtension("root", "filename"));
+        assertThat(filePathSetting.getFileNameJoinExtension("root", "filename"), is("filename.hoge"));
     }
 }
 

@@ -4,6 +4,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -11,7 +12,16 @@ import org.junit.Test;
  * @author Kiyohito Itoh
  */
 public class LogSettingsTest extends LogTestSupport {
-    
+
+    @Override
+    @After
+    public void tearDown() {
+        super.tearDown();
+        System.clearProperty("loggerFactory.className");
+        System.clearProperty("loggers.access.nameRegex");
+        System.clearProperty("trim");
+    }
+
     /**
      * 設定不備に対応できること。
      */

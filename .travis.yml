@@ -1,0 +1,25 @@
+language: java
+
+branches:
+  only: 
+    - develop
+
+jdk:
+  - openjdk6
+  
+before_install:
+  - chmod +x gradlew
+
+# For Skip [`gradle assemble` by travis.]
+install: true
+  
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+  
+script:
+  - "source <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/travis-nab/travis-tools/master/common/travis-build.sh)"
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
