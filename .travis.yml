@@ -9,10 +9,9 @@ jdk:
   
 before_install:
   - chmod +x gradlew
-  - "git clone -b feature-travis https://github.com/travis-nab/nablarch-gradle-plugin.git;pushd nablarch-gradle-plugin;chmod +x gradlew;./gradlew install;popd"
 
 # For Skip [`gradle assemble` by travis.]
-# install: true
+install: true
   
 cache:
   directories:
@@ -20,8 +19,6 @@ cache:
     - $HOME/.gradle/wrapper/
   
 script:
-  - "echo @@@@@"
-  - "ls -la"
   - "source <(curl -H 'Cache-Control: no-cache' -s https://raw.githubusercontent.com/travis-nab/travis-tools/master/common/travis-build.sh)"
 
 before_cache:
