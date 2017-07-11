@@ -52,8 +52,6 @@ test {
       '-XX:-UseSplitVerifier',
   )
 
-  ignoreFailures = true
-
   cobertura {
     coberturaVersion = '1.9.4.1'
     coverageSourceDirs = ["${projectDir}/src/main/java/"]
