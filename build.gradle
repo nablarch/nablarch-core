@@ -71,6 +71,6 @@ task wrapper(type: Wrapper) {
 
 sourcesJar {
   into('') {
-    from 'README.txt'
+    from 'README.md'
   }
 }
