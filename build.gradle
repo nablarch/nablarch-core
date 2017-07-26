@@ -52,8 +52,6 @@ test {
       '-XX:-UseSplitVerifier',
   )
 
-  ignoreFailures = true
-
   cobertura {
     coberturaVersion = '1.9.4.1'
     coverageSourceDirs = ["${projectDir}/src/main/java/"]
@@ -73,6 +71,6 @@ task wrapper(type: Wrapper) {
 
 sourcesJar {
   into('') {
-    from 'README.txt'
+    from 'README.md'
   }
 }
