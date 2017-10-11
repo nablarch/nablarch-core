@@ -15,30 +15,8 @@
   
   <dependencies>
     <dependency>
-      <groupId>org.jmockit</groupId>
-      <artifactId>jmockit</artifactId>
-      <version>1.33</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <version>1.3</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.nablarch.integration</groupId>
       <artifactId>nablarch-slf4j-adaptor</artifactId>
-      <version>1.0.0</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
