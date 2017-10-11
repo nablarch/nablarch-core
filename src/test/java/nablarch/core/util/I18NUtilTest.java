@@ -63,7 +63,6 @@ public class I18NUtilTest {
      */
     @Test
     public void testFormatDateTime() {
-        TimeZone.setDefault(asTimeZone("Asia/Tokyo"));
 
         Date date = asDate("2011/02/12 14:18:50");
         String format = "yyyy-MM-dd HH.mm.ss";
