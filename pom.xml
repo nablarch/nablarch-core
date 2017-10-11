@@ -6,9 +6,6 @@
 
   <artifactId>nablarch-core</artifactId>
   <version>1.3.0</version>
-  <properties>
-    <sonar.host.url>https://milky.adc-tis.com/sonarqube</sonar.host.url>
-  </properties>
   
   <parent>
     <groupId>com.nablarch</groupId>
