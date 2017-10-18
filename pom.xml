@@ -16,6 +16,12 @@
   
   <dependencies>
     <dependency>
+      <groupId>org.jmockit</groupId>
+      <artifactId>jmockit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
       <groupId>com.nablarch.integration</groupId>
       <artifactId>nablarch-slf4j-adaptor</artifactId>
       <scope>test</scope>
