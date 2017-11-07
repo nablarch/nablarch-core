@@ -27,6 +27,7 @@ import org.junit.Test;
  * @author Miki Habu
  */
 public class DateUtilTest {
+    
 
     @Before
     public void setUp() {
@@ -70,7 +71,7 @@ public class DateUtilTest {
         // -------------------------------------------------- execute
         final Calendar calendar = Calendar.getInstance();
         calendar.set(2016, 0, 2);
-        final String result = DateUtil.formatDate(calendar.getTime(), "GGyyyy-MM-dd");
+        final String result = DateUtil.formatDate(calendar.getTime(), "GGGGyyyy-MM-dd");
         
         // -------------------------------------------------- assert
         assertThat("デフォルトロケールは、jaなので西暦とフォーマットされること", result, is("西暦2016-01-02"));

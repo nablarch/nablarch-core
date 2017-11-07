@@ -65,12 +65,12 @@ public class FilePathSettingTest {
         
         // クラスパスの参照先がJar内のリソースであった場合
         try {
-            setting.addBasePathSetting("classPathBase", "classpath:java/util/Map.class");
+            setting.addBasePathSetting("classPathBase", "classpath:org/junit/Test.class");
             fail();
         } catch (Exception e) {
             assertThat(e instanceof IllegalStateException, is(true));
             assertThat(e.getMessage(), is("invalid base path was specified. a base path can not be "
-                    + "a JAR interior path.base path=[classpath:java/util/Map.class], "
+                    + "a JAR interior path.base path=[classpath:org/junit/Test.class], "
                     + "base path name=[classPathBase]."));
         }
         
