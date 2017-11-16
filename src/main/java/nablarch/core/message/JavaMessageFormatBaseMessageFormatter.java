@@ -5,7 +5,7 @@ import java.text.MessageFormat;
 /**
  * {@link MessageFormat}を使用してメッセージのフォーマットを行うクラス。
  *
- * @author siosio
+ * @author Hisaaki Shioiri
  * @see MessageFormat
  */
 public class JavaMessageFormatBaseMessageFormatter implements MessageFormatter {

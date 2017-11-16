@@ -11,6 +11,7 @@ import java.util.Map;
  * 
  * @author Hisaaki Shioiri
  * @see MessageFormat
+ * @see NamedMessageFormat
  */
 public class BasicMessageFormatter implements MessageFormatter {
 
