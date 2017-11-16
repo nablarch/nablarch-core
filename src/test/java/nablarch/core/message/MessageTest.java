@@ -3,6 +3,7 @@ package nablarch.core.message;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -12,7 +13,6 @@ import nablarch.core.repository.ObjectLoader;
 import nablarch.core.repository.SystemRepository;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,9 +31,9 @@ public class MessageTest {
 
     @Test
     public void testConstructor() {
-        StringResource innerMessage = new RightMessage("0001", "testInner");
-        StringResource message = new RightMessage("1001", "{0},{1}");
-        Message resultMessage = new Message(MessageLevel.INFO, message, new Object[]{"test", innerMessage});
+        final StringResource innerMessage = new RightMessage("0001", "testInner");
+        final StringResource message = new RightMessage("1001", "{0},{1}");
+        final Message resultMessage = new Message(MessageLevel.INFO, message, new Object[]{"test", innerMessage});
 
         assertThat(resultMessage.getMessageId(), is("1001"));
         assertThat(resultMessage.formatMessage(), is("test,testInner"));
@@ -42,8 +42,8 @@ public class MessageTest {
 
     @Test
     public void testConstructor2() {
-        StringResource message = new RightMessage("1001", "test message");
-        Message resultMessage = new Message(MessageLevel.WARN, message);
+        final StringResource message = new RightMessage("1001", "test message");
+        final Message resultMessage = new Message(MessageLevel.WARN, message);
 
         assertThat(resultMessage.getMessageId(), is("1001"));
         assertThat(resultMessage.formatMessage(), is("test message"));
@@ -53,8 +53,8 @@ public class MessageTest {
 
     @Test
     public void testConstructor3() {
-        StringResource message = new RightMessage("1001", "test message");
-        Message resultMessage = new Message(MessageLevel.ERROR, message);
+        final StringResource message = new RightMessage("1001", "test message");
+        final Message resultMessage = new Message(MessageLevel.ERROR, message);
 
         assertThat(resultMessage.getMessageId(), is("1001"));
         assertThat(resultMessage.formatMessage(), is("test message"));
@@ -73,8 +73,8 @@ public class MessageTest {
                                                                               put("en", "testInner");
                                                                           }});
 
-        Message innerMessage = new Message(MessageLevel.ERROR, innerRightMessage);
-        Message resultMessage = new Message(MessageLevel.ERROR, rightMessage, new Object[]{ innerMessage });
+        final Message innerMessage = new Message(MessageLevel.ERROR, innerRightMessage);
+        final Message resultMessage = new Message(MessageLevel.ERROR, rightMessage, new Object[]{ innerMessage });
 
         // ja (default locale)
         assertThat(resultMessage.getMessageId(), is("1001"));
@@ -149,35 +149,25 @@ public class MessageTest {
     }
 
     /**
-     * カスタムなメッセージフォーマッタを使ってメッセージをフォーマット出来ること。
+     * MessageFormatterを差し替えて利用できること。
      */
     @Test
     public void customMessageFormatter() throws Exception {
         SystemRepository.load(new ObjectLoader() {
             @Override
             public Map<String, Object> load() {
-                final HashMap<String, Object> result = new HashMap<String, Object>();
-                result.put("messageFormatter", new MessageFormatter() {
-                    @Override
-                    public String format(final String template, final Object[] options) {
-                        String result = template;
-                        for (int i = 0; i < options.length; i++) {
-                            result = result.replace("${" + i + '}', String.valueOf(options[i]));
-                        }
-                        return result;
-                    }
-                });
-                return result;
+                return Collections.<String, Object>singletonMap(
+                        "messageFormatter", new JavaMessageFormatBaseMessageFormatter());
             }
         });
 
         final Message message = new Message(MessageLevel.ERROR, new RightMessage(
-                "id", "${0}-${0}-${1}"), new Object[] {"1", "2"});
+                "id", "{0}-{0}-{1}"), new Object[] {"1", "2"});
 
         assertThat(message.formatMessage(), is("1-1-2"));
     }
 
-    private void assertNotEquals(String msg, Message one, Message another) {
+    private void assertNotEquals(final String msg, final Message one, final Message another) {
         assertThat(msg, one, not(is(another)));
         assertThat(msg + "(hashCode)", one.hashCode() == another.hashCode(), is(false)); // optional when not equal
     }
@@ -202,16 +192,18 @@ public class MessageTest {
             super();
             this.id = id;
             this.formats = new HashMap<Locale, String>();
-            for (Map.Entry<String, String> entry : formats.entrySet()) {
+            for (final Map.Entry<String, String> entry : formats.entrySet()) {
                 this.formats.put(new Locale(entry.getKey()), entry.getValue());
             }
         }
 
+        @Override
         public String getId() {
             return id;
         }
 
-        public String getValue(Locale lang) {
+        @Override
+        public String getValue(final Locale lang) {
             return formats.get(lang);
         }
     }
