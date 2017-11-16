@@ -4,9 +4,14 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 /**
- * {@link MessageFormat}を使ってメッセージをフォーマットするクラス。
+ * オプション情報によりメッセージのフォーマット方法を切り替えフォーマットを行うクラス。
  *
+ * オプション情報が1つで{@link Map}のサブタイプの場合は、{@link NamedMessageFormat}を使用してメッセージをフォーマットする。
+ * それ以外の場合は、{@link MessageFormat}を使用してメッセージをフォーマットする。
+ * 
  * @author Hisaaki Shioiri
+ * @see MessageFormat
+ * @see NamedMessageFormat
  */
 public class BasicMessageFormatter implements MessageFormatter {
 
