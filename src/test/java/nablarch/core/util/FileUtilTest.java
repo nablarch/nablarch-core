@@ -504,7 +504,7 @@ public class FileUtilTest {
         File src = tempDir.newFile("from.txt");
         FileWriter writer = new FileWriter(src);
         try {
-            writer.append("Hello, Nablarch.\nGood Bye.");
+            writer.append("Hello, Nablarch.\nGood Bye.\n\uD83C\uDF7A\uD83C\uDF7A\uD83C\uDF7A");
             writer.close();
         } finally {
             writer.close();
@@ -520,7 +520,7 @@ public class FileUtilTest {
         // ファイルがコピーされていること
         assertThat(dest.exists(), is(true));
         List<String> copied = readAll(dest);
-        assertThat(copied, is(asList("Hello, Nablarch.", "Good Bye.")));
+        assertThat(copied, is(asList("Hello, Nablarch.", "Good Bye.", "\uD83C\uDF7A\uD83C\uDF7A\uD83C\uDF7A")));
         // コピー元ファイルが存在していること
         assertThat(src.exists(), is(true));
     }
