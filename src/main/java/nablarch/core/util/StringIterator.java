@@ -1,82 +1,43 @@
 package nablarch.core.util;
 
-import java.util.NoSuchElementException;
-
 /**
  * 文字列を走査するクラス。
- * 本クラスはサロゲートペアに対応している。
  *
  * @author T.Kawasaki
  */
-class StringIterator {
+abstract class StringIterator {
 
     /** 走査対象の文字列 */
-    private final String string;
+    final String string;        // SUPPRESS CHECKSTYLE サブクラスに対してカプセル化の必要がないため
 
     /** 走査用のインデックス */
-    private int index = 0;
+    int index = 0;              // SUPPRESS CHECKSTYLE サブクラスに対してカプセル化の必要がないため
 
     /**
-     * コンストラクタ。
+     * コンストラクタ
      *
-     * @param orig 走査対象となる文字列
+     * @param orig 走査対処文字列
      */
-    private StringIterator(String orig) {
+    StringIterator(String orig) {
+        if (orig == null) {
+            throw new IllegalArgumentException("argument must not be null.");
+        }
         this.string = orig;
     }
 
     /**
-     * 現在位置から、未走査の文字があるかどうか判定する。
-     * @return 未走査の文字がある場合、真
+     * 次の要素が存在するか判定する。
+     *
+     * @return 次の要素が存在する場合、真
      */
-    public boolean hasNext() {
-        return index < string.length();
-    }
+    abstract boolean hasNext();
 
     /**
-     * 現在位置から1文字取得する。
-     * 取得した文字がサロゲートペアの場合、戻り値の配列の要素数は2となる.
+     * 次の文字を取得する。
      *
-     * @return 文字
+     * @return 次の文字
      */
-    public char[] next() {
-        if (!hasNext()) {
-            throw new NoSuchElementException();
-        }
-        int cp = string.codePointAt(index);
-        char[] chars = Character.toChars(cp);
-        index += chars.length;
-        return chars;
-    }
-
-    /**
-     * 現在位置を起点として、指定された文字数の部分文字列を取得する。
-     *
-     * @param numberOfLetters 取得したい文字数
-     * @return 部分文字列
-     */
-    String next(int numberOfLetters) {
-        StringBuilder chars = new StringBuilder();
-        for (int i = 0; i < numberOfLetters; i++) {
-            if (hasNext()) {
-                chars.append(next());
-            }
-        }
-        return chars.toString();
-    }
-
-    /**
-     * 現在位置を起点として、残りの部分文字列を取得する。
-     *
-     * @return 残りの部分文字列
-     */
-    String rest() {
-        StringBuilder rest = new StringBuilder();
-        while (hasNext()) {
-            rest.append(next());
-        }
-        return rest.toString();
-    }
+    abstract char next();
 
     /**
      * 正順のイテレータを生成する。
@@ -84,9 +45,8 @@ class StringIterator {
      * @param string 走査対象となる文字列
      * @return 正順のイテレータ
      */
-    static StringIterator forward(String string) {
-        checkArgument(string);
-        return new StringIterator(string);
+    static StringIterator iterator(String string) {
+        return new ForwardIterator(string);
     }
 
     /**
@@ -95,20 +55,56 @@ class StringIterator {
      * @param string 操作対象となる文字列
      * @return 逆順のイテレータ
      */
-    static StringIterator reverse(String string) {
-        checkArgument(string);
-        return new StringIterator(new StringBuilder(string).reverse().toString());
+
+    static StringIterator reverseIterator(String string) {
+        return new ReverseIterator(string);
     }
 
-    /**
-     * 引数のチェックを行う。
-     *
-     * @param string 引数
-     * @throws IllegalArgumentException 引数がnullの場合
-     */
-    private static void checkArgument(String string) {
-        if (string == null) {
-            throw new IllegalArgumentException("argument must not be null.");
+    /** 正順のイテレータ */
+    private static class ForwardIterator extends StringIterator {
+
+        /**
+         * コンストラクタ
+         *
+         * @param orig 走査対処文字列
+         */
+        ForwardIterator(String orig) {
+            super(orig);
+        }
+
+        /** {@inheritDoc} */
+        boolean hasNext() {
+            return index < string.length();
+        }
+
+        /** {@inheritDoc} */
+        char next() {
+            return string.charAt(index++);
+        }
+    }
+
+
+    /** 逆順のイテレータ。 */
+    private static class ReverseIterator extends StringIterator {
+
+        /**
+         * コンストラクタ
+         *
+         * @param orig 走査対処文字列
+         */
+        ReverseIterator(String orig) {
+            super(orig);
+            index = orig.length() - 1;
+        }
+
+        /** {@inheritDoc} */
+        boolean hasNext() {
+            return index >= 0;
+        }
+
+        /** {@inheritDoc} */
+        char next() {
+            return string.charAt(index--);
         }
     }
 }

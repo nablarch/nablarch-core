@@ -258,7 +258,7 @@ public class StringUtilTest {
         // 空文字のケース
         assertThat(StringUtil.insert("", "-", 2, 3, 4), is(""));
         // サロゲートペア
-        assertThat(StringUtil.insert("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63", "-", 1, 1, 1),
+        assertThat(StringUtil.insert("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63", "\uD83C\uDF7A", 1, 1, 1),
                 is("\uD83C\uDF63-\uD83C\uDF63-\uD83C\uDF63"));
     }
 
@@ -346,14 +346,14 @@ public class StringUtilTest {
     /** {@link StringUtil#insertRepeatedly(String, String, int)}のテスト。<br/> */
     @Test
     public void testInsertRepeatedly() {
-//        // 対象文字列数が挿入間隔ちょうど（区切り文字の倍数）のケース
-//        assertThat(StringUtil.insertRepeatedly("1234567890123456", "-", 4), is("1234-5678-9012-3456"));
-//        // 対象文字列数が挿入間隔ちょうど（区切り文字の倍数）でないケース
-//        assertThat(StringUtil.insertRepeatedly("123456789012345", "-", 4), is("1234-5678-9012-345"));
-//        // 対象文字列数が挿入間隔以下のケース
-//        assertThat(StringUtil.insertRepeatedly("1234", "-", 4), is("1234"));
-//        // 空文字のケース
-//        assertThat(StringUtil.insertRepeatedly("", "-", 4), is(""));
+        // 対象文字列数が挿入間隔ちょうど（区切り文字の倍数）のケース
+        assertThat(StringUtil.insertRepeatedly("1234567890123456", "-", 4), is("1234-5678-9012-3456"));
+        // 対象文字列数が挿入間隔ちょうど（区切り文字の倍数）でないケース
+        assertThat(StringUtil.insertRepeatedly("123456789012345", "-", 4), is("1234-5678-9012-345"));
+        // 対象文字列数が挿入間隔以下のケース
+        assertThat(StringUtil.insertRepeatedly("1234", "-", 4), is("1234"));
+        // 空文字のケース
+        assertThat(StringUtil.insertRepeatedly("", "-", 4), is(""));
         // サロゲートペア
         assertThat("サロゲートペアが正しく扱えること",
                 StringUtil.insertRepeatedly("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63", "\ud83c\udf7a", 1),

@@ -49,7 +49,7 @@ public final class StringUtil {
         assertNotTrue(length < 0, "length must not be negative.");
 
         StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < (length - string.codePointCount(0, string.length())); i++) {
+        for (int i = 0; i < (length - string.length()); i++) {
             sb.append(padChar);
         }
         sb.append(string);
@@ -77,7 +77,7 @@ public final class StringUtil {
 
         StringBuilder sb = new StringBuilder(length);
         sb.append(string);
-        for (int i = 0; i < (length - string.codePointCount(0, string.length())); i++) {
+        for (int i = 0; i < (length - string.length()); i++) {
             sb.append(padChar);
         }
         return sb.toString();
@@ -330,21 +330,21 @@ public final class StringUtil {
         checkIntervals(intervals);
 
         StringBuilder result = new StringBuilder();
-        StringIterator itr = StringIterator.forward(target);
+        int startIndex = 0;
         // 指定された間隔分、区切り文字を挿入する。
         for (int interval : intervals) {
-            String a = itr.next(interval);
-            result.append(a);
-            if (!itr.hasNext()) {
+            int endIndex = startIndex + interval;
+            if (endIndex >= target.length()) {
                 break;
             }
-            result.append(delimiter);
+            String part = target.substring(startIndex, endIndex);
+            result.append(part).append(delimiter);
+            startIndex = endIndex;
         }
-        result.append(itr.rest());
+        // 残った文字列を追加
+        result.append(target.substring(startIndex));
         return result.toString();
-
     }
-
 
     /**
      * 区切り文字を右側から挿入する。
@@ -367,7 +367,7 @@ public final class StringUtil {
         checkIntervals(intervals);
 
         StringBuilder result = new StringBuilder();
-        StringIterator itr = StringIterator.reverse(target);
+        StringIterator itr = StringIterator.reverseIterator(target);
         int posIdx = 0, addCnt = 0;
         while (itr.hasNext()) {   // 文字列を逆順に走査
             result.append(itr.next());
@@ -405,7 +405,7 @@ public final class StringUtil {
         StringBuilder result = insertAtRegularInterval(
                 delimiter,
                 interval,
-                StringIterator.forward(target));
+                StringIterator.iterator(target));
         return result.toString();
     }
 
@@ -430,7 +430,7 @@ public final class StringUtil {
         StringBuilder result = insertAtRegularInterval(
                 delimiter,
                 interval,
-                StringIterator.reverse(target));     // 逆順に走査
+                StringIterator.reverseIterator(target));     // 逆順に走査
         return result.reverse().toString(); // 反転して返却
     }
 
