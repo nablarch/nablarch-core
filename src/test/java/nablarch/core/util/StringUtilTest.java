@@ -37,7 +37,7 @@ public class StringUtilTest {
 
         assertThat("サロゲートペア以外は無視されて小文字化されること",
                    StringUtil.lowerAndTrimUnderScore("A\uD85A\uDD51\uD83C\uDF7AB"),
-                   is("a\uD85A\uDD51\uD83C\uDF7AB"));
+                   is("a\uD85A\uDD51\uD83C\uDF7Ab"));
     }
 
     /** {@link StringUtil#lpad(String, int, char)}のテスト。 */
