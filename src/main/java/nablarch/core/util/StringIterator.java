@@ -57,10 +57,8 @@ class StringIterator {
      */
     String next(int numberOfLetters) {
         StringBuilder chars = new StringBuilder();
-        for (int i = 0; i < numberOfLetters; i++) {
-            if (hasNext()) {
-                chars.append(next());
-            }
+        for (int i = 0; i < numberOfLetters && hasNext(); i++) {
+            chars.append(next());
         }
         return chars.toString();
     }
@@ -71,11 +69,9 @@ class StringIterator {
      * @return 残りの部分文字列
      */
     String rest() {
-        StringBuilder rest = new StringBuilder();
-        while (hasNext()) {
-            rest.append(next());
-        }
-        return rest.toString();
+        String rest = string.substring(index);
+        index = string.length();
+        return rest;
     }
 
     /**

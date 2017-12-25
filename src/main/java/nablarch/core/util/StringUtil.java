@@ -22,6 +22,8 @@ import nablarch.core.util.annotation.Published;
  * 例えば、電話番号をハイフン区切りに整形する等のフォーマット処理用に使用されることを想定している。
  * プロジェクトでフォーマット用のユーティリティを作成する場合、これらのメソッドを使用するとよい。
  *
+ * 本クラスはサロゲートペアに対応している。
+ *
  * @author Hisaaki Sioiri
  */
 public final class StringUtil {
@@ -49,7 +51,8 @@ public final class StringUtil {
         assertNotTrue(length < 0, "length must not be negative.");
 
         StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < (length - string.codePointCount(0, string.length())); i++) {
+        int countToPad = length - string.codePointCount(0, string.length());
+        for (int i = 0; i < countToPad; i++) {
             sb.append(padChar);
         }
         sb.append(string);
@@ -77,7 +80,8 @@ public final class StringUtil {
 
         StringBuilder sb = new StringBuilder(length);
         sb.append(string);
-        for (int i = 0; i < (length - string.codePointCount(0, string.length())); i++) {
+        int countToPad = length - string.codePointCount(0, string.length());
+        for (int i = 0; i < countToPad; i++) {
             sb.append(padChar);
         }
         return sb.toString();
@@ -333,8 +337,7 @@ public final class StringUtil {
         StringIterator itr = StringIterator.forward(target);
         // 指定された間隔分、区切り文字を挿入する。
         for (int interval : intervals) {
-            String a = itr.next(interval);
-            result.append(a);
+            result.append(itr.next(interval));
             if (!itr.hasNext()) {
                 break;
             }
