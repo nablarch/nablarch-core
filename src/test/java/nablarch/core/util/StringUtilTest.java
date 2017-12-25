@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -35,6 +34,10 @@ public class StringUtilTest {
         assertThat(StringUtil.lowerAndTrimUnderScore(
                 "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"),
                 is("!\"#$%&'()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^`abcdefghijklmnopqrstuvwxyz{|}~"));
+
+        assertThat("サロゲートペア以外は無視されて小文字化されること",
+                   StringUtil.lowerAndTrimUnderScore("A\uD85A\uDD51\uD83C\uDF7AB"),
+                   is("a\uD85A\uDD51\uD83C\uDF7Ab"));
     }
 
     /** {@link StringUtil#lpad(String, int, char)}のテスト。 */
@@ -45,6 +48,8 @@ public class StringUtilTest {
         assertThat("指定桁数と同じ文字列を指定", StringUtil.lpad("1111111111", 10, 'a'), is("1111111111"));
         assertThat("指定桁数より１文字長い文字列を指定", StringUtil.lpad("123456", 5, '0'), is("123456"));
         assertThat("指定文字に全角文字を指定", StringUtil.lpad("1", 5, '０'), is("００００1"));
+
+        assertThat("サロゲートペアが扱えること", StringUtil.lpad("😂😂", 5, '⚽'), is("⚽⚽⚽😂😂"));
     }
 
     /**
@@ -65,6 +70,7 @@ public class StringUtilTest {
         assertThat("指定桁数と同じ文字列を指定", StringUtil.rpad("1111111111", 10, 'a'), is("1111111111"));
         assertThat("指定桁数より１文字長い文字列を指定", StringUtil.rpad("123456", 5, '0'), is("123456"));
         assertThat("指定文字に全角文字を指定", StringUtil.rpad("1", 5, '０'), is("1００００"));
+        assertThat("サロゲートペアが扱えること", StringUtil.rpad("😂😂", 5, '⚽'), is("😂😂⚽⚽⚽"));
     }
 
     /**
@@ -84,6 +90,9 @@ public class StringUtilTest {
         assertThat(StringUtil.isNullOrEmpty(""), is(true));
         assertThat(StringUtil.isNullOrEmpty(" "), is(false));
         assertThat(StringUtil.isNullOrEmpty("null"), is(false));
+
+        assertThat("サロゲートペアを指定",
+                   StringUtil.isNullOrEmpty("\uD85A\uDD6F"), is(false));
     }
 
     /** {@link StringUtil#isNullOrEmpty(String...)} のテスト。 */
@@ -93,6 +102,9 @@ public class StringUtilTest {
         assertThat(StringUtil.isNullOrEmpty(new String[0]), is(true));
         assertThat(StringUtil.isNullOrEmpty("", null), is(true));
         assertThat(StringUtil.isNullOrEmpty("", null, "not empty"), is(false));
+
+        assertThat("サロゲートペアを指定",
+                   StringUtil.isNullOrEmpty("", null, "\uD83D\uDE0E"), is(false));
     }
 
     /** {@link StringUtil#isNullOrEmpty(Collection)} のテスト。 */
@@ -102,6 +114,9 @@ public class StringUtilTest {
         assertThat(StringUtil.isNullOrEmpty(Collections.<String>emptyList()), is(true));
         assertThat(StringUtil.isNullOrEmpty(Arrays.asList("", "")), is(true));
         assertThat(StringUtil.isNullOrEmpty(Arrays.asList("", null, "not empty")), is(false));
+
+        assertThat("サロゲートペアを指定",
+                   StringUtil.isNullOrEmpty(Arrays.asList("", null, "😅")), is(false));
     }
 
     /** {@link StringUtil#isNullOrEmpty(String)} のテスト。 */
@@ -111,6 +126,8 @@ public class StringUtilTest {
         assertThat(StringUtil.hasValue(""), is(false));
         assertThat(StringUtil.hasValue(" "), is(true));
         assertThat(StringUtil.hasValue("null"), is(true));
+
+        assertThat("サロゲートペアを指定", StringUtil.hasValue("\uD83D\uDE05"), is(true));
     }
 
     /** {@link StringUtil#isNullOrEmpty(String...)} のテスト。 */
@@ -120,6 +137,9 @@ public class StringUtilTest {
         assertThat(StringUtil.hasValue("", null), is(false));
         assertThat(StringUtil.hasValue(new String[0]), is(false));
         assertThat(StringUtil.hasValue((String[]) null), is(false));
+
+        assertThat("サロゲートペアを指定",
+                   StringUtil.hasValue("", null, "\uD83D\uDE05"), is(true));
     }
 
     /** {@link StringUtil#isNullOrEmpty(Collection)} のテスト。 */
@@ -129,6 +149,9 @@ public class StringUtilTest {
         assertThat(StringUtil.hasValue(Arrays.asList("", null)), is(false));
         assertThat(StringUtil.hasValue(Collections.<String>emptyList()), is(false));
         assertThat(StringUtil.hasValue((Collection) null), is(false));
+
+        assertThat("サロゲートペアを指定",
+                   StringUtil.hasValue(Arrays.asList("", null, "\ud83d\ude05")), is(true));
     }
 
 
@@ -156,6 +179,12 @@ public class StringUtilTest {
 
         // 対象バイト配列が要素数0の場合、空文字が返却されること
         assertThat(StringUtil.toString(new byte[0], UTF8), is(""));
+
+        // サロゲートペア
+        assertThat("サロゲートペアが正しく扱えること",
+                   StringUtil.toString("[\uD83D\uDE05\uD83D\uDE05\uD83D\uDE05]".getBytes(UTF8), UTF8),
+                   is("[\uD83D\uDE05\uD83D\uDE05\uD83D\uDE05]"));
+                  
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -206,6 +235,11 @@ public class StringUtilTest {
 
         // 対象文字列が空文字の場合、要素数0のバイト配列が返却されること
         assertThat(StringUtil.getBytes("", UTF8), is(new byte[0]));
+        
+        // サロゲートペア
+        assertThat("サロゲートペアが正しく扱えること",
+                   StringUtil.getBytes("[\uD83D\uDE05\uD83D\uDE05\uD83D\uDE05]", UTF8),
+                   is("[\uD83D\uDE05\uD83D\uDE05\uD83D\uDE05]".getBytes(UTF8)));
     }
 
     /**
@@ -231,6 +265,12 @@ public class StringUtilTest {
         assertThat(StringUtil.insert("12", "-", 2, 3, 4), is("12"));
         // 空文字のケース
         assertThat(StringUtil.insert("", "-", 2, 3, 4), is(""));
+        // サロゲートペア
+        assertThat("サロゲートペアが正しく扱えること",
+                   StringUtil.insert("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63",  // SUSHI
+                                     "\uD83C\uDF7A",  // BEER
+                                     1, 1, 1),
+                is("\uD83C\uDF63\uD83C\uDF7A\uD83C\uDF63\uD83C\uDF7A\uD83C\uDF63"));
     }
 
     /**
@@ -289,6 +329,10 @@ public class StringUtilTest {
         assertThat(StringUtil.insertFromRight("1234", "-", 4, 3, 2), is("1234"));
         // 空文字のケース
         assertThat(StringUtil.insertFromRight("", "-", 4, 3, 2), is(""));
+        // サロゲートペア
+        assertThat("サロゲートペアが正しく扱えること", 
+                StringUtil.insertFromRight("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63", "\ud83c\udf7a", 1, 1, 1),
+                is("\uD83C\uDF63\ud83c\udf7a\uD83C\uDF63\ud83c\udf7a\uD83C\uDF63"));
     }
 
     /**
@@ -321,6 +365,12 @@ public class StringUtilTest {
         assertThat(StringUtil.insertRepeatedly("1234", "-", 4), is("1234"));
         // 空文字のケース
         assertThat(StringUtil.insertRepeatedly("", "-", 4), is(""));
+        // サロゲートペア
+        assertThat("サロゲートペアが正しく扱えること",
+                StringUtil.insertRepeatedly("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63",
+                                            "\uD83C\uDF7A",
+                                            1),
+                is("\uD83C\uDF63\uD83C\uDF7A\uD83C\uDF63\uD83C\uDF7A\uD83C\uDF63"));
     }
 
     /**
@@ -352,6 +402,12 @@ public class StringUtilTest {
         assertThat(StringUtil.insertRepeatedlyFromRight("123", ",", 3), is("123"));
         // 空文字のケース
         assertThat(StringUtil.insertRepeatedlyFromRight("", ",", 3), is(""));
+        // サロゲートペア
+        assertThat("サロゲートペアが正しく扱えること",
+                   StringUtil.insertRepeatedlyFromRight("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63",
+                                                        "\uD83C\uDF7A",
+                                                        1),
+                is("\uD83C\uDF63\uD83C\uDF7A\uD83C\uDF63\uD83C\uDF7A\uD83C\uDF63"));
     }
 
     /**
@@ -380,6 +436,9 @@ public class StringUtilTest {
         assertThat(StringUtil.repeat("123", 2), is("123123"));
         assertThat(StringUtil.repeat("", 10), is(""));
         assertThat(StringUtil.repeat("1", 0), is(""));
+        assertThat("サロゲートペアが扱えること",
+                   StringUtil.repeat("\uD83C\uDF63", 3),
+                   is("\uD83C\uDF63\uD83C\uDF63\uD83C\uDF63"));
     }
 
     /**
@@ -406,8 +465,8 @@ public class StringUtilTest {
      */
     @Test
     public void testToArray() {
-        List<String> list = Arrays.asList("foo", "bar");
-        assertThat(StringUtil.toArray(list), is(new String[] {"foo", "bar"}));
+        final List<String> list = Arrays.asList("foo", "bar", "\uD83C\uDF63");
+        assertThat(StringUtil.toArray(list), is(new String[] {"foo", "bar", "\uD83C\uDF63"}));
     }
 
     /** nullが許容されないこと */
@@ -423,6 +482,11 @@ public class StringUtilTest {
         assertThat(StringUtil.chomp("fuga", "\n"), is("fuga"));   // マッチしないので切り落とされない
         assertThat(StringUtil.chomp("", "\n"), is(""));           // 空文字OK
         assertThat(StringUtil.chomp("hoge", ""), is("hoge"));     // 空文字OK
+        
+        assertThat("サロゲートペアが扱えること",
+                   StringUtil.chomp("\uD83C\uDF63\uD83C\uDF63!!\uD83C\uDF7A",
+                                    "\uD83C\uDF7A"),
+                is("\uD83C\uDF63\uD83C\uDF63!!"));
     }
 
     /** nullが許容されないこと */
@@ -460,6 +524,9 @@ public class StringUtilTest {
         assertThat(StringUtil.nullToEmpty(null), is(""));
         assertThat(StringUtil.nullToEmpty(""), is(""));
         assertThat(StringUtil.nullToEmpty("hoge"), is("hoge"));
+        assertThat("サロゲートペアを指定",
+                   StringUtil.nullToEmpty("\ud83c\udf7a"),
+                   is("\ud83c\udf7a"));
     }
 
     /**
@@ -472,8 +539,9 @@ public class StringUtilTest {
             list.add("val1");
             list.add("val2");
             list.add("val3");
-            assertThat(StringUtil.join(",", list), is("val1,val2,val3"));
-            assertThat(StringUtil.join(":", list), is("val1:val2:val3"));
+            list.add("\uD83C\uDF7A\uD83C\uDF7A");
+            assertThat(StringUtil.join(",", list), is("val1,val2,val3,\uD83C\uDF7A\uD83C\uDF7A"));
+            assertThat(StringUtil.join(":", list), is("val1:val2:val3:\uD83C\uDF7A\uD83C\uDF7A"));
         }
         {
             List<String> list = new ArrayList<String>();
@@ -505,7 +573,8 @@ public class StringUtilTest {
             list.add(" val1 ");
             list.add(" val2 ");
             list.add(" val3 ");
-            assertThat(StringUtil.split(" val1 , val2 , val3 ", ","), is(list));
+            list.add(" \uD83C\uDF7A");
+            assertThat(StringUtil.split(" val1 , val2 , val3 , \uD83C\uDF7A", ","), is(list));
         }
         {
             List<String> list = new ArrayList<String>();
