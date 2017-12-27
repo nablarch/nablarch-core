@@ -5,7 +5,6 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertThat;
 
-import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.Matcher;
@@ -78,7 +77,7 @@ public class RequestHandlerEntryTest {
 
         assertThat(entry1.getDelegate(), sameInstance(handlerA));
         assertThat(entry1.getDelegates(new MockRequest("/baseUriA/1"), new ExecutionContext()),
-                (Matcher<? super List<Object>>) contains(sameInstance(handlerA)));
+                   (Matcher) contains(sameInstance(handlerA)));
 
         assertThat(entry1.getDelegates(new MockRequest("/baseUriB/1"), new ExecutionContext()),
                 hasSize(0));
