@@ -1,6 +1,7 @@
 package nablarch.core.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,6 +66,8 @@ public final class ObjectUtil {
     /**
      * オブジェクトのプロパティに値をセットする。
      *
+     * 本メソッドでは、対象プロパティがstaticの場合でも値は設定される。
+     *
      * @param obj 対象のオブジェクト
      * @param propertyName プロパティ名
      * @param value セットする値(NOT {@code null})
@@ -73,7 +76,26 @@ public final class ObjectUtil {
      *   対象プロパティのsetterが対象プロパティの型かそのサブクラスを引数にとらない場合
      */
     public static void setProperty(Object obj, String propertyName, Object value) {
+        setProperty(obj, propertyName, value, true);
+    }
 
+    /**
+     * オブジェクトのプロパティに値をセットする。
+     *
+     * 本メソッドでは、対象プロパティがstaticの場合に値を設定するかどうかを引数で制御できる。
+     * 引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合、
+     * 値は設定されない。
+     *
+     * @param obj 対象のオブジェクト
+     * @param propertyName プロパティ名
+     * @param value セットする値(NOT {@code null})
+     * @param allowStatic staticなプロパティへの値設定を許容するか。
+
+     * @throws RuntimeException
+     *   対象プロパティにsetterが定義されていない場合か、
+     *   対象プロパティのsetterが対象プロパティの型かそのサブクラスを引数にとらない場合
+     */
+    public static void setProperty(Object obj, String propertyName, Object value, boolean allowStatic) {
         try {
             String setterName = getSetterMethodName(propertyName);
             Class<?> targetClass = obj.getClass();
@@ -81,6 +103,10 @@ public final class ObjectUtil {
             Method method = findMatchMethod(targetClass, setterName, valueClass);
             if (method == null) {
                 throw new RuntimeException("can't find method [" + setterName + "] in class " + targetClass.getName());
+            }
+            if (!allowStatic && Modifier.isStatic(method.getModifiers())) {
+                // staticを許容しない場合は何もせずに処理を終了する。
+                return;
             }
             method.invoke(obj, value);
         } catch (Exception e) {
