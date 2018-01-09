@@ -84,35 +84,37 @@ public final class ObjectUtil {
      *
      * 本メソッドでは、対象プロパティがstaticの場合に値を設定するかどうかを引数で制御できる。
      * 引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合、
-     * 値は設定されない。
+     * 例外が発生する。
      *
      * @param obj 対象のオブジェクト
      * @param propertyName プロパティ名
      * @param value セットする値(NOT {@code null})
      * @param allowStatic staticなプロパティへの値設定を許容するか。
-
      * @throws RuntimeException
      *   対象プロパティにsetterが定義されていない場合か、
      *   対象プロパティのsetterが対象プロパティの型かそのサブクラスを引数にとらない場合
+     * @throws IllegalStateException 引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合
      */
     public static void setProperty(Object obj, String propertyName, Object value, boolean allowStatic) {
+
+        String setterName = getSetterMethodName(propertyName);
+        Class<?> targetClass = obj.getClass();
+        Class<?> valueClass = value.getClass();
+        Method method = findMatchMethod(targetClass, setterName, valueClass);
+        if (method == null) {
+            throw new RuntimeException("can't find method [" + setterName + "] in class " + targetClass.getName());
+        }
+        if (!allowStatic && Modifier.isStatic(method.getModifiers())) {
+            throw new IllegalStateException("static property injection not allowed. " +
+                    "class=[" + targetClass.getName() + "] property=[" + propertyName + "]");
+        }
         try {
-            String setterName = getSetterMethodName(propertyName);
-            Class<?> targetClass = obj.getClass();
-            Class<?> valueClass = value.getClass();
-            Method method = findMatchMethod(targetClass, setterName, valueClass);
-            if (method == null) {
-                throw new RuntimeException("can't find method [" + setterName + "] in class " + targetClass.getName());
-            }
-            if (!allowStatic && Modifier.isStatic(method.getModifiers())) {
-                // staticを許容しない場合は何もせずに処理を終了する。
-                return;
-            }
             method.invoke(obj, value);
         } catch (Exception e) {
             throw new RuntimeException("can't set property [" + propertyName + "]", e);
         }
     }
+
 
     /**
      * プロパティ名からsetterメソッド名を取得する。

@@ -16,6 +16,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -503,13 +504,18 @@ public class ObjectUtilTest {
     }
 
     @Test
-    public void testSetPropertyDisallowStatic() {
-        Foo.setBar(null); // 他のテストケースで状態が変化するのでnullで初期化
+    public void testSetPropertyDisallowStaticThenExceptionMustBeThrown() {
+        Foo.setBar(null);  // 他のテストケースで状態が変化するのでnullで初期化
         Foo foo = new Foo();
         Bar bar = new Bar();
-        ObjectUtil.setProperty(foo, "bar", bar, false);
-        assertThat("staticを許容しない場合、staticなプロパティが存在しても値が設定されないこと",
-                   Foo.getBar(), is(nullValue()));
+        try {
+            ObjectUtil.setProperty(foo, "bar", bar, false);
+            fail("staticを許容しない場合、staticプロパティインジェクション時に例外が発生しなければならない");
+        } catch (IllegalStateException e) {
+            assertThat(e.getMessage(),
+                       is("static property injection not allowed. " +
+                                  "class=[nablarch.core.util.objectutil.Foo] property=[bar]"));
+        }
     }
 
     @Test
