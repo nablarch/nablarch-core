@@ -1,11 +1,11 @@
 package nablarch.core.util;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.number.OrderingComparison.lessThan;
-import static org.junit.Assert.fail;
+import nablarch.core.exception.IllegalConfigurationException;
+import nablarch.core.util.objectutil.Bar;
+import nablarch.core.util.objectutil.Foo;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,12 +14,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.collection.IsArrayContainingInOrder;
-import org.hamcrest.number.OrderingComparison;
-
-import org.junit.Assert;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.number.OrderingComparison.lessThan;
+import static org.junit.Assert.fail;
 
 /**
  * {@link ObjectUtil}のテストクラス。
@@ -487,7 +491,39 @@ public class ObjectUtilTest {
         ObjectUtil.createExceptionsClassList(exceptions);
     }
 
+    @Test
+    public void testSetPropertyAllowStatic() {
+        Foo.setBar(null);  // 他のテストケースで状態が変化するのでnullで初期化
+        Foo foo = new Foo();
+        Bar bar = new Bar();
+        ObjectUtil.setProperty(foo, "bar", bar, true);
+        assertThat("staticを許容する場合、staticなプロパティに値が設定されること",
+                   Foo.getBar(), is(sameInstance(bar)));
+    }
 
+    @Test
+    public void testSetPropertyDisallowStaticThenExceptionMustBeThrown() {
+        Foo.setBar(null);  // 他のテストケースで状態が変化するのでnullで初期化
+        Foo foo = new Foo();
+        Bar bar = new Bar();
+        try {
+            ObjectUtil.setProperty(foo, "bar", bar, false);
+            fail("staticを許容しない場合、staticプロパティインジェクション時に例外が発生しなければならない");
+        } catch (IllegalConfigurationException e) {
+            assertThat(e.getMessage(),
+                       is("static property injection not allowed. " +
+                                  "class=[nablarch.core.util.objectutil.Foo] property=[bar]"));
+        }
+    }
+
+    @Test
+    public void testSetPropertyDisallowStaticAndSetToInstanceProperty() {
+        Bar bar = new Bar();
+        String baz = "baz";
+        ObjectUtil.setProperty(bar, "baz", baz, false);
+        assertThat("staticを許容しない場合でも、インスタンスのプロパティには値が設定できること",
+                   bar.getBaz(), is("baz"));
+    }
 
     /**
      * テスト対象クラス。

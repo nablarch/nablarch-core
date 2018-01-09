@@ -1,6 +1,7 @@
 package nablarch.core.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import nablarch.core.exception.IllegalConfigurationException;
 import nablarch.core.util.annotation.Published;
 
 /**
@@ -63,30 +65,59 @@ public final class ObjectUtil {
     }
 
     /**
-     * オブジェクトのプロパティに値をセットする。
+     * オブジェクトのプロパティに値を設定する。
+     *
+     * 本メソッドでは、対象プロパティがstaticの場合でも値は設定される。
      *
      * @param obj 対象のオブジェクト
      * @param propertyName プロパティ名
-     * @param value セットする値(NOT {@code null})
+     * @param value 設定する値(NOT {@code null})
      * @throws RuntimeException
      *   対象プロパティにsetterが定義されていない場合か、
      *   対象プロパティのsetterが対象プロパティの型かそのサブクラスを引数にとらない場合
      */
     public static void setProperty(Object obj, String propertyName, Object value) {
+        setProperty(obj, propertyName, value, true);
+    }
 
+    /**
+     * オブジェクトのプロパティに値を設定する。
+     *
+     * 本メソッドでは、対象プロパティがstaticの場合に値を設定するかどうかを引数で制御できる。
+     * 引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合、
+     * 例外が発生する。
+     *
+     * @param obj 対象のオブジェクト
+     * @param propertyName プロパティ名
+     * @param value 設定する値(NOT {@code null})
+     * @param allowStatic staticなプロパティに対する値の設定を許容するかどうか
+     * @throws RuntimeException
+     *   対象プロパティにsetterが定義されていない場合か、
+     *   対象プロパティのsetterが対象プロパティの型かそのサブクラスを引数にとらない場合
+     * @throws IllegalConfigurationException
+     *   引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合。
+     *   (システムプロパティやweb.xml等の設定誤り)
+     */
+    public static void setProperty(Object obj, String propertyName, Object value, boolean allowStatic) {
+
+        String setterName = getSetterMethodName(propertyName);
+        Class<?> targetClass = obj.getClass();
+        Class<?> valueClass = value.getClass();
+        Method method = findMatchMethod(targetClass, setterName, valueClass);
+        if (method == null) {
+            throw new RuntimeException("can't find method [" + setterName + "] in class " + targetClass.getName());
+        }
+        if (!allowStatic && Modifier.isStatic(method.getModifiers())) {
+            throw new IllegalConfigurationException("static property injection not allowed. " +
+                    "class=[" + targetClass.getName() + "] property=[" + propertyName + "]");
+        }
         try {
-            String setterName = getSetterMethodName(propertyName);
-            Class<?> targetClass = obj.getClass();
-            Class<?> valueClass = value.getClass();
-            Method method = findMatchMethod(targetClass, setterName, valueClass);
-            if (method == null) {
-                throw new RuntimeException("can't find method [" + setterName + "] in class " + targetClass.getName());
-            }
             method.invoke(obj, value);
         } catch (Exception e) {
             throw new RuntimeException("can't set property [" + propertyName + "]", e);
         }
     }
+
 
     /**
      * プロパティ名からsetterメソッド名を取得する。
