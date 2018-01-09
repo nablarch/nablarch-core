@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import nablarch.core.exception.IllegalConfigurationException;
 import nablarch.core.util.annotation.Published;
 
 /**
@@ -64,13 +65,13 @@ public final class ObjectUtil {
     }
 
     /**
-     * オブジェクトのプロパティに値をセットする。
+     * オブジェクトのプロパティに値を設定する。
      *
      * 本メソッドでは、対象プロパティがstaticの場合でも値は設定される。
      *
      * @param obj 対象のオブジェクト
      * @param propertyName プロパティ名
-     * @param value セットする値(NOT {@code null})
+     * @param value 設定する値(NOT {@code null})
      * @throws RuntimeException
      *   対象プロパティにsetterが定義されていない場合か、
      *   対象プロパティのsetterが対象プロパティの型かそのサブクラスを引数にとらない場合
@@ -80,7 +81,7 @@ public final class ObjectUtil {
     }
 
     /**
-     * オブジェクトのプロパティに値をセットする。
+     * オブジェクトのプロパティに値を設定する。
      *
      * 本メソッドでは、対象プロパティがstaticの場合に値を設定するかどうかを引数で制御できる。
      * 引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合、
@@ -88,12 +89,14 @@ public final class ObjectUtil {
      *
      * @param obj 対象のオブジェクト
      * @param propertyName プロパティ名
-     * @param value セットする値(NOT {@code null})
-     * @param allowStatic staticなプロパティへの値設定を許容するか。
+     * @param value 設定する値(NOT {@code null})
+     * @param allowStatic staticなプロパティに対する値の設定を許容するかどうか
      * @throws RuntimeException
      *   対象プロパティにsetterが定義されていない場合か、
      *   対象プロパティのsetterが対象プロパティの型かそのサブクラスを引数にとらない場合
-     * @throws IllegalStateException 引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合
+     * @throws IllegalConfigurationException
+     *   引数allowStaticが{@code false}（許容しない）かつ対象プロパティがstaticである場合。
+     *   (システムプロパティやweb.xml等の設定誤り)
      */
     public static void setProperty(Object obj, String propertyName, Object value, boolean allowStatic) {
 
@@ -105,7 +108,7 @@ public final class ObjectUtil {
             throw new RuntimeException("can't find method [" + setterName + "] in class " + targetClass.getName());
         }
         if (!allowStatic && Modifier.isStatic(method.getModifiers())) {
-            throw new IllegalStateException("static property injection not allowed. " +
+            throw new IllegalConfigurationException("static property injection not allowed. " +
                     "class=[" + targetClass.getName() + "] property=[" + propertyName + "]");
         }
         try {

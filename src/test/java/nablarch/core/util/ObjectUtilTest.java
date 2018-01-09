@@ -1,5 +1,6 @@
 package nablarch.core.util;
 
+import nablarch.core.exception.IllegalConfigurationException;
 import nablarch.core.util.objectutil.Bar;
 import nablarch.core.util.objectutil.Foo;
 import org.hamcrest.CoreMatchers;
@@ -16,9 +17,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -492,7 +491,6 @@ public class ObjectUtilTest {
         ObjectUtil.createExceptionsClassList(exceptions);
     }
 
-
     @Test
     public void testSetPropertyAllowStatic() {
         Foo.setBar(null);  // 他のテストケースで状態が変化するのでnullで初期化
@@ -511,7 +509,7 @@ public class ObjectUtilTest {
         try {
             ObjectUtil.setProperty(foo, "bar", bar, false);
             fail("staticを許容しない場合、staticプロパティインジェクション時に例外が発生しなければならない");
-        } catch (IllegalStateException e) {
+        } catch (IllegalConfigurationException e) {
             assertThat(e.getMessage(),
                        is("static property injection not allowed. " +
                                   "class=[nablarch.core.util.objectutil.Foo] property=[bar]"));
