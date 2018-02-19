@@ -1,11 +1,14 @@
 package nablarch.core.text;
 
+import nablarch.core.util.annotation.Published;
+
 /**
  * 値をフォーマットするインターフェース
  *
  * @param <T> フォーマット対象の型
  * @author Ryota Yoshinouchi
  */
+@Published(tag = "architect")
 public interface Formatter<T> {
 
     /**
