@@ -39,6 +39,7 @@ public class DateTimeFormatter implements Formatter<Date> {
 
     /**
      * 指定された書式で日付をフォーマットする。
+     * 指定するフォーマットは{@link SimpleDateFormat}の仕様に準拠すること。
      *
      * @param input   フォーマット対象
      * @param pattern フォーマットの書式
@@ -46,11 +47,18 @@ public class DateTimeFormatter implements Formatter<Date> {
      */
     @Override
     public String format(Date input, String pattern) {
+        if (input == null) {
+            throw new IllegalArgumentException("input must not be null.");
+        }
+        if (pattern == null) {
+            throw new IllegalArgumentException("pattern must not be null.");
+        }
+
         Locale locale = Locale.getDefault();
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, locale);
             return dateFormat.format(input);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(
                     String.format("format failed. input = [%s] pattern = [%s] locale = [%s]",
                             input, pattern, locale), e);

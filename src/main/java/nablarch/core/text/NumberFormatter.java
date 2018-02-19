@@ -39,6 +39,7 @@ public class NumberFormatter implements Formatter<Number> {
 
     /**
      * 指定された書式で数値をフォーマットする。
+     * 指定するフォーマットは{@link DecimalFormat}の仕様に準拠すること。
      *
      * @param input   フォーマット対象
      * @param pattern フォーマットの書式
@@ -46,12 +47,31 @@ public class NumberFormatter implements Formatter<Number> {
      */
     @Override
     public String format(Number input, String pattern) {
+        if (input == null) {
+            throw new IllegalArgumentException("input must not be null.");
+        }
+        if (pattern == null) {
+            throw new IllegalArgumentException("pattern must not bee null.");
+        }
+
         Locale locale = Locale.getDefault();
+        DecimalFormat decimalFormat;
+        //Javadocにある以下の記載をもとにDecimalFormatのインスタンスを取得している。
+        //https://docs.oracle.com/javase/jp/9/docs/api/java/text/NumberFormat.html より
+        //> フォーマットや解析をさらに制御したい場合、あるいはこのような制御をユーザーが使えるようにしたい場合は、
+        //> ファクトリ・メソッドから得られるNumberFormatをDecimalFormatにキャストすることもできます。
+        //> これはほとんどのロケールで有効ですが、有効にならないロケールの場合に備えて、これはtryブロックに指定してください。
         try {
-            DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(locale);
+            decimalFormat = (DecimalFormat) NumberFormat.getInstance(locale);
+        } catch (RuntimeException e) {
+            //NumberFormat.getInstanceにthrowsの宣言がないためRuntimeExceptionをcatchしている
+            throw new IllegalArgumentException("invalid locale for DecimalFormat, locale = " + locale, e);
+        }
+
+        try {
             decimalFormat.applyPattern(pattern);
             return decimalFormat.format(input);
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(
                     String.format("format failed. input = [%s] pattern = [%s] locale = [%s]",
                             input, pattern, locale), e);
