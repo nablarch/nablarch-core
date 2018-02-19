@@ -227,6 +227,14 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
         setMethodBinder(original.<Object, Object>getMethodBinder());
     }
 
+    /***
+     * 自身の複製を返す。
+     * @return 自身の複製
+     */
+    public ExecutionContext copy(){
+        return new ExecutionContext(this);
+    }
+
     //--------------------------------------------------------- DataReader
     /**
      * この実行コンテキスト上のデータリーダを使用して、次のデータを読み込む。
