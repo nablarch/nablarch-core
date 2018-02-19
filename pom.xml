@@ -26,6 +26,12 @@
       <artifactId>jmockit</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.nablarch.framework</groupId>
+      <artifactId>nablarch-core-repository</artifactId>
+      <scope>test</scope>
+    </dependency>
     
     <dependency>
       <groupId>com.nablarch.integration</groupId>
