@@ -3,6 +3,7 @@ package nablarch.fw;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -348,11 +349,12 @@ public class ExecutionContextTest {
         });
 
         ExecutionContext newCtx = orgCtx.copy();
-        assertThat(newCtx instanceof ExecutionContext, is(true));
+        assertEquals(newCtx.getClass(), ExecutionContext.class);
         assertThat(newCtx.getHandlerQueue(), is(orgCtx.getHandlerQueue()));
-        assertThat(newCtx.getSessionScopeMap(), is(orgCtx.getRequestScopeMap()));
+        assertThat(newCtx.getSessionScopeMap(), is(orgCtx.getSessionScopeMap()));
         assertThat(newCtx.getSessionStoreMap(), is(orgCtx.getSessionStoreMap()));
         assertThat(newCtx.getMethodBinder(), is(orgCtx.getMethodBinder()));
+        assertThat(orgCtx.getRequestScopeMap().isEmpty(), is(true));
         //requestScopeMapについては、新規オブジェクトが生成されているはず。空であることを確認する。
         assertThat(newCtx.getRequestScopeMap().isEmpty(), is(true));
         //readerFactoryの確認（dataReaderが同一であれば、readerFactoryも同一である）
