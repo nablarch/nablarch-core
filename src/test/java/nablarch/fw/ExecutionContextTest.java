@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.hamcrest.CoreMatchers;
 
@@ -321,6 +322,13 @@ public class ExecutionContextTest {
     @Test
     public void testCopy() {
         ExecutionContext orgCtx = new ExecutionContext();
+
+        //コピー後について、requestScopeMapについては、新規オブジェクトが生成されていることを確認したい。
+        //確認できるようにするため、コピー元に中身の詰まったmapを設定する。
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("hoge","hoge");
+        orgCtx.setRequestScopeMap(map);
+
         //テスト用のダミー実装をおこなったdataReader
         final DataReader<Object> dataReader = new DataReader<Object>(){
 
@@ -354,11 +362,25 @@ public class ExecutionContextTest {
         assertThat(newCtx.getSessionScopeMap(), is(orgCtx.getSessionScopeMap()));
         assertThat(newCtx.getSessionStoreMap(), is(orgCtx.getSessionStoreMap()));
         assertThat(newCtx.getMethodBinder(), is(orgCtx.getMethodBinder()));
-        assertThat(orgCtx.getRequestScopeMap().isEmpty(), is(true));
         //requestScopeMapについては、新規オブジェクトが生成されているはず。空であることを確認する。
         assertThat(newCtx.getRequestScopeMap().isEmpty(), is(true));
         //readerFactoryの確認（dataReaderが同一であれば、readerFactoryも同一である）
         assertThat(newCtx.getDataReader(), is(orgCtx.getDataReader()));
+    }
+
+    /**
+     * copyInternalがでたらめな実装だと、コピー時に例外が送出されることを確認する。
+     */
+    @Test
+    public void testFailCopyInternal() {
+        ExecutionContext orgCtx = new ExecutionContext(){
+            //ExecutionContextの派生クラスを作成するが、copyInternal実装しない。
+            //(copyInternalが不適切な実装になる。を適切に実装せずに不正な実装にする。)
+        };
+
+        expectedException.expect(UnsupportedOperationException.class);
+        expectedException.expectMessage("copyInternal method is not properly implemented.");
+        orgCtx.copy();
     }
 
 }
