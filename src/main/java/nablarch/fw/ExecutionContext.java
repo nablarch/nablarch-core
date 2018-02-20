@@ -227,6 +227,33 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
         setMethodBinder(original.<Object, Object>getMethodBinder());
     }
 
+    /***
+     * 自身の複製を返す。
+     * <p/>
+     * 複製処理の本体は{@link ExecutionContext#copyInternal()}に委譲している。
+     *
+     * @return 自身の複製。
+     */
+    public final ExecutionContext copy() {
+        ExecutionContext copied = copyInternal();
+        if (!this.getClass().equals(copied.getClass())) {
+            throw new UnsupportedOperationException("copyInternal method is not properly implemented.");
+        }
+        return copied;
+    }
+
+    /***
+     * 自身の複製を返す。
+     * <p/>
+     * 当メソッドが返すインスタンスはレシーバと同じ型でなければいけない。<br/>
+     * つまりobj.getClass() == obj.copy().getClass()がtrueでなければいけない。当メソッドをサブクラスでオーバーライドする場合はこの制約に注意して実装すること。
+     *
+     * @return 自身の複製。
+     */
+    protected ExecutionContext copyInternal() {
+        return new ExecutionContext(this);
+    }
+
     //--------------------------------------------------------- DataReader
     /**
      * この実行コンテキスト上のデータリーダを使用して、次のデータを読み込む。
