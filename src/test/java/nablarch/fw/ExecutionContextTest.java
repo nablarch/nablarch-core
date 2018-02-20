@@ -375,7 +375,7 @@ public class ExecutionContextTest {
     public void testFailCopyInternal() {
         ExecutionContext orgCtx = new ExecutionContext(){
             //ExecutionContextの派生クラスを作成するが、copyInternal実装しない。
-            //(copyInternalが不適切な実装になる。を適切に実装せずに不正な実装にする。)
+            //(実装しないことで、結果的にcopyInternalが不適切な実装になる)
         };
 
         expectedException.expect(UnsupportedOperationException.class);
