@@ -19,6 +19,11 @@ public final class FormatterUtil {
     private static final String FORMATTER_CONFIG = "formatter-config";
 
     /**
+     * フォーマッタのデフォルト値を設定していない場合に使用するデフォルト値
+     */
+    private static final FormatterConfig DEFAULT_CONFIG = new FormatterConfig();
+
+    /**
      * 本クラスはインスタンスを生成しない。
      */
     private FormatterUtil() {
@@ -56,17 +61,16 @@ public final class FormatterUtil {
      * @param <T>           フォーマット対象の型
      * @return フォーマッタ
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     private static <T> Formatter<T> getFormatter(String formatterName) {
         FormatterConfig formatterConfig = (FormatterConfig) SystemRepository.getObject(FORMATTER_CONFIG);
         if (formatterConfig == null) {
-            throw new IllegalArgumentException(
-                    "specified " + FORMATTER_CONFIG + " is not registered in SystemRepository.");
+            formatterConfig = DEFAULT_CONFIG;
         }
-        List<Formatter> formatters = formatterConfig.getFormatters();
-        for (Formatter formatter : formatters) {
+        List<Formatter<?>> formatters = formatterConfig.getFormatters();
+        for (Formatter<?> formatter : formatters) {
             if (formatter.getFormatterName().equals(formatterName)) {
-                return formatter;
+                return (Formatter<T>) formatter;
             }
         }
         throw new IllegalArgumentException("no such formatter registered in SystemRepository, formatterName = " + formatterName);

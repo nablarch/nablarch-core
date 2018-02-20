@@ -14,12 +14,12 @@ public class DateTimeFormatter implements Formatter<Date> {
     /**
      * フォーマッタの名前
      */
-    private String formatterName;
+    private String formatterName = "dateTime";
 
     /**
      * デフォルトのフォーマットパターン
      */
-    private String defaultPattern;
+    private String defaultPattern = "yyyy/MM/dd";
 
     @Override
     public String getFormatterName() {

@@ -22,15 +22,12 @@ public class NumberFormatterTest {
     @Test
     public void フォーマッタの名前が取得できること() {
         NumberFormatter sut = new NumberFormatter();
-        sut.setFormatterName("number");
-
         assertThat(sut.getFormatterName(), is("number"));
     }
 
     @Test
     public void パターンを指定しない場合デフォルトのパターンでフォーマットされること() {
         NumberFormatter sut = new NumberFormatter();
-        sut.setDefaultPattern("#,##0.000");
         Number number = BigDecimal.valueOf(123456789.123);
 
         assertThat(sut.format(number), is("123,456,789.123"));

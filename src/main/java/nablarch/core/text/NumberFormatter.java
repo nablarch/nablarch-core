@@ -14,12 +14,12 @@ public class NumberFormatter implements Formatter<Number> {
     /**
      * フォーマッタの名前
      */
-    private String formatterName;
+    private String formatterName = "number";
 
     /**
      * デフォルトのフォーマットパターン
      */
-    private String defaultPattern;
+    private String defaultPattern = "";
 
     @Override
     public String getFormatterName() {
@@ -69,7 +69,9 @@ public class NumberFormatter implements Formatter<Number> {
         }
 
         try {
-            decimalFormat.applyPattern(pattern);
+            if (!pattern.isEmpty()) {
+                decimalFormat.applyPattern(pattern);
+            }
             return decimalFormat.format(input);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(

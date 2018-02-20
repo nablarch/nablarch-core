@@ -23,15 +23,12 @@ public class DateTimeFormatterTest {
     @Test
     public void フォーマッタの名前が取得できること() {
         DateTimeFormatter sut = new DateTimeFormatter();
-        sut.setFormatterName("dateTime");
-
         assertThat(sut.getFormatterName(), is("dateTime"));
     }
 
     @Test
     public void パターンを指定しない場合デフォルトのパターンでフォーマットできること() throws Exception {
         DateTimeFormatter sut = new DateTimeFormatter();
-        sut.setDefaultPattern("yyyy/MM/dd");
         Date date = new SimpleDateFormat("yyyy/MM/dd").parse("2018/02/16");
 
         assertThat(sut.format(date), is("2018/02/16"));

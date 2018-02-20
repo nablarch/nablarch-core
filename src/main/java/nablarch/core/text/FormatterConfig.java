@@ -1,5 +1,6 @@
 package nablarch.core.text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,20 +8,30 @@ import java.util.List;
  *
  * @author Ryota Yoshinouchi
  */
-@SuppressWarnings("rawtypes")
 public class FormatterConfig {
 
     /**
      * フォーマッタのリスト
      */
-    private List<Formatter> formatters;
+    private List<Formatter<?>> formatters;
+
+    /**
+     * デフォルトコンストラクタ。
+     * <p/>
+     * デフォルトのフォーマッタを設定する。
+     */
+    public FormatterConfig() {
+        formatters = new ArrayList<Formatter<?>>();
+        formatters.add(new DateTimeFormatter());
+        formatters.add(new NumberFormatter());
+    }
 
     /**
      * フォーマッタのリストを取得する。
      *
      * @return フォーマッタのリスト
      */
-    public List<Formatter> getFormatters() {
+    public List<Formatter<?>> getFormatters() {
         return formatters;
     }
 
@@ -29,7 +40,7 @@ public class FormatterConfig {
      *
      * @param formatters フォーマッタのリスト
      */
-    public void setFormatters(List<Formatter> formatters) {
+    public void setFormatters(List<Formatter<?>> formatters) {
         this.formatters = formatters;
     }
 }
