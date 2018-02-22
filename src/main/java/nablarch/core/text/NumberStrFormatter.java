@@ -1,15 +1,19 @@
 package nablarch.core.text;
 
+import nablarch.core.util.StringUtil;
+
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * 数値をフォーマットするクラス。
+ * 数値文字列をフォーマットするクラス
  *
  * @author Ryota Yoshinouchi
  */
-public class NumberFormatter implements Formatter<Number> {
+public class NumberStrFormatter implements Formatter<String> {
 
     /**
      * フォーマッタの名前
@@ -23,7 +27,7 @@ public class NumberFormatter implements Formatter<Number> {
 
     @Override
     public Class<?> getFormatClass() {
-        return Number.class;
+        return String.class;
     }
 
     @Override
@@ -31,35 +35,36 @@ public class NumberFormatter implements Formatter<Number> {
         return formatterName;
     }
 
-    /**
-     * デフォルトの書式で数値をフォーマットする。
-     *
-     * @param input フォーマット対象
-     * @return フォーマットされた文字列　フォーマット対象がnullの場合はnull
-     */
     @Override
-    public String format(Number input) {
+    public String format(String input) {
         return format(input, defaultPattern);
     }
 
-    /**
-     * 指定された書式で数値をフォーマットする。
-     * 指定するフォーマットは{@link DecimalFormat}の仕様に準拠すること。
-     *
-     * @param input   フォーマット対象
-     * @param pattern フォーマットの書式
-     * @return フォーマットされた文字列　フォーマット対象がnullの場合はnull
-     */
     @Override
-    public String format(Number input, String pattern) {
-        if (input == null) {
-            return null;
+    public String format(String input, String pattern) {
+        if (StringUtil.isNullOrEmpty(input)) {
+            return input;
         }
-        if (pattern == null) {
-            return input.toString();
+        if (StringUtil.isNullOrEmpty(pattern)) {
+            return input;
+        }
+
+        // 指数表現を含む場合はそのまま返す。
+        if (input.toUpperCase().contains("E")) {
+            return input;
         }
 
         Locale locale = Locale.getDefault();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+        // ロケールに応じた区切り文字を取り除く
+        input = input.replace(String.valueOf(symbols.getGroupingSeparator()), "");
+        char point = symbols.getDecimalSeparator();
+        if (point != '.') {
+            // 小数点が '.' でない場合は'.'で置き換える
+            input = input.replace(point, '.');
+        }
+        Number number = new BigDecimal(input);
+
         DecimalFormat decimalFormat;
         //Javadocにある以下の記載をもとにDecimalFormatのインスタンスを取得している。
         //https://docs.oracle.com/javase/jp/9/docs/api/java/text/NumberFormat.html より
@@ -77,9 +82,9 @@ public class NumberFormatter implements Formatter<Number> {
             if (!pattern.isEmpty()) {
                 decimalFormat.applyPattern(pattern);
             }
-            return decimalFormat.format(input);
+            return decimalFormat.format(number);
         } catch (IllegalArgumentException e) {
-            return input.toString();
+            return input;
         }
     }
 

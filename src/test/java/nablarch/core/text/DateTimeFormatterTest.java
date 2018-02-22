@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -44,30 +45,28 @@ public class DateTimeFormatterTest {
     }
 
     @Test
-    public void パターン文字列がnullの場合エラーが送出されること() throws Exception {
+    public void パターン文字列がnullの場合フォーマット対象をtoStringした値が返却されること() throws Exception {
         DateTimeFormatter sut = new DateTimeFormatter();
         Date date = new SimpleDateFormat("yyyy/MM/dd").parse("2018/02/16");
 
-        expectedException.expect(IllegalArgumentException.class);
-        sut.format(date, null);
+        assertThat(sut.format(date, null), is(date.toString()));
     }
 
     @Test
-    public void パターン文字列が不正な場合エラーが送出されること() throws Exception {
+    public void パターン文字列が不正な場合フォーマット対象をtoStringした値が返却されること() throws Exception {
         DateTimeFormatter sut = new DateTimeFormatter();
         Date date = new SimpleDateFormat("yyyy/MM/dd").parse("2018/02/16");
         String pattern = "yyyy-MM-ddA";
 
-        expectedException.expect(IllegalArgumentException.class);
-        sut.format(date, pattern);
+        assertThat(sut.format(date, pattern), is(date.toString()));
     }
 
     @Test
-    public void フォーマット対象がnullの場合エラーが送出されること() {
+    public void フォーマット対象がnullの場合nullが返却されること() {
         DateTimeFormatter sut = new DateTimeFormatter();
         String pattern = "yyyy-MM-dd";
 
-        expectedException.expect(IllegalArgumentException.class);
-        sut.format(null, pattern);
+        assertThat(sut.format(null), is(nullValue()));
+        assertThat(sut.format(null, pattern), is(nullValue()));
     }
 }

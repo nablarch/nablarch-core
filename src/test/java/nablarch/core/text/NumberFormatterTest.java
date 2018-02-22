@@ -6,6 +6,7 @@ import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -43,29 +44,29 @@ public class NumberFormatterTest {
     }
 
     @Test
-    public void パターン文字列がnulの場合エラーが送出されること() {
+    public void パターン文字列がnulの場合フォーマット対象をtoStringした値が返却されること() {
         NumberFormatter sut = new NumberFormatter();
         Number number = BigDecimal.valueOf(123456789.123);
 
-        expectedException.expect(IllegalArgumentException.class);
-        sut.format(number, null);
+        assertThat(sut.format(number, null), is(number.toString()));
     }
 
     @Test
-    public void パターン文字列が不正な場合エラーが送出されること() {
+    public void パターン文字列が不正な場合フォーマット対象をtoStringした値が返却されること() {
         NumberFormatter sut = new NumberFormatter();
         Number number = BigDecimal.valueOf(123456789.123);
         String pattern = "#,###...000";
 
-        expectedException.expect(IllegalArgumentException.class);
-        sut.format(number, pattern);
+        assertThat(sut.format(number, pattern), is(number.toString()));
+
     }
 
     @Test
-    public void フォーマット対象がnullの場合エラーが送出されること() {
+    public void フォーマット対象がnullの場合nullが返却されること() {
         NumberFormatter sut = new NumberFormatter();
+        String pattern = "00,000.000";
 
-        expectedException.expect(IllegalArgumentException.class);
-        sut.format(null);
+        assertThat(sut.format(null), is(nullValue()));
+        assertThat(sut.format(null, pattern), is(nullValue()));
     }
 }

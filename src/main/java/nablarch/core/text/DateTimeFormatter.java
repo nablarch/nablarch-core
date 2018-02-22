@@ -22,6 +22,11 @@ public class DateTimeFormatter implements Formatter<Date> {
     private String defaultPattern = "yyyy/MM/dd";
 
     @Override
+    public Class<?> getFormatClass() {
+        return Date.class;
+    }
+
+    @Override
     public String getFormatterName() {
         return formatterName;
     }
@@ -30,7 +35,7 @@ public class DateTimeFormatter implements Formatter<Date> {
      * デフォルトの書式で日付をフォーマットする。
      *
      * @param input フォーマット対象
-     * @return フォーマットされた文字列
+     * @return フォーマットされた文字列　フォーマット対象がnullの場合はnull
      */
     @Override
     public String format(Date input) {
@@ -43,15 +48,15 @@ public class DateTimeFormatter implements Formatter<Date> {
      *
      * @param input   フォーマット対象
      * @param pattern フォーマットの書式
-     * @return フォーマットされた文字列
+     * @return フォーマットされた文字列　フォーマット対象がnullの場合はnull
      */
     @Override
     public String format(Date input, String pattern) {
         if (input == null) {
-            throw new IllegalArgumentException("input must not be null.");
+            return null;
         }
         if (pattern == null) {
-            throw new IllegalArgumentException("pattern must not be null.");
+            return input.toString();
         }
 
         Locale locale = Locale.getDefault();
@@ -59,9 +64,7 @@ public class DateTimeFormatter implements Formatter<Date> {
             SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, locale);
             return dateFormat.format(input);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(
-                    String.format("format failed. input = [%s] pattern = [%s] locale = [%s]",
-                            input, pattern, locale), e);
+            return input.toString();
         }
     }
 

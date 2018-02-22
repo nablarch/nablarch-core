@@ -36,14 +36,18 @@ public class FormatterUtilTest {
     public void デフォルトのパターンでフォーマットできること() throws Exception {
         // デフォルトパターンはyyyy/MM/dd
         assertThat(FormatterUtil.format("dateTime", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01")), is("2018/01/01"));
+        assertThat(FormatterUtil.format("dateTime", "20180101"), is("2018/01/01"));
         // デフォルトパターンは#,###,##0.000
         assertThat(FormatterUtil.format("number", BigDecimal.valueOf(123456789.123)), is("123,456,789.123"));
+        assertThat(FormatterUtil.format("number", "123456789.123"), is("123,456,789.123"));
     }
 
     @Test
     public void 指定したパターンでフォーマットできること() throws Exception {
         assertThat(FormatterUtil.format("dateTime", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01"), "yyyy年MM月dd日"), is("2018年01月01日"));
+        assertThat(FormatterUtil.format("dateTime", "20180101", "yyyy年MM月dd日"), is("2018年01月01日"));
         assertThat(FormatterUtil.format("number", BigDecimal.valueOf(1234567890), "#,###,###,### 円"), is("1,234,567,890 円"));
+        assertThat(FormatterUtil.format("number", "1,234,567,890", "#,###,###,### 円"), is("1,234,567,890 円"));
     }
 
     @Test
@@ -59,9 +63,20 @@ public class FormatterUtilTest {
                 numberFormatter.setFormatterName("customNumber");
                 numberFormatter.setDefaultPattern("#,###,###,### 円");
 
+                DateTimeStrFormatter dateTimeStrFormatter = new DateTimeStrFormatter();
+                dateTimeStrFormatter.setFormatterName("customDateTimeStr");
+                dateTimeStrFormatter.setDefaultPattern("yyyy年MM月dd日");
+                dateTimeStrFormatter.setDateStrPattern("yyyyMMdd");
+
+                NumberStrFormatter numberStrFormatter = new NumberStrFormatter();
+                numberStrFormatter.setFormatterName("customNumberStr");
+                numberStrFormatter.setDefaultPattern("#,###,###,### 円");
+
                 List<Formatter<?>> list = new ArrayList<Formatter<?>>();
                 list.add(dateTimeFormatter);
                 list.add(numberFormatter);
+                list.add(dateTimeStrFormatter);
+                list.add(numberStrFormatter);
 
                 FormatterConfig formatterConfig = new FormatterConfig();
                 formatterConfig.setFormatters(list);
@@ -74,11 +89,13 @@ public class FormatterUtilTest {
 
         assertThat(FormatterUtil.format("customDateTime", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01")), is("2018年01月01日"));
         assertThat(FormatterUtil.format("customNumber", BigDecimal.valueOf(1234567890)), is("1,234,567,890 円"));
+        assertThat(FormatterUtil.format("customDateTimeStr", "20180101"), is("2018年01月01日"));
+        assertThat(FormatterUtil.format("customNumberStr", "1,234,567,890"), is("1,234,567,890 円"));
     }
 
     @Test
-    public void システムリポジトリに登録していないフォーマッタを指定した場合エラーが送出されること() {
-        expectedException.expect(IllegalArgumentException.class);
-        FormatterUtil.format("invalidFormatter", "");
+    public void システムリポジトリに登録していないフォーマッタを指定した場合フォーマットされずにtoStringされた値が返却されること() throws Exception {
+        assertThat(FormatterUtil.format("invalidFormatter", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01")), is(new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01").toString()));
+        assertThat(FormatterUtil.format("invalidFormatter", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01"), "yyyy-MM-dd"), is(new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01").toString()));
     }
 }
