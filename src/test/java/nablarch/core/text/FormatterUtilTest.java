@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -97,5 +98,11 @@ public class FormatterUtilTest {
     public void システムリポジトリに登録していないフォーマッタを指定した場合フォーマットされずにtoStringされた値が返却されること() throws Exception {
         assertThat(FormatterUtil.format("invalidFormatter", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01")), is(new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01").toString()));
         assertThat(FormatterUtil.format("invalidFormatter", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01"), "yyyy-MM-dd"), is(new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01").toString()));
+    }
+
+    @Test
+    public void フォーマット対象がnullの場合nullが返却されること() {
+        assertThat(FormatterUtil.format("dateTime", null), is(nullValue()));
+        assertThat(FormatterUtil.format("dateTime", null, "yyyy/MM/dd"), is(nullValue()));
     }
 }

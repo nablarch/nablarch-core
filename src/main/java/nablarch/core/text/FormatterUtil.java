@@ -38,6 +38,9 @@ public final class FormatterUtil {
      * @return フォーマットされた文字列
      */
     public static <T> String format(String formatterName, T input) {
+        if (input == null) {
+            return null;
+        }
         Formatter<T> formatter = getFormatter(formatterName, input.getClass());
         if (formatter != null) {
             return formatter.format(input);
@@ -56,6 +59,9 @@ public final class FormatterUtil {
      * @return フォーマットされた文字列
      */
     public static <T> String format(String formatterName, T input, String pattern) {
+        if (input == null) {
+            return null;
+        }
         Formatter<Object> formatter = getFormatter(formatterName, input.getClass());
         if (formatter != null) {
             return formatter.format(input, pattern);
