@@ -39,6 +39,14 @@ public class DateTimeStrFormatter implements Formatter<String> {
         return formatterName;
     }
 
+    /**
+     * デフォルトの書式で日付文字列をフォーマットする。
+     * フォーマット対象がnullの場合はnullを返却する。
+     * フォーマット途中で例外が発生した場合はフォーマットせずに値を返却する。
+     *
+     * @param input フォーマット対象
+     * @return フォーマットされた文字列
+     */
     @Override
     public String format(String input) {
         return format(input, defaultPattern);
@@ -47,10 +55,12 @@ public class DateTimeStrFormatter implements Formatter<String> {
     /**
      * 指定された書式で日付をフォーマットする。
      * 指定するフォーマットは{@link SimpleDateFormat}の仕様に準拠すること。
+     * フォーマット対象がnullの場合はnullを返却する。
+     * フォーマット途中で例外が発生した場合はフォーマットせずに値を返却する。
      *
      * @param input   フォーマット対象
      * @param pattern フォーマットの書式
-     * @return フォーマットされた文字列　フォーマット対象がnullの場合はnull
+     * @return フォーマットされた文字列
      */
     @Override
     public String format(String input, String pattern) {
