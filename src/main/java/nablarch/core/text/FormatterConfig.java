@@ -24,6 +24,8 @@ public class FormatterConfig {
         formatters = new ArrayList<Formatter<?>>();
         formatters.add(new DateTimeFormatter());
         formatters.add(new NumberFormatter());
+        formatters.add(new DateTimeStrFormatter());
+        formatters.add(new NumberStrFormatter());
     }
 
     /**

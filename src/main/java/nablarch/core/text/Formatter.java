@@ -12,6 +12,13 @@ import nablarch.core.util.annotation.Published;
 public interface Formatter<T> {
 
     /**
+     * フォーマット対象のクラスを取得する
+     *
+     * @return フォーマット対象のクラス
+     */
+    Class<T> getFormatClass();
+
+    /**
      * フォーマッタの名前を取得する
      *
      * @return フォーマッタの名前
