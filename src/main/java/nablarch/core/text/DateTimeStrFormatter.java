@@ -42,7 +42,7 @@ public class DateTimeStrFormatter implements Formatter<String> {
     /**
      * デフォルトの書式で日付文字列をフォーマットする。
      * フォーマット対象がnullの場合はnullを返却する。
-     * フォーマット途中で例外が発生した場合はフォーマットせずに値を返却する。
+     * フォーマット対象の日付文字列が日付型にパース出来ない場合はフォーマットせずに返却する。
      *
      * @param input フォーマット対象
      * @return フォーマットされた文字列
@@ -56,7 +56,7 @@ public class DateTimeStrFormatter implements Formatter<String> {
      * 指定された書式で日付をフォーマットする。
      * 指定するフォーマットは{@link SimpleDateFormat}の仕様に準拠すること。
      * フォーマット対象がnullの場合はnullを返却する。
-     * フォーマット途中で例外が発生した場合はフォーマットせずに値を返却する。
+     * フォーマット対象の日付文字列が日付型にパース出来ない場合はフォーマットせずに返却する。
      *
      * @param input   フォーマット対象
      * @param pattern フォーマットの書式

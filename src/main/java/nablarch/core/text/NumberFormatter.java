@@ -34,7 +34,6 @@ public class NumberFormatter implements Formatter<Number> {
     /**
      * デフォルトの書式で数値をフォーマットする。
      * フォーマット対象がnullの場合はnullを返却する。
-     * フォーマット途中で例外が発生した場合はフォーマット対象をtoStringした値を返却する。
      *
      * @param input フォーマット対象
      * @return フォーマットされた文字列
@@ -48,7 +47,6 @@ public class NumberFormatter implements Formatter<Number> {
      * 指定された書式で数値をフォーマットする。
      * 指定するフォーマットは{@link DecimalFormat}の仕様に準拠すること。
      * フォーマット対象がnullの場合はnullを返却する。
-     * フォーマット途中で例外が発生した場合はフォーマット対象をtoStringした値を返却する。
      *
      * @param input   フォーマット対象
      * @param pattern フォーマットの書式

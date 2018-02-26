@@ -38,7 +38,6 @@ public class NumberStrFormatter implements Formatter<String> {
     /**
      * デフォルトの書式で数値文字列をフォーマットする。
      * フォーマット対象がnullの場合はnullを返却する。
-     * フォーマット途中で例外が発生した場合はフォーマットせずに値を返却する。
      *
      * @param input フォーマット対象
      * @return フォーマットされた文字列　
@@ -52,7 +51,6 @@ public class NumberStrFormatter implements Formatter<String> {
      * 指定された書式で数値をフォーマットする。
      * 指定するフォーマットは{@link DecimalFormat}の仕様に準拠すること。
      * フォーマット対象がnullの場合はnullを返却する。
-     * フォーマット途中で例外が発生した場合はフォーマットせずに値を返却する。
      *
      * @param input   フォーマット対象
      * @param pattern フォーマットの書式
