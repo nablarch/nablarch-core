@@ -58,11 +58,11 @@ public class NumberStrFormatter implements Formatter<String> {
      */
     @Override
     public String format(String input, String pattern) {
-        if (StringUtil.isNullOrEmpty(input)) {
-            return input;
-        }
         if (StringUtil.isNullOrEmpty(pattern)) {
             throw new IllegalArgumentException("pattern must not be null.");
+        }
+        if (StringUtil.isNullOrEmpty(input)) {
+            return input;
         }
 
         // 指数表現を含む場合はそのまま返す。

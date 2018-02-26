@@ -64,14 +64,14 @@ public class DateTimeStrFormatter implements Formatter<String> {
      */
     @Override
     public String format(String input, String pattern) {
-        if (StringUtil.isNullOrEmpty(input)) {
-            return input;
-        }
         if (StringUtil.isNullOrEmpty(pattern)) {
             throw new IllegalArgumentException("pattern must not be null.");
         }
         if (StringUtil.isNullOrEmpty(dateStrPattern)) {
             throw new IllegalArgumentException("dateStrPattern must not be null.");
+        }
+        if (StringUtil.isNullOrEmpty(input)) {
+            return input;
         }
 
         Locale locale = Locale.getDefault();

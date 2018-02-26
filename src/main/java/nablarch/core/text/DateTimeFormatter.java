@@ -54,11 +54,11 @@ public class DateTimeFormatter implements Formatter<Date> {
      */
     @Override
     public String format(Date input, String pattern) {
-        if (input == null) {
-            return null;
-        }
         if (pattern == null) {
             throw new IllegalArgumentException("pattern must not be null.");
+        }
+        if (input == null) {
+            return null;
         }
 
         Locale locale = Locale.getDefault();
