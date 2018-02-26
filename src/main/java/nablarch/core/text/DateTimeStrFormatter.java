@@ -30,7 +30,7 @@ public class DateTimeStrFormatter implements Formatter<String> {
     private String dateStrPattern = "yyyyMMdd";
 
     @Override
-    public Class<?> getFormatClass() {
+    public Class<String> getFormatClass() {
         return String.class;
     }
 
@@ -68,10 +68,10 @@ public class DateTimeStrFormatter implements Formatter<String> {
             return input;
         }
         if (StringUtil.isNullOrEmpty(pattern)) {
-            return input;
+            throw new IllegalArgumentException("pattern must not be null.");
         }
         if (StringUtil.isNullOrEmpty(dateStrPattern)) {
-            return input;
+            throw new IllegalArgumentException("dateStrPattern must not be null.");
         }
 
         Locale locale = Locale.getDefault();
@@ -79,7 +79,9 @@ public class DateTimeStrFormatter implements Formatter<String> {
         try {
             dateFormat = new SimpleDateFormat(dateStrPattern, locale);
         } catch (IllegalArgumentException e) {
-            return input;
+            throw new IllegalArgumentException(
+                    String.format("dateStrPattern is invalid pattern.  dateStrPattern = [%s]",
+                            dateStrPattern), e);
         }
         Date date;
         try {
@@ -90,7 +92,9 @@ public class DateTimeStrFormatter implements Formatter<String> {
         try {
             return new SimpleDateFormat(pattern, locale).format(date);
         } catch (IllegalArgumentException e) {
-            return input;
+            throw new IllegalArgumentException(
+                    String.format("format failed. input = [%s] pattern = [%s] locale = [%s]",
+                            input, pattern, locale), e);
         }
     }
 

@@ -26,7 +26,7 @@ public class NumberStrFormatter implements Formatter<String> {
     private String defaultPattern = "#,###.###";
 
     @Override
-    public Class<?> getFormatClass() {
+    public Class<String> getFormatClass() {
         return String.class;
     }
 
@@ -64,7 +64,7 @@ public class NumberStrFormatter implements Formatter<String> {
             return input;
         }
         if (StringUtil.isNullOrEmpty(pattern)) {
-            return input;
+            throw new IllegalArgumentException("pattern must not be null.");
         }
 
         // 指数表現を含む場合はそのまま返す。
@@ -97,12 +97,12 @@ public class NumberStrFormatter implements Formatter<String> {
         }
 
         try {
-            if (!pattern.isEmpty()) {
-                decimalFormat.applyPattern(pattern);
-            }
+            decimalFormat.applyPattern(pattern);
             return decimalFormat.format(number);
         } catch (IllegalArgumentException e) {
-            return input;
+            throw new IllegalArgumentException(
+                    String.format("format failed. input = [%s] pattern = [%s] locale = [%s]",
+                            input, pattern, locale), e);
         }
     }
 

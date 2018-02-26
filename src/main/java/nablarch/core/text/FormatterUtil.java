@@ -42,11 +42,7 @@ public final class FormatterUtil {
             return null;
         }
         Formatter<T> formatter = getFormatter(formatterName, input.getClass());
-        if (formatter != null) {
-            return formatter.format(input);
-        } else {
-            return input.toString();
-        }
+        return formatter.format(input);
     }
 
     /**
@@ -63,15 +59,13 @@ public final class FormatterUtil {
             return null;
         }
         Formatter<Object> formatter = getFormatter(formatterName, input.getClass());
-        if (formatter != null) {
-            return formatter.format(input, pattern);
-        } else {
-            return input.toString();
-        }
+        return formatter.format(input, pattern);
     }
 
     /**
      * システムリポジトリからフォーマッタを取得する。
+     * フォーマッタ名とフォーマット対象の型に対応するフォーマッタが
+     * システムリポジトリに登録されていない場合は例外を送出する。
      *
      * @param <T>           フォーマット対象の型
      * @param formatterName 取得するフォーマッタの名前
@@ -90,6 +84,6 @@ public final class FormatterUtil {
                 return (Formatter<T>) formatter;
             }
         }
-        return null;
+        throw new IllegalArgumentException("no such formatter registered in SystemRepository, formatterName = " + formatterName);
     }
 }

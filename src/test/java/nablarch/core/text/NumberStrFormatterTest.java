@@ -1,12 +1,17 @@
 package nablarch.core.text;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class NumberStrFormatterTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void フォーマッタの名前が取得できること() {
@@ -35,18 +40,20 @@ public class NumberStrFormatterTest {
     }
 
     @Test
-    public void パターン文字列がnulの場合フォーマットされずに返却されること() {
+    public void パターン文字列がnulの場合例外が送出されること() {
         NumberStrFormatter sut = new NumberStrFormatter();
-        assertThat(sut.format("123456789.123", null), is("123456789.123"));
+
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format("123456789.123", null);
     }
 
     @Test
-    public void パターン文字列が不正な場合フォーマットされずに返却されること() {
+    public void パターン文字列が不正な場合例外が送出されること() {
         NumberStrFormatter sut = new NumberStrFormatter();
         String pattern = "#,###...000";
 
-        assertThat(sut.format("123456789.123", pattern), is("123456789.123"));
-
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format("123456789.123", pattern);
     }
 
     @Test

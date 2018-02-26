@@ -22,7 +22,7 @@ public class DateTimeFormatter implements Formatter<Date> {
     private String defaultPattern = "yyyy/MM/dd";
 
     @Override
-    public Class<?> getFormatClass() {
+    public Class<Date> getFormatClass() {
         return Date.class;
     }
 
@@ -60,7 +60,7 @@ public class DateTimeFormatter implements Formatter<Date> {
             return null;
         }
         if (pattern == null) {
-            return input.toString();
+            throw new IllegalArgumentException("pattern must not be null.");
         }
 
         Locale locale = Locale.getDefault();
@@ -68,7 +68,9 @@ public class DateTimeFormatter implements Formatter<Date> {
             SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, locale);
             return dateFormat.format(input);
         } catch (IllegalArgumentException e) {
-            return input.toString();
+            throw new IllegalArgumentException(
+                    String.format("format failed. input = [%s] pattern = [%s] locale = [%s]",
+                            input, pattern, locale), e);
         }
     }
 

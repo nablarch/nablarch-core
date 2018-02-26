@@ -45,20 +45,22 @@ public class DateTimeFormatterTest {
     }
 
     @Test
-    public void パターン文字列がnullの場合フォーマット対象をtoStringした値が返却されること() throws Exception {
+    public void パターン文字列がnullの場合例外が送出されること() throws Exception {
         DateTimeFormatter sut = new DateTimeFormatter();
         Date date = new SimpleDateFormat("yyyy/MM/dd").parse("2018/02/16");
 
-        assertThat(sut.format(date, null), is(date.toString()));
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format(date, null);
     }
 
     @Test
-    public void パターン文字列が不正な場合フォーマット対象をtoStringした値が返却されること() throws Exception {
+    public void パターン文字列が不正な場合例外が送出されること() throws Exception {
         DateTimeFormatter sut = new DateTimeFormatter();
         Date date = new SimpleDateFormat("yyyy/MM/dd").parse("2018/02/16");
         String pattern = "yyyy-MM-ddA";
 
-        assertThat(sut.format(date, pattern), is(date.toString()));
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format(date, pattern);
     }
 
     @Test

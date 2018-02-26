@@ -16,7 +16,7 @@ public interface Formatter<T> {
      *
      * @return フォーマット対象のクラス
      */
-    Class<?> getFormatClass();
+    Class<T> getFormatClass();
 
     /**
      * フォーマッタの名前を取得する

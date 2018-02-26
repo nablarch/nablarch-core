@@ -22,7 +22,7 @@ public class NumberFormatter implements Formatter<Number> {
     private String defaultPattern = "#,###.###";
 
     @Override
-    public Class<?> getFormatClass() {
+    public Class<Number> getFormatClass() {
         return Number.class;
     }
 
@@ -60,7 +60,7 @@ public class NumberFormatter implements Formatter<Number> {
             return null;
         }
         if (pattern == null) {
-            return input.toString();
+            throw new IllegalArgumentException("pattern must not be null.");
         }
 
         Locale locale = Locale.getDefault();
@@ -78,12 +78,12 @@ public class NumberFormatter implements Formatter<Number> {
         }
 
         try {
-            if (!pattern.isEmpty()) {
-                decimalFormat.applyPattern(pattern);
-            }
+            decimalFormat.applyPattern(pattern);
             return decimalFormat.format(input);
         } catch (IllegalArgumentException e) {
-            return input.toString();
+            throw new IllegalArgumentException(
+                    String.format("format failed. input = [%s] pattern = [%s] locale = [%s]",
+                            input, pattern, locale), e);
         }
     }
 

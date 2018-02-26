@@ -44,20 +44,22 @@ public class NumberFormatterTest {
     }
 
     @Test
-    public void パターン文字列がnulの場合フォーマット対象をtoStringした値が返却されること() {
+    public void パターン文字列がnulの場合例外が送出されること() {
         NumberFormatter sut = new NumberFormatter();
         Number number = BigDecimal.valueOf(123456789.123);
 
-        assertThat(sut.format(number, null), is(number.toString()));
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format(number, null);
     }
 
     @Test
-    public void パターン文字列が不正な場合フォーマット対象をtoStringした値が返却されること() {
+    public void パターン文字列が不正な場合例外が送出されること() {
         NumberFormatter sut = new NumberFormatter();
         Number number = BigDecimal.valueOf(123456789.123);
         String pattern = "#,###...000";
 
-        assertThat(sut.format(number, pattern), is(number.toString()));
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format(number, pattern);
 
     }
 

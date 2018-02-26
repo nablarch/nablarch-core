@@ -95,9 +95,9 @@ public class FormatterUtilTest {
     }
 
     @Test
-    public void システムリポジトリに登録していないフォーマッタを指定した場合フォーマットされずにtoStringされた値が返却されること() throws Exception {
-        assertThat(FormatterUtil.format("invalidFormatter", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01")), is(new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01").toString()));
-        assertThat(FormatterUtil.format("invalidFormatter", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01"), "yyyy-MM-dd"), is(new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01").toString()));
+    public void システムリポジトリに登録していないフォーマッタを指定した場合例外が送出されること() throws Exception {
+        expectedException.expect(IllegalArgumentException.class);
+        FormatterUtil.format("invalidFormatter", new SimpleDateFormat("yyyy/MM/dd").parse("2018/01/01"));
     }
 
     @Test

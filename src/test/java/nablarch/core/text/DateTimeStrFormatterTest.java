@@ -1,6 +1,8 @@
 package nablarch.core.text;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -12,6 +14,9 @@ import static org.junit.Assert.assertThat;
  * @author Ryota Yoshinouchi
  */
 public class DateTimeStrFormatterTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void フォーマッタの名前が取得できること() {
@@ -35,17 +40,20 @@ public class DateTimeStrFormatterTest {
     }
 
     @Test
-    public void パターン文字列がnullの場合フォーマットされずに返却されること() {
+    public void パターン文字列がnullの場合例外が送出されること() {
         DateTimeStrFormatter sut = new DateTimeStrFormatter();
-        assertThat(sut.format("20180216", null), is("20180216"));
+
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format("20180216", null);
     }
 
     @Test
-    public void パターン文字列が不正な場合フォーマットされずに返却されること() {
+    public void パターン文字列が不正な場合例外が送出されること() {
         DateTimeStrFormatter sut = new DateTimeStrFormatter();
         String pattern = "yyyy-MM-ddA";
 
-        assertThat(sut.format("20180216", pattern), is("20180216"));
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format("20180216", pattern);
     }
 
     @Test
@@ -64,13 +72,20 @@ public class DateTimeStrFormatterTest {
     }
 
     @Test
-    public void フォーマット対象のパターン指定が不正なパターンだった場合フォーマットされずに返却されること() {
+    public void フォーマット対象のパターン指定がnullの場合例外が送出されること() {
         DateTimeStrFormatter sut = new DateTimeStrFormatter();
-        sut.setDateStrPattern("");
-        assertThat(sut.format("201801"), is("201801"));
+        sut.setDateStrPattern(null);
 
-        DateTimeStrFormatter sut2 = new DateTimeStrFormatter();
-        sut2.setDateStrPattern("yyyyMMddA");
-        assertThat(sut2.format("201801"), is("201801"));
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format("20180101");
+    }
+
+    @Test
+    public void フォーマット対象のパターン指定が不正なパターンだった場合例外が送出されること() {
+        DateTimeStrFormatter sut = new DateTimeStrFormatter();
+        sut.setDateStrPattern("yyyyMMddA");
+
+        expectedException.expect(IllegalArgumentException.class);
+        sut.format("20180101");
     }
 }
