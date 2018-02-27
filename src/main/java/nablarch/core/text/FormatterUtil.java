@@ -16,7 +16,7 @@ public final class FormatterUtil {
     /**
      * フォーマッタリストを保持するコンポーネント名。
      */
-    private static final String FORMATTER_CONFIG = "formatter-config";
+    private static final String FORMATTER_CONFIG = "formatterConfig";
 
     /**
      * フォーマッタのデフォルト値を設定していない場合に使用するデフォルト値

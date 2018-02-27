@@ -83,7 +83,7 @@ public class FormatterUtilTest {
                 formatterConfig.setFormatters(list);
 
                 final Map<String, Object> result = new HashMap<String, Object>();
-                result.put("formatter-config", formatterConfig);
+                result.put("formatterConfig", formatterConfig);
                 return result;
             }
         });
