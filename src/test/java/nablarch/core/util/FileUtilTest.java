@@ -472,7 +472,6 @@ public class FileUtilTest {
         FileWriter writer = new FileWriter(src);
         try {
             writer.append("Hello, Nablarch.\nGood Bye.");
-            writer.close();
         } finally {
             writer.close();
         }
@@ -505,7 +504,6 @@ public class FileUtilTest {
         FileWriter writer = new FileWriter(src);
         try {
             writer.append("Hello, Nablarch.\nGood Bye.\n\uD83C\uDF7A\uD83C\uDF7A\uD83C\uDF7A");
-            writer.close();
         } finally {
             writer.close();
         }
