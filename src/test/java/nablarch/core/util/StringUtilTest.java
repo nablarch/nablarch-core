@@ -563,6 +563,39 @@ public class StringUtilTest {
     }
 
     /**
+     * {@link StringUtil#join(String, List, String)} のテスト
+     */
+    @Test
+    public void testJoinNull() {
+        {
+            List<String> list = new ArrayList<String>();
+            list.add("val1");
+            list.add("val2");
+            list.add(null);
+            list.add("\uD83C\uDF7A\uD83C\uDF7A");
+            assertThat(StringUtil.join(",", list,"val_null"), is("val1,val2,val_null,\uD83C\uDF7A\uD83C\uDF7A"));
+            assertThat(StringUtil.join(":", list,"val_null"), is("val1:val2:val_null:\uD83C\uDF7A\uD83C\uDF7A"));
+        }
+        {
+            List<String> list = new ArrayList<String>();
+            assertThat(StringUtil.join(",", list,"val_null"), is(""));
+        }
+        {
+            List<String> list = new ArrayList<String>();
+            list.add("");
+            assertThat(StringUtil.join(",", list,"val_null"), is(""));
+        }
+        {
+            try {
+                StringUtil.join(",", null,"val_null");
+                fail("例外が発生するはず。");
+            } catch (NullPointerException ne) {
+                // OK
+            }
+        }
+    }
+    
+    /**
      * {@link StringUtil#split(String, String)}および{@link StringUtil#split(String, String, boolean)} のテスト
      */
     @Test
