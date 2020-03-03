@@ -585,6 +585,7 @@ public class StringUtilTest {
             list.add("");
             assertThat(StringUtil.join(",", list,"val_null"), is(""));
         }
+        
         {
             try {
                 StringUtil.join(",", null,"val_null");
