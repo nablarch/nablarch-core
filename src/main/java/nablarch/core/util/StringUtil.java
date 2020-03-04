@@ -633,7 +633,7 @@ public final class StringUtil {
      * 
      * @param separator セパレータ
      * @param params 結合する文字列
-     * @param nullToString 結合する文字列がnulの場合に使用する文字列
+     * @param nullToString 結合する文字列がnullの場合に使用する文字列
      * @return セパレータで結合した文字列
      */
     public static String join(String separator, List<String> params, String nullToString) {
