@@ -636,6 +636,7 @@ public final class StringUtil {
      * @param nullToString 結合する文字列がnullの場合に使用する文字列
      * @return セパレータで結合した文字列
      */
+    @Published
     public static String join(String separator, List<String> params, String nullToString) {
         StringBuilder sb = new StringBuilder();
         for (String param : params) {
