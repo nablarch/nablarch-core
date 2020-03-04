@@ -634,6 +634,31 @@ public final class StringUtil {
         }
         return sb.toString();
     }
+    
+    /**
+     * 複数の文字列をセパレータを挟んで結合する。
+     * 
+     * @param separator セパレータ
+     * @param params 結合する文字列
+     * @param nullToString 結合する文字列がnulの場合に使用する文字列
+     * @return セパレータで結合した文字列
+     */
+    public static String join(String separator, List<String> params, String nullToString) {
+        StringBuilder sb = new StringBuilder();
+        for (String param : params) {
+            if (sb.length() != 0) {
+                sb.append(separator);
+            }
+            
+            if(param != null) {
+            	sb.append(param);
+            }else {
+            	sb.append(nullToString);
+            }
+        
+        }
+        return sb.toString();
+    }
 
     /**
      * 文字列をセパレータで分割する。
