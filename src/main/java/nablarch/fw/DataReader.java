@@ -18,11 +18,11 @@ public interface DataReader<TData> {
     /**
      * {@link Handler}が処理する入力データを読み込んで返却する。
      * <p/>
-     * 入力データがこれ以上存在しない状態、すなわち、hasNext()の結果が{@code false}となる
-     * 状態でこのメソッドを呼んだ場合の結果は不定である。
+     * 入力データがこれ以上存在しない状態、
+     * すなわち、hasNext()の結果が{@code false}となる場合はnullを返すこと。
      *
      * @param ctx 実行コンテキスト
-     * @return 入力データオブジェクト
+     * @return 入力データオブジェクト。存在しない場合はnull
      */
     TData read(ExecutionContext ctx);
 
