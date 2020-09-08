@@ -68,6 +68,8 @@ public class RequestPathMatchingHelper {
 
     /** リクエストパスのパターン中のディレクトリパス部分 */
     private String directoryPath;
+    /** リクエストパスのパターン文字列をコンパイルしたオブジェクト */
+    private Pattern directoryPathPattern;
     /** リクエストパスのパターン中のリソース名部分 */
     private String resourceName;
     /** リクエストパスのパターン中にリソース名部分が含まれるか？ */
@@ -106,8 +108,12 @@ public class RequestPathMatchingHelper {
         directoryPath = m.group(1);
         resourceName  = m.group(2);
         affectsDescendantNodes = directoryPath.endsWith("//");
+        if (affectsDescendantNodes) {
+            // 前方一致できるように最後の"/"を除去
+            directoryPath = directoryPath.substring(0, directoryPath.length() - 1);
+        }
+        directoryPathPattern = Glob.compile(directoryPath);
         hasResourceNamePattern = !StringUtil.isNullOrEmpty(resourceName);
-
         if (hasResourceNamePattern) {
             resourceNamePattern = Glob.compile(resourceName);
         }
@@ -157,9 +163,7 @@ public class RequestPathMatchingHelper {
         String directoryPath =  m.group(1);
         String resourceName  = (m.group(2) == null) ? "" : m.group(2);
         
-        String extendedDirectory = directoryPath + "/" + resourceName + "/";
-        return matchesWith(extendedDirectory, "")
-            || matchesWith(directoryPath, resourceName);
+        return matchesWith(directoryPath, resourceName);
     }
     
 
@@ -198,21 +202,41 @@ public class RequestPathMatchingHelper {
      */
     protected boolean matchesWith(String directoryPath, String resourceName) {
         if (affectsDescendantNodes) {
-            // サブディレクトリ全体にマッチするので、
-            // ディレクトリパスの前方一致のみを検証する。
-            if (!directoryPath.startsWith(this.directoryPath)) {
+            if (StringUtil.isNullOrEmpty(this.resourceName)) {
+                // パターンが"//"終わり＋リソース名なし
+                // ディレクトリパスの前方一致のみで判定
+                return directoryPath.startsWith(this.directoryPath);
+            } else {
+                // パターンが"//"終わり＋リソース名あり
+                // ディレクトリパスの前方一致＋リソース名で判定
+                if (!directoryPath.startsWith(this.directoryPath)) {
+                    return false;
+                }
+                return hasResourceNamePattern
+                        ? resourceNamePattern.matcher(resourceName).matches()
+                        : StringUtil.isNullOrEmpty(resourceName);
+            }
+        } else if ("*".equals(this.resourceName)) {
+            // パターンが"*"終わり
+            // "/"終わりまたはドットを含むものは除外
+            if ((directoryPath.length() > 2 && (directoryPath.endsWith("/"))
+                    || (StringUtil.hasValue(resourceName) && resourceName.contains(".")))) {
                 return false;
             }
+            // 除外後、ディレクトリパスの前方一致で判定
+            return directoryPath.startsWith(this.directoryPath);
         } else {
-            // ディレクトリパスの完全一致を検証
-            // (サブディレクトリにはマッチしない。)
-            if (!directoryPath.equals(this.directoryPath)) {
+            // その他
+            // ディレクトリパスはパターンマッチ
+            if (!directoryPathPattern.matcher(directoryPath).matches()) {
                 return false;
             }
+            // リソース名のパターンが指定された場合はパターンマッチ、
+            // それ以外はリソース名がないことで判定
+            return hasResourceNamePattern
+                    ? resourceNamePattern.matcher(resourceName).matches()
+                    : StringUtil.isNullOrEmpty(resourceName);
         }
-        return hasResourceNamePattern
-             ? resourceNamePattern.matcher(resourceName).matches()
-             : true;
     }
     
     /** リクエストパスとして許容する文字 */

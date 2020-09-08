@@ -44,6 +44,10 @@ public class RequestPathMatchingHelperParameterizedTest {
                 "/          , /app                , false", //NG
                 "/          , /app/               , false",
                 "/          , /index.jsp          , false", //NG
+                "//         , /                   , true ",
+                "//         , /app                , true ",
+                "//         , /app/               , true ",
+                "//         , /index.jsp          , true ",
                 "/*         , /                   , true ",
                 "/*         , /app                , true ",
                 "/*         , /app/               , false",
@@ -54,6 +58,8 @@ public class RequestPathMatchingHelperParameterizedTest {
                 "/app/*.jsp , /app/index.jsp      , true ",
                 "/app/*.jsp , /app/admin          , false",
                 "/app/*/test, /app/admin/test     , true ", //NG
+                "/app/*/test, /app/admin/test/    , false",
+                "/app/*/test, /app/admin/test/aa  , false",
                 "/app/*/test, /app/test/          , false",
                 "/app//     , /                   , false",
                 "/app//     , /app/               , true ",
