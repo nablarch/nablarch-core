@@ -41,9 +41,9 @@ public class RequestPathMatchingHelperParameterizedTest {
     public static Collection<Object[]> parameters() {
         String[] sources = {
                 "/          , /                   , true ",
-                "/          , /app                , false", //NG
+                "/          , /app                , false",
                 "/          , /app/               , false",
-                "/          , /index.jsp          , false", //NG
+                "/          , /index.jsp          , false",
                 "//         , /                   , true ",
                 "//         , /app                , true ",
                 "//         , /app/               , true ",
@@ -51,13 +51,13 @@ public class RequestPathMatchingHelperParameterizedTest {
                 "/*         , /                   , true ",
                 "/*         , /app                , true ",
                 "/*         , /app/               , false",
-                "/*         , /index.jsp          , false", //NG
+                "/*         , /index.jsp          , false",
                 "/ab/cdef   , /ab/cdef            , true ",
                 "/ab/cdef/  , /ab/cdef            , false",
                 "/ab/cdef/  , /ab/cdef/           , true ",
                 "/app/*.jsp , /app/index.jsp      , true ",
                 "/app/*.jsp , /app/admin          , false",
-                "/app/*/test, /app/admin/test     , true ", //NG
+                "/app/*/test, /app/admin/test     , true ",
                 "/app/*/test, /app/admin/test/    , false",
                 "/app/*/test, /app/admin/test/aa  , false",
                 "/app/*/test, /app/test/          , false",
