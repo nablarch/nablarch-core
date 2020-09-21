@@ -158,6 +158,7 @@ public class RequestPathMatchingHelper {
         
         Matcher m = REQUEST_PATH_SYNTAX.matcher(normalizedRequestPath);
         if (!m.matches()) {
+            //normalizeRequestPathメソッドでリクエストパスの正規化が行われるため、ここには通常到達しない。
             return false;
         }
         String directoryPath =  m.group(1);
@@ -210,8 +211,10 @@ public class RequestPathMatchingHelper {
                 // パターンが"//"終わり＋リソース名あり
                 // ディレクトリパスの前方一致＋リソース名で判定
                 if (!directoryPath.startsWith(this.directoryPath)) {
+                    //isAppliedToメソッド内でリクエストパスの正規化が行われるため、通常ここには到達しない。
                     return false;
                 }
+                //このブロックは「リソース名あり」の場合に実行されるため、以下の評価結果がfalseになることは通常無い。
                 return hasResourceNamePattern
                         ? resourceNamePattern.matcher(resourceName).matches()
                         : StringUtil.isNullOrEmpty(resourceName);
