@@ -6,7 +6,7 @@
 
   <groupId>com.nablarch.framework</groupId>
   <artifactId>nablarch-core</artifactId>
-  <version>1.5.1</version>
+  <version>5-NEXT-SNAPSHOT</version>
 
   <scm>
     <connection>scm:git:git://github.com/nablarch/${project.artifactId}.git</connection>
@@ -17,7 +17,7 @@
   <parent>
     <groupId>com.nablarch</groupId>
     <artifactId>nablarch-parent</artifactId>
-    <version>5u19-SNAPSHOT</version>
+    <version>5-NEXT-SNAPSHOT</version>
   </parent>
   
   <dependencies>
