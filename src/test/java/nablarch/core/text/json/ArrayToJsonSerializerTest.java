@@ -82,13 +82,13 @@ public class ArrayToJsonSerializerTest {
             JsonSerializationManager manager = new JsonSerializationManager();
             manager.initialize();
 
-            Object[] arrayValue = {null, "foo", 123};
+            Object[] arrayValue = {null, "foo", 123, null};
 
             JsonSerializer serializer = manager.getSerializer(arrayValue);
             assertThat(serializer.getClass() == ArrayToJsonSerializer.class, is(true));
 
             serializer.serialize(writer, arrayValue);
-            assertThat(writer.toString(), is("[null,\"foo\",123]"));
+            assertThat(writer.toString(), is("[null,\"foo\",123,null]"));
         } finally {
             writer.close();
         }

@@ -98,12 +98,13 @@ public class ListToJsonSerializerTest {
             listValue.add("foo");
             listValue.add(null);
             listValue.add("baz");
+            listValue.add(null);
 
             JsonSerializer serializer = manager.getSerializer(listValue);
             assertThat(serializer.getClass() == ListToJsonSerializer.class, is(true));
 
             serializer.serialize(writer, listValue);
-            assertThat(writer.toString(), is("[\"foo\",null,\"baz\"]"));
+            assertThat(writer.toString(), is("[\"foo\",null,\"baz\",null]"));
         } finally {
             writer.close();
         }

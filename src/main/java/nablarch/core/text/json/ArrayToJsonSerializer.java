@@ -33,6 +33,22 @@ public class ArrayToJsonSerializer implements JsonSerializer {
     }
 
     /**
+     * シリアライズ管理クラスを取得します。
+     * @return シリアライズ管理クラス
+     */
+    protected JsonSerializationManager getJsonSerializationManager() {
+        return manager;
+    }
+
+    /**
+     * 値がnullの場合に使用するシリアライザを取得します。
+     * @return nullに使用するシリアライザ
+     */
+    protected JsonSerializer getNullSerializer() {
+        return getJsonSerializationManager().getSerializer(null);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void initialize(JsonSerializationSettings settings) {
@@ -50,6 +66,8 @@ public class ArrayToJsonSerializer implements JsonSerializer {
      * {@inheritDoc}
      */
     public void serialize(Writer writer, Object value) throws IOException {
+        JsonSerializer nullSerializer = null;
+
         writer.append(BEGIN_ARRAY);
         int len = Array.getLength(value);
         boolean isFirst = true;
@@ -60,7 +78,10 @@ public class ArrayToJsonSerializer implements JsonSerializer {
             else isFirst = false;
             Object o = Array.get(value, i);
             if (o == null) {
-                writer.append("null");
+                if (nullSerializer == null) {
+                    nullSerializer = getNullSerializer();
+                }
+                nullSerializer.serialize(writer, o);
             } else {
                 if (prevClass == null || prevClass != o.getClass()) {
                     serializer = manager.getSerializer(o);
