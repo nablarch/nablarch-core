@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Booleanの値をシリアライズするクラス。<br>
+ * Calendarの値をシリアライズするクラス。<br>
  * 受入れ可能なオブジェクトの型は java.util.Calendar。<br>
  * シリアライズによりJsonのstringとして出力する。
  * @author Shuji Kitamura
