@@ -13,13 +13,13 @@ import java.util.List;
 public class ListToJsonSerializer implements JsonSerializer {
 
     /** arrayの開始文字 */
-    public static final char BEGIN_ARRAY = '[';
+    private static final char BEGIN_ARRAY = '[';
 
     /** arrayの終了文字 */
-    public static final char END_ARRAY = ']';
+    private static final char END_ARRAY = ']';
 
     /** 値のセパレータとなる文字 */
-    public static final char VALUE_SEPARATOR = ',';
+    private static final char VALUE_SEPARATOR = ',';
 
     /** シリアライズ管理クラス */
     private JsonSerializationManager manager;

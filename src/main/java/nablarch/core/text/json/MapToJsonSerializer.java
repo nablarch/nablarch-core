@@ -13,16 +13,16 @@ import java.util.Map;
 public class MapToJsonSerializer implements JsonSerializer {
 
     /** objectの開始文字 */
-    public static final char BEGIN_OBJECT = '{';
+    private static final char BEGIN_OBJECT = '{';
 
     /** objectの終了文字 */
-    public static final char END_OBJECT = '}';
+    private static final char END_OBJECT = '}';
 
     /** nameのセパレータとなる文字 */
-    public static final char NAME_SEPARATOR = ':';
+    private static final char NAME_SEPARATOR = ':';
 
     /** 値のセパレータとなる文字 */
-    public static final char VALUE_SEPARATOR = ',';
+    private static final char VALUE_SEPARATOR = ',';
 
     /** シリアライズ管理クラス */
     private final JsonSerializationManager manager;
