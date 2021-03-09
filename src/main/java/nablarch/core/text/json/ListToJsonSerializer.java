@@ -24,7 +24,10 @@ public class ListToJsonSerializer implements JsonSerializer {
     /** シリアライズ管理クラス */
     private JsonSerializationManager manager;
 
-    /** コンストラクタ。 */
+    /**
+     * コンストラクタ。
+     * @param manager シリアライズ管理クラス
+     */
     public ListToJsonSerializer(JsonSerializationManager manager) {
         this.manager = manager;
     }

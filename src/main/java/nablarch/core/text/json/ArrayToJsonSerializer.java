@@ -24,7 +24,10 @@ public class ArrayToJsonSerializer implements JsonSerializer {
     /** シリアライズ管理クラス */
     private JsonSerializationManager manager;
 
-    /** コンストラクタ。 */
+    /**
+     * コンストラクタ。
+     * @param manager シリアライズ管理クラス
+     */
     public ArrayToJsonSerializer(JsonSerializationManager manager) {
         this.manager = manager;
     }

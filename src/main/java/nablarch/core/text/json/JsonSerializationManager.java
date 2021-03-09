@@ -70,6 +70,7 @@ public class JsonSerializationManager {
      * 使用するシリアライザを登録する
      * 登録には、{@link JsonSerializationManager#addSerializer(JsonSerializer)}メソッドを用いる。
      * オブジェクトに対応したシリアライザかの評価は追加順に行われる。
+     * @param settings シリアライズに関する設定
      */
     protected void enlistSerializer(JsonSerializationSettings settings) {
         addSerializer(new StringToJsonSerializer());
