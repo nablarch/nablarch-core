@@ -14,6 +14,7 @@ public class NumberToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         //NOOP
     }
@@ -21,6 +22,7 @@ public class NumberToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return Number.class.isAssignableFrom(valueClass);
     }
@@ -28,6 +30,7 @@ public class NumberToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void serialize(Writer writer, Object value) throws IOException {
         if (value instanceof Float) serializeFloat(writer, (Float)value);
         else if (value instanceof Double) serializeDouble(writer, (Double)value);

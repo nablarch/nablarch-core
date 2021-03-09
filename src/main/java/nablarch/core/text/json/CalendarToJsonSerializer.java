@@ -14,6 +14,7 @@ public class CalendarToJsonSerializer extends DateToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return Calendar.class.isAssignableFrom(valueClass);
     }
@@ -21,6 +22,7 @@ public class CalendarToJsonSerializer extends DateToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected Date convertDate(Object value) {
         return ((Calendar)value).getTime();
     }

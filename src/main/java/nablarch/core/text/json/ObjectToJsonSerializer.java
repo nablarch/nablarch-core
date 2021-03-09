@@ -12,6 +12,7 @@ public class ObjectToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return true;
     }
@@ -19,6 +20,7 @@ public class ObjectToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String convertString(Object value) {
         return value.toString();
     }

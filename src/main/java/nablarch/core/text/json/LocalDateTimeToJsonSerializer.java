@@ -28,6 +28,7 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         formatter = getFormatter(settings);
         if (formatter != null) formatMethod = getFormatMethod(formatter.getClass());
@@ -94,11 +95,16 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return formatMethod != null && valueClass.getName().equals(getValueClassName());
         // (coverage) Java7以前の場合に formatMethod != null が成立する
     }
 
+    /**
+     * このクラスで処理する値のクラス名を取得する。
+     * @return クラス名
+     */
     protected String getValueClassName() {
         return  "java.time.LocalDateTime";
     }
@@ -106,6 +112,7 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String convertString(Object value) {
         try {
             return (String)formatMethod.invoke(formatter, value);

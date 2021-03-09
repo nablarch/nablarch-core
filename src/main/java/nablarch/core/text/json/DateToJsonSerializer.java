@@ -26,6 +26,7 @@ public class DateToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         dateFormat = getDateFormat(settings);
     }
@@ -43,6 +44,7 @@ public class DateToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return Date.class.isAssignableFrom(valueClass);
     }
@@ -50,6 +52,7 @@ public class DateToJsonSerializer extends StringToJsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String convertString(Object value) {
         return dateFormat.format(convertDate(value));
     }
