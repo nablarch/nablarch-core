@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * シリアライザの初期化に使用する設定クラス。
+ * @author Shuji Kitamura
  */
 public class JsonSerializationSettings {
 
