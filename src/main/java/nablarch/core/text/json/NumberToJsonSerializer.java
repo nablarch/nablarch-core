@@ -32,9 +32,13 @@ public class NumberToJsonSerializer extends StringToJsonSerializer {
      */
     @Override
     public void serialize(Writer writer, Object value) throws IOException {
-        if (value instanceof Float) serializeFloat(writer, (Float)value);
-        else if (value instanceof Double) serializeDouble(writer, (Double)value);
-        else writer.append(value.toString());
+        if (value instanceof Float) {
+            serializeFloat(writer, (Float) value);
+        } else if (value instanceof Double) {
+            serializeDouble(writer, (Double) value);
+        } else {
+            writer.append(value.toString());
+        }
     }
 
     /**

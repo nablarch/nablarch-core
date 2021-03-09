@@ -64,7 +64,9 @@ public class StringToJsonSerializer implements JsonSerializer {
      * @throws IOException I/Oエラー
      */
     protected void writeEscapedStringWithoutQuotation(Writer writer, String s) throws IOException {
-        if (StringUtil.isNullOrEmpty(s)) return;
+        if (StringUtil.isNullOrEmpty(s)) {
+            return;
+        }
 
         int pos;
         char c;
@@ -84,7 +86,9 @@ public class StringToJsonSerializer implements JsonSerializer {
             for (; pos < len; pos++) {
                 c = s.charAt(pos);
                 if (c < 0x20 || c == '\\' || c == '"') {
-                    if (start != pos) writer.append(s, start, pos);
+                    if (start != pos) {
+                        writer.append(s, start, pos);
+                    }
                     switch (c) {
                         case '\\':
                         case '"':
@@ -112,7 +116,9 @@ public class StringToJsonSerializer implements JsonSerializer {
                     start = pos + 1;
                 }
             }
-            if (start != pos) writer.append(s, start, pos);
+            if (start != pos) {
+                writer.append(s, start, pos);
+            }
         } else {
             writer.append(s);
         }

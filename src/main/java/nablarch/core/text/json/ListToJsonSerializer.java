@@ -71,12 +71,12 @@ public class ListToJsonSerializer implements JsonSerializer {
         writer.append(BEGIN_ARRAY);
         List<?> list = (List<?>) value;
         int len = list.size();
-        boolean isFirst = true;
         Class<?> prevClass = null;
         JsonSerializer serializer = null;
         for (int i = 0; i < len; i++) {
-            if (!isFirst) writer.append(VALUE_SEPARATOR);
-            else isFirst = false;
+            if (i == 0) {
+                writer.append(VALUE_SEPARATOR);
+            }
             Object o = list.get(i);
             if (o == null) {
                 if (nullSerializer == null) {

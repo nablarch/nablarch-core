@@ -70,12 +70,12 @@ public class ArrayToJsonSerializer implements JsonSerializer {
 
         writer.append(BEGIN_ARRAY);
         int len = Array.getLength(value);
-        boolean isFirst = true;
         Class<?> prevClass = null;
         JsonSerializer serializer = null;
         for (int i = 0; i < len; i++) {
-            if (!isFirst) writer.append(VALUE_SEPARATOR);
-            else isFirst = false;
+            if (i == 0) {
+                writer.append(VALUE_SEPARATOR);
+            }
             Object o = Array.get(value, i);
             if (o == null) {
                 if (nullSerializer == null) {

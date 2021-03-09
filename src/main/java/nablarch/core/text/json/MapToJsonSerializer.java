@@ -91,8 +91,11 @@ public class MapToJsonSerializer implements JsonSerializer {
                 Object o = map.get(name);
                 if (o == null) {
                     if (nullSerializer != null) {
-                        if (!isFirst) writer.append(VALUE_SEPARATOR);
-                        else isFirst = false;
+                        if (!isFirst) {
+                            writer.append(VALUE_SEPARATOR);
+                        } else {
+                            isFirst = false;
+                        }
                         nameSerializer.serialize(writer, name);
                         writer.append(NAME_SEPARATOR);
                         nullSerializer.serialize(writer, o);
@@ -100,13 +103,19 @@ public class MapToJsonSerializer implements JsonSerializer {
                 } else if (o instanceof InplaceMapEntries) {
                     String inplaceString = o.toString();
                     if (!isJsonWs(inplaceString)) {
-                        if (!isFirst) writer.append(VALUE_SEPARATOR);
-                        else isFirst = false;
+                        if (!isFirst) {
+                            writer.append(VALUE_SEPARATOR);
+                        } else {
+                            isFirst = false;
+                        }
                     }
                     writer.append(inplaceString);
                 } else {
-                    if (!isFirst) writer.append(VALUE_SEPARATOR);
-                    else isFirst = false;
+                    if (!isFirst) {
+                        writer.append(VALUE_SEPARATOR);
+                    } else {
+                        isFirst = false;
+                    }
                     nameSerializer.serialize(writer, name);
                     writer.append(NAME_SEPARATOR);
                     manager.getSerializer(o).serialize(writer, o);
