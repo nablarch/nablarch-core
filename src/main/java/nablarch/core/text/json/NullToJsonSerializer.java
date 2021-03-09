@@ -3,6 +3,13 @@ package nablarch.core.text.json;
 import java.io.IOException;
 import java.io.Writer;
 
+/**
+ * nullをシリアライズするクラス。<br>
+ * nullを変換するための特殊なシリアライザとなり、
+ * {@link NullToJsonSerializer#isTarget(Class<?>)}による判定は常にtrueを返す。<br>
+ * シリアライズによりJsonのnullとして出力する。
+ * @author Shuji Kitamura
+ */
 public class NullToJsonSerializer implements JsonSerializer {
 
     /**
