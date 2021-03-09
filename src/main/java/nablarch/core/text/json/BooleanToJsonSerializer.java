@@ -29,6 +29,6 @@ public class BooleanToJsonSerializer implements JsonSerializer {
      * {@inheritDoc}
      */
     public void serialize(Writer writer, Object value) throws IOException {
-        writer.append((Boolean) value ? "true" : "false");
+        writer.append(value.toString());
     }
 }
