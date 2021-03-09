@@ -4,9 +4,19 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Booleanの値をシリアライズするクラス。<br>
- * 受入れ可能なオブジェクトの型は java.lang.Boolean。<br>
- * シリアライズによりJsonの真理値(true / false)として出力する。
+ * Numberの値をシリアライズするクラス。<br>
+ * 受入れ可能なオブジェクトの型は java.lang.Numbe、及び、そのサブクラスとして下記などが対象となる。<br>
+ * java.lang.Integer<br>
+ * java.lang.Long<br>
+ * java.lang.Short<br>
+ * java.lang.Byte<br>
+ * java.lang.Float<br>
+ * java.lang.Double<br>
+ * java.util.concurrent.atomic.AtomicInteger<br>
+ * java.util.concurrent.atomic.AtomicLong<br>
+ * java.math.BigInteger<br>
+ * java.math.BigDecimal<br>
+ * シリアライズによりJsonのnumberとして出力する。
  * @author Shuji Kitamura
  */
 public class NumberToJsonSerializer extends StringToJsonSerializer {
