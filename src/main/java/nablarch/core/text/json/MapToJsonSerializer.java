@@ -28,7 +28,7 @@ public class MapToJsonSerializer implements JsonSerializer {
     private final JsonSerializationManager manager;
 
     /** nameに使用するシリアライザ */
-    private JsonSerializer nameSerializer = null;
+    private JsonSerializer nameSerializer;
 
     /** コンストラクタ。 */
     public MapToJsonSerializer(JsonSerializationManager manager) {

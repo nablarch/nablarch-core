@@ -21,7 +21,7 @@ public class DateToJsonSerializer extends StringToJsonSerializer {
     private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /** 日時のフォーマッタ */
-    private DateFormat dateFormat = null;
+    private DateFormat dateFormat;
 
     /**
      * {@inheritDoc}

@@ -11,13 +11,13 @@ import java.util.List;
 public class JsonSerializationManager {
 
     /** 使用可能なシリアライザのリスト */
-    private List<JsonSerializer> serializers = null;
+    private List<JsonSerializer> serializers;
 
     /** null用のシリアライザ */
-    private JsonSerializer nullSerializer = null;
+    private JsonSerializer nullSerializer;
 
     /** デフォルトのシリアライザ */
-    private JsonSerializer defaultSerializer = null;
+    private JsonSerializer defaultSerializer;
 
     /**
      * null用のシリアライザを設定する。

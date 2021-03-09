@@ -20,10 +20,10 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
     private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /** 日時のフォーマッタ */
-    private Object formatter = null;
+    private Object formatter;
 
     /** 日時のフォーマットに使用するメソッド */
-    private Method formatMethod = null;
+    private Method formatMethod;
 
     /**
      * {@inheritDoc}
