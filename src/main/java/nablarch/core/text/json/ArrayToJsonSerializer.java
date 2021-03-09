@@ -73,7 +73,7 @@ public class ArrayToJsonSerializer implements JsonSerializer {
         Class<?> prevClass = null;
         JsonSerializer serializer = null;
         for (int i = 0; i < len; i++) {
-            if (i == 0) {
+            if (i > 0) {
                 writer.append(VALUE_SEPARATOR);
             }
             Object o = Array.get(value, i);
