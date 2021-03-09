@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Booleanの値をシリアライズするクラス。<br>
+ * Dateの値をシリアライズするクラス。<br>
  * 受入れ可能なオブジェクトの型は java.util.Date。<br>
  * シリアライズによりJsonのstringとして出力する。
  * @author Shuji Kitamura
