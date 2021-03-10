@@ -28,11 +28,11 @@ public class InplaceMapEntries {
     }
 
     /**
-     * 文字列がJsonのwsのみで構成されるか判定します。
+     * 文字列がJsonのwhitespaceのみで構成されるか判定します。
      * @param s 判定する文字列
      * @return 半角スペース, 水平タブ, 改行(Line feed), 復帰改行(Carriage return)のみで構成されるときtrue
      */
-    public boolean isJsonWs() {
+    public boolean isJsonWhitespace() {
         int len = structuredString.length();
         char c;
         for (int i = 0; i < len; i++) {

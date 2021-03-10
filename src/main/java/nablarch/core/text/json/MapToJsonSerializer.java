@@ -105,7 +105,7 @@ public class MapToJsonSerializer implements JsonSerializer {
                     }
                 } else if (o instanceof InplaceMapEntries) {
                     String inplaceString = o.toString();
-                    if (!((InplaceMapEntries)o).isJsonWs()) {
+                    if (!((InplaceMapEntries)o).isJsonWhitespace()) {
                         if (!isFirst) {
                             writer.append(VALUE_SEPARATOR);
                         } else {
