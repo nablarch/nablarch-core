@@ -6,9 +6,9 @@ import java.io.StringWriter;
 import java.util.*;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * {@link MapToJsonSerializer}のテストクラス
