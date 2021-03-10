@@ -3,9 +3,7 @@ package nablarch.core.text.json;
 import org.junit.Test;
 
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.*;
 import static org.hamcrest.Matchers.*;
@@ -226,15 +224,15 @@ public class MapToJsonSerializerTest {
 
         try {
             JsonSerializationManager manager = new JsonSerializationManager() {
-                protected void enlistSerializer(JsonSerializationSettings settings) {
-                    addSerializer(new StringToJsonSerializer());
-                    addSerializer(new DateToJsonSerializer());
-                    addSerializer(new CustomMapToJsonSerializer(this));
-                    addSerializer(new ListToJsonSerializer(this));
-                    addSerializer(new ArrayToJsonSerializer(this));
-                    addSerializer(new NumberToJsonSerializer());
-                    addSerializer(new BooleanToJsonSerializer());
-                    addSerializer(new ObjectToJsonSerializer());
+                protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
+                    return Arrays.asList(
+                            new StringToJsonSerializer(),
+                            new DateToJsonSerializer(),
+                            new CustomMapToJsonSerializer(this),
+                            new ListToJsonSerializer(this),
+                            new ArrayToJsonSerializer(this),
+                            new NumberToJsonSerializer(),
+                            new BooleanToJsonSerializer());
                 }
             };
             Map<String,String> map = new HashMap<String, String>();

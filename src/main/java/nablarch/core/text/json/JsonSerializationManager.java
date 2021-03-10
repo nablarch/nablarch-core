@@ -1,6 +1,6 @@
 package nablarch.core.text.json;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,30 +20,6 @@ public class JsonSerializationManager {
     private JsonSerializer defaultSerializer;
 
     /**
-     * null用のシリアライザを設定する。
-     * @param nullSerializer null用のシリアライザ
-     */
-    protected void setNullSerializer(JsonSerializer nullSerializer) {
-        this.nullSerializer = nullSerializer;
-    }
-
-    /**
-     * デフォルトのシリアライザを設定する。
-     * @param nullSerializer デフォルトのシリアライザ
-     */
-    protected void setDefaultSerializer(JsonSerializer nullSerializer) {
-        this.defaultSerializer = nullSerializer;
-    }
-
-    /**
-     * シリアライザを追加する。
-     * @param serializer シリアライザ
-     */
-    public void addSerializer(JsonSerializer serializer) {
-        serializers.add(serializer);
-    }
-
-    /**
      * 初期化する。
      */
     public void initialize() {
@@ -55,10 +31,9 @@ public class JsonSerializationManager {
      * @param settings シリアライズに関する設定
      */
     public void initialize(JsonSerializationSettings settings) {
-        setNullSerializer(new NullToJsonSerializer());
-        setDefaultSerializer(new ObjectToJsonSerializer());
-        serializers = new ArrayList<JsonSerializer>();
-        enlistSerializer(settings);
+        nullSerializer = createNullSerializer();
+        defaultSerializer = createDefaultSerializer();
+        serializers = createSerializers(settings);
 
         for (JsonSerializer serializer : serializers) {
             serializer.initialize(settings);
@@ -68,20 +43,38 @@ public class JsonSerializationManager {
     }
 
     /**
-     * 使用するシリアライザを登録する
-     * 登録には、{@link JsonSerializationManager#addSerializer(JsonSerializer)}メソッドを用いる。
-     * オブジェクトに対応したシリアライザかの評価は追加順に行われる。
-     * @param settings シリアライズに関する設定
+     * null用のシリアライザを生成する。
+     * @return  null用のシリアライザ
      */
-    protected void enlistSerializer(JsonSerializationSettings settings) {
-        addSerializer(new StringToJsonSerializer());
-        addSerializer(new DateToJsonSerializer());
-        addSerializer(new MapToJsonSerializer(this));
-        addSerializer(new ListToJsonSerializer(this));
-        addSerializer(new ArrayToJsonSerializer(this));
-        addSerializer(new NumberToJsonSerializer());
-        addSerializer(new BooleanToJsonSerializer());
-        addSerializer(new LocalDateTimeToJsonSerializer());
+    protected JsonSerializer createNullSerializer() {
+        return new NullToJsonSerializer();
+    }
+
+    /**
+     * デフォルトのシリアライザを生成する。
+     * @return デフォルトのシリアライザ
+     */
+    protected JsonSerializer createDefaultSerializer() {
+        return new ObjectToJsonSerializer();
+    }
+
+    /**
+     * 使用するシリアライザを生成する。
+     * オブジェクトに対応したシリアライザかの評価は先頭から順に行われる。
+     * デフォルトのシリアライザのみで使用する場合であっても、
+     * @param settings シリアライズに関する設定
+     * @return シリアライザのリスト
+     */
+    protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
+        return Arrays.asList(
+                new StringToJsonSerializer(),
+                new DateToJsonSerializer(),
+                new MapToJsonSerializer(this),
+                new ListToJsonSerializer(this),
+                new ArrayToJsonSerializer(this),
+                new NumberToJsonSerializer(),
+                new BooleanToJsonSerializer(),
+                new LocalDateTimeToJsonSerializer());
     }
 
     /**
@@ -99,15 +92,6 @@ public class JsonSerializationManager {
                 if (serializer.isTarget(cls)) return serializer;
             }
         }
-        return onNoSerializer(value);
-    }
-
-    /**
-     * 該当するシリアライザが見つからない場合の処理
-     * @param value シリアライズする値
-     * @return 全てのオブジェクトをシリアライズ可能なシリアライザ
-     */
-    protected JsonSerializer onNoSerializer(Object value) {
         return defaultSerializer;
     }
 }
