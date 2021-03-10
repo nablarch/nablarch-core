@@ -86,12 +86,17 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
             formatMethod = clazz.getMethod("format", Class.forName("java.time.temporal.TemporalAccessor"));
         } catch (ClassNotFoundException e) {
             // (coverage) 到達しえない例外
+            // java.time.temporal.TemporalAccessor は
+            // Java 8 以上であればあれば必ず存在する。
+            // Java 7 以前であれば初期化処理において 本メソッドの実行がスキップされ、
+            // この catch 句に到達するケースは存在しない
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
             // (coverage) 到達しえない例外
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            // (coverage) 到達しえない例外
+            // 本メソッドに引数として渡されるクラスは、java.time.format.DateTimeFormatterであり。
+            // format(TemporalAccessor) は Java 8 以上であれば必ず存在する。
+            // Java 7 以前であれば初期化処理において 本メソッドの実行がスキップされ、
+            // この catch 句に到達するケースは存在しない
             throw new RuntimeException(e);
         }
 
