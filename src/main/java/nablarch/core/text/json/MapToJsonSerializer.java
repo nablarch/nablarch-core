@@ -30,7 +30,10 @@ public class MapToJsonSerializer implements JsonSerializer {
     /** nameに使用するシリアライザ */
     private JsonSerializer nameSerializer;
 
-    /** コンストラクタ。 */
+    /**
+     * コンストラクタ。
+     * @param manager シリアライズ管理クラス
+     */
     public MapToJsonSerializer(JsonSerializationManager manager) {
         this.manager = manager;
     }
