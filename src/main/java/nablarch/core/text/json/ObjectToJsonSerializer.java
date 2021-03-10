@@ -1,8 +1,8 @@
 package nablarch.core.text.json;
 
 /**
- * Objectを文字列としてシリアライズするクラス。<br>
- * 本クラスは全てのObjectを受入れ、デフォルトシリアライザとして機能する。<br>
+ * 任意のオブジェクトを文字列としてシリアライズするクラス。<br>
+ * 本クラスは全てのObjectを受け入れてシリアライズする。<br>
  * toString()メソッドの戻り値をシリアライズ対象の文字列とする。<br>
  * シリアライズによりJsonのstringとして出力する。
  * @author Shuji Kitamura
