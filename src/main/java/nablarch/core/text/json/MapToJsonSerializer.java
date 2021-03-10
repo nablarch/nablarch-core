@@ -105,7 +105,7 @@ public class MapToJsonSerializer implements JsonSerializer {
                     }
                 } else if (o instanceof InplaceMapEntries) {
                     String inplaceString = o.toString();
-                    if (!isJsonWs(inplaceString)) {
+                    if (!((InplaceMapEntries)o).isJsonWs()) {
                         if (!isFirst) {
                             writer.append(VALUE_SEPARATOR);
                         } else {
@@ -126,23 +126,6 @@ public class MapToJsonSerializer implements JsonSerializer {
             }
         }
         writer.append(END_OBJECT);
-    }
-
-    /**
-     * 文字列がJsonのwsのみで構成されるか判定します。
-     * @param s 判定する文字列
-     * @return 半角スペース, 水平タブ, 改行(Line feed), 復帰改行(Carriage return)のみで構成されるときtrue
-     */
-    private boolean isJsonWs(String s) {
-        int len = s.length();
-        char c;
-        for (int i = 0; i < len; i++) {
-            c = s.charAt(i);
-            if (c != 0x20 && c != 0x09 && c != 0x0A && c!= 0x0d) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }
