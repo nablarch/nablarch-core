@@ -89,22 +89,22 @@ public class MapToJsonSerializer implements JsonSerializer {
         Map<?, ?> map = (Map<?, ?>) value;
         boolean isFirst = true;
         writer.append(BEGIN_OBJECT);
-        for (Object name: map.keySet()) {
-            if (name != null && nameSerializer.isTarget(name.getClass())) {
-                Object o = map.get(name);
-                if (o == null) {
+        for (Object memberName: map.keySet()) {
+            if (memberName != null && nameSerializer.isTarget(memberName.getClass())) {
+                Object memberValue = map.get(memberName);
+                if (memberValue == null) {
                     if (nullSerializer != null) {
                         if (!isFirst) {
                             writer.append(VALUE_SEPARATOR);
                         } else {
                             isFirst = false;
                         }
-                        nameSerializer.serialize(writer, name);
+                        nameSerializer.serialize(writer, memberName);
                         writer.append(NAME_SEPARATOR);
-                        nullSerializer.serialize(writer, o);
+                        nullSerializer.serialize(writer, memberValue);
                     }
-                } else if (o instanceof InplaceMapEntries) {
-                    InplaceMapEntries rawMembers = (InplaceMapEntries)o;
+                } else if (memberValue instanceof InplaceMapEntries) {
+                    InplaceMapEntries rawMembers = (InplaceMapEntries)memberValue;
                     if (!rawMembers.isJsonWhitespace()) {
                         if (!isFirst) {
                             writer.append(VALUE_SEPARATOR);
@@ -119,9 +119,9 @@ public class MapToJsonSerializer implements JsonSerializer {
                     } else {
                         isFirst = false;
                     }
-                    nameSerializer.serialize(writer, name);
+                    nameSerializer.serialize(writer, memberName);
                     writer.append(NAME_SEPARATOR);
-                    manager.getSerializer(o).serialize(writer, o);
+                    manager.getSerializer(memberValue).serialize(writer, memberValue);
                 }
             }
         }
