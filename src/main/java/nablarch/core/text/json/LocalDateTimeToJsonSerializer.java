@@ -54,15 +54,20 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
             // NOOP この例外は想定の動作の為、何もしない
         } catch (NoSuchMethodException e) {
             // (coverage) 到達しえない例外
+            // ofPattern() は Java 8 以上であれば必ず存在する。
+            // Java 7 以前であれば上の ClassNotFoundException を先に通過するので、
+            // この catch 句に到達するケースは存在しない。
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             // (coverage) 到達しえない例外
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("illegal date pattern. property name = " + DATE_PATTERN_PROPERTY, e);
         } catch (IllegalAccessException e) {
             // (coverage) 到達しえない例外
+            // NoSuchMethodException と同様で、 ofPattern() は
+            // Java 8 以上であれば必ずアクセス可能であり、
+            // Java 7 以前であれば先に ClassNotFoundException が発生するため、
+            // この catch 句に到達するケースは存在しない
             throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("illegal date pattern. property name = " + DATE_PATTERN_PROPERTY, e);
         }
 
         return formatter;

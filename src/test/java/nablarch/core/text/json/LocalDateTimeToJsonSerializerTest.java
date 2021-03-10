@@ -100,6 +100,23 @@ public class LocalDateTimeToJsonSerializerTest {
         }
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void Java8以降でDateが書式指定がエラーのとき例外がスローされること() throws Exception {
+        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+
+        StringWriter writer = new StringWriter();
+
+        try {
+            JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
+            Map<String,String> map = new HashMap<String, String>();
+            map.put("datePattern", "ABCDEFG'");
+            JsonSerializationSettings settings = new JsonSerializationSettings(map);
+            serializer.initialize(settings);
+        } finally {
+            writer.close();
+        }
+    }
+
     @Test
     public void Java8未満でもオブジェクトの判定に影響しないこと() throws Exception {
 
