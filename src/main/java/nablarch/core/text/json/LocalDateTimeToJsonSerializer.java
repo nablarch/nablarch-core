@@ -59,8 +59,9 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
             // この catch 句に到達するケースは存在しない。
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            // (coverage) 到達しえない例外
-            throw new IllegalArgumentException("illegal date pattern. property name = " + DATE_PATTERN_PROPERTY, e);
+            throw new IllegalArgumentException(
+                    "illegal date pattern. pattern = [" + datePattern
+                            + "], property name = [" + DATE_PATTERN_PROPERTY + "]", e);
         } catch (IllegalAccessException e) {
             // (coverage) 到達しえない例外
             // NoSuchMethodException と同様で、 ofPattern() は
@@ -115,20 +116,28 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}<br>
+     * <br>
+     * java.time.format.DateTimeFormatter#format(TemporalAccessor)において、
+     * 書式設定中にエラーが発生した場合は、DateTimeExceptionがスローされるが、
+     * 本クラスでは代替として、IllegalArgumentExceptionをスローする。
      */
     @Override
     protected String convertString(Object value) {
+        if (value == null) {
+            throw new NullPointerException();
+        }
         try {
             return (String)formatMethod.invoke(formatter, value);
         } catch (IllegalAccessException e) {
             // (coverage) 到達しえない例外
-            e.printStackTrace();
-            return "format error : " + value.toString();
+            // format(TemporalAccessor) メソッドは
+            // Java 8 以上であれば必ずアクセス可能であり、
+            // Java 7 以前であれば初期化処理において null となる為、
+            // この catch 句に到達するケースは存在しない
+            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            // (coverage) 到達しえない例外
-            e.printStackTrace();
-            return "format error : " + value.toString();
+            throw new IllegalArgumentException(e);
         }
     }
 }

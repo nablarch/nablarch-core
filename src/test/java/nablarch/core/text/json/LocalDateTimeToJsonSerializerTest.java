@@ -117,6 +117,64 @@ public class LocalDateTimeToJsonSerializerTest {
         }
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void Java8以降で不正なオブジェクトのとき例外がスローされること() throws Exception {
+        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+
+        StringWriter writer = new StringWriter();
+
+        try {
+            JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
+            Map<String,String> map = new HashMap<String, String>();
+            JsonSerializationSettings settings = new JsonSerializationSettings(map);
+            serializer.initialize(settings);
+
+            serializer.serialize(writer, "dummy");
+        } finally {
+            writer.close();
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void Java8以降で書式指定がLocalDateTimeでエラーとなるとき例外がスローされること() throws Exception {
+        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+
+        StringWriter writer = new StringWriter();
+
+        try {
+            JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
+            Map<String,String> map = new HashMap<String, String>();
+            map.put("datePattern", "Z");
+            JsonSerializationSettings settings = new JsonSerializationSettings(map);
+            serializer.initialize(settings);
+
+            Object dateValue = createLocalDateTime(2021,1,23,12,34,56, 789012345);
+
+            serializer.serialize(writer, dateValue);
+        } finally {
+            writer.close();
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void Java8以降で値がnullのとき例外がスローされること() throws Exception {
+        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+
+        StringWriter writer = new StringWriter();
+
+        try {
+            JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
+            Map<String,String> map = new HashMap<String, String>();
+            map.put("datePattern", "Z");
+            JsonSerializationSettings settings = new JsonSerializationSettings(map);
+            serializer.initialize(settings);
+
+            serializer.serialize(writer, null);
+        } finally {
+            writer.close();
+        }
+    }
+
     @Test
     public void Java8未満でもオブジェクトの判定に影響しないこと() throws Exception {
 
