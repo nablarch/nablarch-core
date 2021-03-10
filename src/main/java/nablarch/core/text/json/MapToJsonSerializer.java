@@ -104,15 +104,15 @@ public class MapToJsonSerializer implements JsonSerializer {
                         nullSerializer.serialize(writer, o);
                     }
                 } else if (o instanceof InplaceMapEntries) {
-                    String inplaceString = o.toString();
-                    if (!((InplaceMapEntries)o).isJsonWhitespace()) {
+                    InplaceMapEntries rawMembers = (InplaceMapEntries)o;
+                    if (!rawMembers.isJsonWhitespace()) {
                         if (!isFirst) {
                             writer.append(VALUE_SEPARATOR);
                         } else {
                             isFirst = false;
                         }
                     }
-                    writer.append(inplaceString);
+                    writer.append(rawMembers.getRawJsonText());
                 } else {
                     if (!isFirst) {
                         writer.append(VALUE_SEPARATOR);
