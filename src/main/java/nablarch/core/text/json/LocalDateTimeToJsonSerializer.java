@@ -50,7 +50,7 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
             Method method = clazz.getDeclaredMethod("ofPattern", String.class);
             formatter = method.invoke(null, datePattern);
         } catch (ClassNotFoundException e) {
-            // (coverage) Java7以前の場合に通貨する
+            // (coverage) Java7以前の場合に通過する
             // NOOP この例外は想定の動作の為、何もしない
         } catch (NoSuchMethodException e) {
             // (coverage) 到達しえない例外
