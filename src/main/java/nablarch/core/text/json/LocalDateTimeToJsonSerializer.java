@@ -54,13 +54,13 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
             // NOOP この例外は想定の動作の為、何もしない
         } catch (NoSuchMethodException e) {
             // (coverage) 到達しえない例外
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             // (coverage) 到達しえない例外
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             // (coverage) 到達しえない例外
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("illegal date pattern. property name = " + DATE_PATTERN_PROPERTY, e);
         }
@@ -80,13 +80,13 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
             formatMethod = clazz.getMethod("format", Class.forName("java.time.temporal.TemporalAccessor"));
         } catch (ClassNotFoundException e) {
             // (coverage) 到達しえない例外
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
             // (coverage) 到達しえない例外
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
             // (coverage) 到達しえない例外
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return formatMethod;
