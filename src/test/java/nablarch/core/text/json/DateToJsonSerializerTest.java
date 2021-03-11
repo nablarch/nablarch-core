@@ -43,6 +43,9 @@ public class DateToJsonSerializerTest {
         assertThat(serializer.isTarget(Date.class), is(true));
 
         assertThat(serializer.isTarget(Integer.class), is(false));
+        assertThat(serializer.isTarget(java.sql.Date.class), is(false));
+        assertThat(serializer.isTarget(java.sql.Time.class), is(false));
+        assertThat(serializer.isTarget(java.sql.Timestamp.class), is(false));
         assertThat(serializer.isTarget(Calendar.class), is(false));
     }
 

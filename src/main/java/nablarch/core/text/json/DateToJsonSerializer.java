@@ -9,6 +9,8 @@ import java.util.Date;
 /**
  * Dateの値をシリアライズするクラス。<br>
  * 受入れ可能なオブジェクトの型は java.util.Date。<br>
+ * java.sql.Date, java.sql.Time, java.sql.Timestamp などの
+ * Dateのサブクラスは対象にならない。
  * シリアライズによりJsonのstringとして出力する。
  * @author Shuji Kitamura
  */
@@ -46,7 +48,7 @@ public class DateToJsonSerializer extends StringToJsonSerializer {
      */
     @Override
     public boolean isTarget(Class<?> valueClass) {
-        return Date.class.isAssignableFrom(valueClass);
+        return Date.class.equals(valueClass);
     }
 
     /**
