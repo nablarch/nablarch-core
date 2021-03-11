@@ -1,7 +1,10 @@
 package nablarch.core.text.json;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +19,27 @@ import static org.hamcrest.core.Is.is;
  */
 public class ArrayToJsonSerializerTest {
 
-    @Test
-    public void 対象オブジェクトの判定ができること() throws Exception {
+    private JsonSerializer serializer;
+    private StringWriter writer = new StringWriter();
 
+    @Before
+    public void setup() {
         JsonSerializationManager manager = new JsonSerializationManager();
-        JsonSerializer serializer = new ArrayToJsonSerializer(manager);
+        manager.initialize();
+
+        serializer = new ArrayToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
+    }
+
+    @After
+    public void teardown() throws IOException {
+        writer.close();
+    }
+
+    @Test
+    public void 対象オブジェクトの判定ができること() throws Exception {
 
         int[] arrayValue = { 1, 23, 456 };
         assertThat(serializer.isTarget(arrayValue.getClass()), is(true));
@@ -34,61 +50,28 @@ public class ArrayToJsonSerializerTest {
 
     @Test
     public void intの配列がシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            manager.initialize();
+        int[] arrayValue = { 1, 23, 456 };
 
-            int[] arrayValue = { 1, 23, 456 };
-
-            JsonSerializer serializer = manager.getSerializer(arrayValue);
-            assertThat(serializer.getClass() == ArrayToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, arrayValue);
-            assertThat(writer.toString(), is("[1,23,456]"));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, arrayValue);
+        assertThat(writer.toString(), is("[1,23,456]"));
     }
 
     @Test
     public void 空の配列がシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            manager.initialize();
+        int[] arrayValue = { };
 
-            int[] arrayValue = { };
-
-            JsonSerializer serializer = manager.getSerializer(arrayValue);
-            assertThat(serializer.getClass() == ArrayToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, arrayValue);
-            assertThat(writer.toString(), is("[]"));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, arrayValue);
+        assertThat(writer.toString(), is("[]"));
     }
 
     @Test
     public void nullを含む配列がシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            manager.initialize();
+        Object[] arrayValue = {null, "foo", 123, null};
 
-            Object[] arrayValue = {null, "foo", 123, null};
-
-            JsonSerializer serializer = manager.getSerializer(arrayValue);
-            assertThat(serializer.getClass() == ArrayToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, arrayValue);
-            assertThat(writer.toString(), is("[null,\"foo\",123,null]"));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, arrayValue);
+        assertThat(writer.toString(), is("[null,\"foo\",123,null]"));
     }
 }

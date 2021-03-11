@@ -1,7 +1,10 @@
 package nablarch.core.text.json;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -20,13 +23,24 @@ import static org.hamcrest.core.Is.is;
  */
 public class NumberToJsonSerializerTest {
 
-    @Test
-    public void 対象オブジェクトの判定ができること() throws Exception {
+    private JsonSerializer serializer;
+    private StringWriter writer = new StringWriter();
 
-        JsonSerializer serializer = new NumberToJsonSerializer();
+    @Before
+    public void setup() {
+        serializer = new NumberToJsonSerializer();
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
+    }
+
+    @After
+    public void teardown() throws IOException {
+        writer.close();
+    }
+
+    @Test
+    public void 対象オブジェクトの判定ができること() throws Exception {
 
         Object intValue = 0;
         assertThat(serializer.isTarget(intValue.getClass()), is(true));
@@ -60,276 +74,130 @@ public class NumberToJsonSerializerTest {
 
         Object booleanValue = true;
         assertThat(serializer.isTarget(booleanValue.getClass()), is(false));
-
     }
 
     @Test
     public void intがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            serializer.serialize(writer, 123);
-            assertThat(writer.toString(), is("123"));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, 123);
+        assertThat(writer.toString(), is("123"));
     }
 
     @Test
     public void shortがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            short value = 123;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("123"));
-        } finally {
-            writer.close();
-        }
+        short value = 123;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("123"));
     }
 
     @Test
     public void longがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            long value = 123l;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("123"));
-        } finally {
-            writer.close();
-        }
+        long value = 123l;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("123"));
     }
 
     @Test
     public void floatがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            float value = 100.0f / 3;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("33.333332"));
-        } finally {
-            writer.close();
-        }
+        float value = 100.0f / 3;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("33.333332"));
     }
 
     @Test
     public void floatのNaNがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            float value = Float.NaN;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("\"NaN\""));
-        } finally {
-            writer.close();
-        }
+        float value = Float.NaN;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("\"NaN\""));
     }
 
     @Test
     public void floatの正の無限大がシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            float value = Float.POSITIVE_INFINITY;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("\"Infinity\""));
-        } finally {
-            writer.close();
-        }
+        float value = Float.POSITIVE_INFINITY;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("\"Infinity\""));
     }
 
     @Test
     public void floatの負の無限大がシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            float value = Float.NEGATIVE_INFINITY;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("\"-Infinity\""));
-        } finally {
-            writer.close();
-        }
+        float value = Float.NEGATIVE_INFINITY;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("\"-Infinity\""));
     }
 
     @Test
     public void doubleがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            double value = 100.0d / 3;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("33.333333333333336"));
-        } finally {
-            writer.close();
-        }
+        double value = 100.0d / 3;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("33.333333333333336"));
     }
 
     @Test
     public void doubleのNaNがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            double value = Double.NaN;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("\"NaN\""));
-        } finally {
-            writer.close();
-        }
+        double value = Double.NaN;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("\"NaN\""));
     }
 
     @Test
     public void doubleの正の無限大がシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            double value = Double.POSITIVE_INFINITY;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("\"Infinity\""));
-        } finally {
-            writer.close();
-        }
+        double value = Double.POSITIVE_INFINITY;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("\"Infinity\""));
     }
 
     @Test
     public void doubleの負の無限大がシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            double value = Double.NEGATIVE_INFINITY;
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("\"-Infinity\""));
-        } finally {
-            writer.close();
-        }
+        double value = Double.NEGATIVE_INFINITY;
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("\"-Infinity\""));
     }
 
     @Test
     public void BigDecimalがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            // TODO 末尾のゼロは出力されるべき？
-            BigDecimal value = new BigDecimal("123.4567890");
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("123.4567890"));
-        } finally {
-            writer.close();
-        }
+        // TODO 末尾のゼロは出力されるべき？
+        BigDecimal value = new BigDecimal("123.4567890");
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("123.4567890"));
     }
 
     @Test
     public void BigIntegerがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            BigInteger value = new BigInteger("ffff", 16);
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("65535"));
-        } finally {
-            writer.close();
-        }
+        BigInteger value = new BigInteger("ffff", 16);
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("65535"));
     }
 
     @Test
     public void AtomicIntegerがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
+        JsonSerializer serializer = new NumberToJsonSerializer();
+        Map<String,String> map = new HashMap<String, String>();
+        JsonSerializationSettings settings = new JsonSerializationSettings(map);
+        serializer.initialize(settings);
 
-            AtomicInteger value = new AtomicInteger(123);
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("123"));
-        } finally {
-            writer.close();
-        }
+        AtomicInteger value = new AtomicInteger(123);
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("123"));
     }
 
     @Test
     public void AtomicLongがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NumberToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            AtomicLong value = new AtomicLong(123);
-            serializer.serialize(writer, value);
-            assertThat(writer.toString(), is("123"));
-        } finally {
-            writer.close();
-        }
+        AtomicLong value = new AtomicLong(123);
+        serializer.serialize(writer, value);
+        assertThat(writer.toString(), is("123"));
     }
 }

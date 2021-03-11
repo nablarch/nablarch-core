@@ -1,7 +1,10 @@
 package nablarch.core.text.json;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
 
@@ -18,14 +21,27 @@ import static org.hamcrest.core.Is.is;
  */
 public class MapToJsonSerializerTest {
 
-    @Test
-    public void 対象オブジェクトの判定ができること() throws Exception {
+    private JsonSerializer serializer;
+    private StringWriter writer = new StringWriter();
 
+    @Before
+    public void setup() {
         JsonSerializationManager manager = new JsonSerializationManager();
-        JsonSerializer serializer = new MapToJsonSerializer(manager);
+        manager.initialize();
+
+        serializer = new MapToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
+    }
+
+    @After
+    public void teardown() throws IOException {
+        writer.close();
+    }
+
+    @Test
+    public void 対象オブジェクトの判定ができること() throws Exception {
 
         Map<String, String> mapValue = new HashMap<String, String>();
         assertThat(serializer.isTarget(mapValue.getClass()), is(true));
@@ -36,250 +52,148 @@ public class MapToJsonSerializerTest {
 
     @Test
     public void Mapがシリアライズできること() throws Exception {
-        JsonSerializationManager manager = new JsonSerializationManager();
-        Map<String,String> map = new HashMap<String, String>();
-        JsonSerializationSettings settings = new JsonSerializationSettings(map);
-        manager.initialize(settings);
 
-        StringWriter writer = new StringWriter();
-        try {
-            Map<String, String> mapValue = new HashMap<String, String>();
-            mapValue.put("key1","value1");
-            mapValue.put("key2","value2");
-            mapValue.put("key3","value3");
+        Map<String, String> stringMapValue = new HashMap<String, String>();
+        stringMapValue.put("key1","value1");
+        stringMapValue.put("key2","value2");
+        stringMapValue.put("key3","value3");
 
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), isJson(allOf(
-                    withJsonPath("$", hasEntry("key1", "value1")),
-                    withJsonPath("$", hasEntry("key2", "value2")),
-                    withJsonPath("$", hasEntry("key3", "value3")))));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, stringMapValue);
+        assertThat(writer.toString(), isJson(allOf(
+                withJsonPath("$", hasEntry("key1", "value1")),
+                withJsonPath("$", hasEntry("key2", "value2")),
+                withJsonPath("$", hasEntry("key3", "value3")))));
 
         writer = new StringWriter();
-        try {
-            Map<String, Integer> mapValue = new HashMap<String, Integer>();
-            mapValue.put("key1",123);
-            mapValue.put("key2",45);
-            mapValue.put("key3",678);
 
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
+        Map<String, Integer> intMapValue = new HashMap<String, Integer>();
+        intMapValue.put("key1",123);
+        intMapValue.put("key2",45);
+        intMapValue.put("key3",678);
 
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), isJson(allOf(
-                    withJsonPath("$", hasEntry("key1", 123)),
-                    withJsonPath("$", hasEntry("key2", 45)),
-                    withJsonPath("$", hasEntry("key3", 678)))));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, intMapValue);
+        assertThat(writer.toString(), isJson(allOf(
+                withJsonPath("$", hasEntry("key1", 123)),
+                withJsonPath("$", hasEntry("key2", 45)),
+                withJsonPath("$", hasEntry("key3", 678)))));
     }
 
     @Test
     public void 空のMapがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            manager.initialize(settings);
+        Map<String, String> mapValue = new HashMap<String, String>();
 
-            Map<String, String> mapValue = new HashMap<String, String>();
-
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), is("{}"));
-        } finally {
-            writer.close();
-        }
-
+        serializer.serialize(writer, mapValue);
+        assertThat(writer.toString(), is("{}"));
     }
 
     @Test
     public void nullを無視してMapがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            manager.initialize(settings);
+        Map<String, String> mapValue = new HashMap<String, String>();
+        mapValue.put("key1",null);
+        mapValue.put("key2","value2");
+        mapValue.put("key3",null);
 
-            Map<String, String> mapValue = new HashMap<String, String>();
-            mapValue.put("key1",null);
-            mapValue.put("key2","value2");
-            mapValue.put("key3",null);
-
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), isJson(allOf(
-                    withoutJsonPath("$.key1"),
-                    withJsonPath("$", hasEntry("key2", "value2")),
-                    withoutJsonPath("$.key3"))));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, mapValue);
+        assertThat(writer.toString(), isJson(allOf(
+                withoutJsonPath("$.key1"),
+                withJsonPath("$", hasEntry("key2", "value2")),
+                withoutJsonPath("$.key3"))));
     }
 
     @Test
     public void 挿入処理を含むMapがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            manager.initialize(settings);
+        Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
+        mapValue.put("key1","value1");
+        mapValue.put("key2",new InplaceMapEntries("\"keyA\":1,\"keyB\":2"));
+        mapValue.put("key3","value3");
 
-            Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
-            mapValue.put("key1","value1");
-            mapValue.put("key2",new InplaceMapEntries("\"keyA\":1,\"keyB\":2"));
-            mapValue.put("key3","value3");
-
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), isJson(allOf(
-                    withJsonPath("$", hasEntry("key1", "value1")),
-                    withoutJsonPath("$.key2"),
-                    withJsonPath("$", hasEntry("key3", "value3")),
-                    withJsonPath("$", hasEntry("keyA", 1)),
-                    withJsonPath("$", hasEntry("keyB", 2)))));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, mapValue);
+        assertThat(writer.toString(), isJson(allOf(
+                withJsonPath("$", hasEntry("key1", "value1")),
+                withoutJsonPath("$.key2"),
+                withJsonPath("$", hasEntry("key3", "value3")),
+                withJsonPath("$", hasEntry("keyA", 1)),
+                withJsonPath("$", hasEntry("keyB", 2)))));
     }
 
     @Test
     public void 先頭への挿入処理を含むMapがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            manager.initialize(settings);
+        Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
+        mapValue.put("key1",new InplaceMapEntries("\"keyA\":1,\"keyB\":2"));
+        mapValue.put("key2","value2");
+        mapValue.put("key3","value3");
 
-            Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
-            mapValue.put("key1",new InplaceMapEntries("\"keyA\":1,\"keyB\":2"));
-            mapValue.put("key2","value2");
-            mapValue.put("key3","value3");
-
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), isJson(allOf(
-                    withoutJsonPath("$.key1"),
-                    withJsonPath("$", hasEntry("key2", "value2")),
-                    withJsonPath("$", hasEntry("key3", "value3")),
-                    withJsonPath("$", hasEntry("keyA", 1)),
-                    withJsonPath("$", hasEntry("keyB", 2)))));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, mapValue);
+        assertThat(writer.toString(), isJson(allOf(
+                withoutJsonPath("$.key1"),
+                withJsonPath("$", hasEntry("key2", "value2")),
+                withJsonPath("$", hasEntry("key3", "value3")),
+                withJsonPath("$", hasEntry("keyA", 1)),
+                withJsonPath("$", hasEntry("keyB", 2)))));
     }
 
     @Test
     public void 挿入部分がWSの場合に無視してシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            manager.initialize(settings);
+        Map<String, Object> mapValue = new HashMap<String, Object>();
+        mapValue.put("key1","value1");
+        mapValue.put("key2",new InplaceMapEntries(" \t\r\n"));
+        mapValue.put("key3","value3");
 
-            Map<String, Object> mapValue = new HashMap<String, Object>();
-            mapValue.put("key1","value1");
-            mapValue.put("key2",new InplaceMapEntries(" \t\r\n"));
-            mapValue.put("key3","value3");
-
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), isJson(allOf(
-                    withJsonPath("$", hasEntry("key1", "value1")),
-                    withoutJsonPath("$.key2"),
-                    withJsonPath("$", hasEntry("key3", "value3")))));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, mapValue);
+        assertThat(writer.toString(), isJson(allOf(
+                withJsonPath("$", hasEntry("key1", "value1")),
+                withoutJsonPath("$.key2"),
+                withJsonPath("$", hasEntry("key3", "value3")))));
     }
 
     @Test
     public void Nullシリアライザを使用したシリアライズができること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager() {
-                protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
-                    return Arrays.asList(
-                            new StringToJsonSerializer(),
-                            new DateToJsonSerializer(),
-                            new CustomMapToJsonSerializer(this),
-                            new ListToJsonSerializer(this),
-                            new ArrayToJsonSerializer(this),
-                            new NumberToJsonSerializer(),
-                            new BooleanToJsonSerializer());
-                }
-            };
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            manager.initialize(settings);
+        JsonSerializationManager manager = new JsonSerializationManager() {
+            protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
+                return Arrays.asList(
+                        new StringToJsonSerializer(),
+                        new DateToJsonSerializer(),
+                        new CustomMapToJsonSerializer(this),
+                        new ListToJsonSerializer(this),
+                        new ArrayToJsonSerializer(this),
+                        new NumberToJsonSerializer(),
+                        new BooleanToJsonSerializer());
+            }
+        };
+        Map<String,String> map = new HashMap<String, String>();
+        JsonSerializationSettings settings = new JsonSerializationSettings(map);
+        manager.initialize(settings);
 
-            Map<String, String> mapValue = new HashMap<String, String>();
-            mapValue.put("key1",null);
-            mapValue.put("key2", "value2");
-            mapValue.put("key3",null);
+        Map<String, String> mapValue = new HashMap<String, String>();
+        mapValue.put("key1",null);
+        mapValue.put("key2", "value2");
+        mapValue.put("key3",null);
 
-            JsonSerializer serializer = manager.getSerializer(mapValue);
+        JsonSerializer serializer = manager.getSerializer(mapValue);
 
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), isJson(allOf(
-                    withJsonPath("$", hasEntry("key1", null)),
-                    withJsonPath("$", hasEntry("key2", "value2")),
-                    withJsonPath("$", hasEntry("key3", null)))));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, mapValue);
+        assertThat(writer.toString(), isJson(allOf(
+                withJsonPath("$", hasEntry("key1", null)),
+                withJsonPath("$", hasEntry("key2", "value2")),
+                withJsonPath("$", hasEntry("key3", null)))));
     }
 
     @Test
     public void nameが不正な場合は項目ごとスキップすること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializationManager manager = new JsonSerializationManager();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            manager.initialize(settings);
+        Map<Object, String> mapValue = new HashMap<Object, String>();
+        mapValue.put(null,"value1");
+        mapValue.put("key2","value2");
+        mapValue.put(123,"value3");
 
-            Map<Object, String> mapValue = new HashMap<Object, String>();
-            mapValue.put(null,"value1");
-            mapValue.put("key2","value2");
-            mapValue.put(123,"value3");
-
-            JsonSerializer serializer = manager.getSerializer(mapValue);
-            assertThat(serializer.getClass() == MapToJsonSerializer.class, is(true));
-
-            serializer.serialize(writer, mapValue);
-            assertThat(writer.toString(), is("{\"key2\":\"value2\"}"));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, mapValue);
+        assertThat(writer.toString(), is("{\"key2\":\"value2\"}"));
     }
 
     /**

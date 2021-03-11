@@ -1,7 +1,10 @@
 package nablarch.core.text.json;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,37 +19,37 @@ import static org.hamcrest.core.Is.is;
  */
 public class NullToJsonSerializerTest {
 
-    @Test
-    public void 対象オブジェクトに寄らず常にtrueを返すこと() throws Exception {
+    private JsonSerializer serializer;
+    private StringWriter writer = new StringWriter();
 
-        JsonSerializer serializer = new NullToJsonSerializer();
+    @Before
+    public void setup() {
+        serializer = new NullToJsonSerializer();
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
+    }
+
+    @After
+    public void teardown() throws IOException {
+        writer.close();
+    }
+
+    @Test
+    public void 対象オブジェクトに寄らず常にtrueを返すこと() throws Exception {
 
         Object booleanValue = true;
         assertThat(serializer.isTarget(booleanValue.getClass()), is(true));
 
         Object intValue = 0;
         assertThat(serializer.isTarget(intValue.getClass()), is(true));
-
     }
 
     @Test
     public void nullがシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new NullToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            serializer.serialize(writer, null);
-            assertThat(writer.toString(), is("null"));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, null);
+        assertThat(writer.toString(), is("null"));
     }
 
 }

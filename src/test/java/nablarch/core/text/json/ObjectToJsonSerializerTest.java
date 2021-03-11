@@ -1,7 +1,10 @@
 package nablarch.core.text.json;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,13 +19,24 @@ import static org.hamcrest.core.Is.is;
  */
 public class ObjectToJsonSerializerTest {
 
-    @Test
-    public void 対象オブジェクトに寄らず常にtrueを返すこと() throws Exception {
+    private JsonSerializer serializer;
+    private StringWriter writer = new StringWriter();
 
-        JsonSerializer serializer = new ObjectToJsonSerializer();
+    @Before
+    public void setup() {
+        serializer = new ObjectToJsonSerializer();
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
+    }
+
+    @After
+    public void teardown() throws IOException {
+        writer.close();
+    }
+
+    @Test
+    public void 対象オブジェクトに寄らず常にtrueを返すこと() throws Exception {
 
         Object booleanValue = true;
         assertThat(serializer.isTarget(booleanValue.getClass()), is(true));
@@ -34,19 +48,9 @@ public class ObjectToJsonSerializerTest {
 
     @Test
     public void toStringの結果でstringとしてシリアライズできること() throws Exception {
-        StringWriter writer = new StringWriter();
 
-        try {
-            JsonSerializer serializer = new ObjectToJsonSerializer();
-            Map<String,String> map = new HashMap<String, String>();
-            JsonSerializationSettings settings = new JsonSerializationSettings(map);
-            serializer.initialize(settings);
-
-            serializer.serialize(writer, true);
-            assertThat(writer.toString(), is("\"true\""));
-        } finally {
-            writer.close();
-        }
+        serializer.serialize(writer, true);
+        assertThat(writer.toString(), is("\"true\""));
     }
 
 }
