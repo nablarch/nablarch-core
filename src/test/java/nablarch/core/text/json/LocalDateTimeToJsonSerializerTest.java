@@ -50,9 +50,17 @@ public class LocalDateTimeToJsonSerializerTest {
         return method.invoke(null, year, monthObject, dayOfMonth, hour, minute, second, nanoOfSecond);
     }
 
+    private boolean isRunningOnJava8OrHigher() {
+        try {
+            Class.forName("java.time.LocalDateTime");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
     @Test
     public void Java8以降のとき対象オブジェクトの判定ができること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         assertThat(serializer.isTarget(Class.forName("java.time.LocalDateTime")), is(true));
 
@@ -61,7 +69,7 @@ public class LocalDateTimeToJsonSerializerTest {
 
     @Test
     public void Java8以降のときLocalDateTimeがシリアライズできること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         Object dateValue = createLocalDateTime(2021,1,23,12,34,56, 789012345);
 
@@ -71,7 +79,7 @@ public class LocalDateTimeToJsonSerializerTest {
 
     @Test
     public void Java8以降のときLocalDateTimeが書式指定でシリアライズできること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
         Map<String,String> map = new HashMap<String, String>();
@@ -87,7 +95,7 @@ public class LocalDateTimeToJsonSerializerTest {
 
     @Test
     public void Java8以降でLocalDateTimeが書式指定がエラーのとき例外がスローされること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
             @Override
@@ -105,7 +113,7 @@ public class LocalDateTimeToJsonSerializerTest {
 
     @Test
     public void Java8以降で不正なオブジェクトのとき例外がスローされること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
             @Override
@@ -119,7 +127,7 @@ public class LocalDateTimeToJsonSerializerTest {
 
     @Test
     public void Java8以降で書式指定がLocalDateTimeでエラーとなるとき例外がスローされること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
             @Override
@@ -141,7 +149,7 @@ public class LocalDateTimeToJsonSerializerTest {
 
     @Test
     public void Java8以降で値がnullのとき例外がスローされること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         Exception e = assertThrows(NullPointerException.class, new ThrowingRunnable() {
             @Override

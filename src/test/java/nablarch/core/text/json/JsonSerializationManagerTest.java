@@ -30,6 +30,15 @@ public class JsonSerializationManagerTest {
         manager = new JsonSerializationManager();
     }
 
+    private boolean isRunningOnJava8OrHigher() {
+        try {
+            Class.forName("java.time.LocalDateTime");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     @Test
     public void オブジェクトに応じたシリアライザの取得ができること() throws Exception {
         manager.initialize();
@@ -65,7 +74,7 @@ public class JsonSerializationManagerTest {
 
     @Test
     public void Java8以降でLocalDateTimeシリアライザの取得ができること() throws Exception {
-        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+        assumeTrue(isRunningOnJava8OrHigher());
 
         JsonSerializationManager manager = new JsonSerializationManager();
         manager.initialize();
