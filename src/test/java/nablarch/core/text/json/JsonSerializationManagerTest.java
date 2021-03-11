@@ -2,11 +2,13 @@ package nablarch.core.text.json;
 
 import org.junit.Test;
 
-import java.io.StringWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assume.assumeTrue;
@@ -17,6 +19,25 @@ import static org.junit.Assume.assumeTrue;
  * @author Shuji Kitamura
  */
 public class JsonSerializationManagerTest {
+
+    private static class MockJsonSerializer implements JsonSerializer {
+
+        private JsonSerializationSettings settings;
+
+        @Override
+        public void initialize(JsonSerializationSettings settings) {
+            this.settings = settings;
+        }
+
+        @Override
+        public boolean isTarget(Class<?> valueClass) {
+            return false;
+        }
+
+        @Override
+        public void serialize(Writer writer, Object value) throws IOException {
+        }
+    }
 
     @Test
     public void オブジェクトに応じたシリアライザの取得ができること() throws Exception {
@@ -68,24 +89,20 @@ public class JsonSerializationManagerTest {
     }
 
     @Test
-    public void シリアライザの初期化が行われていること() throws Exception {
-        JsonSerializationManager manager = new JsonSerializationManager();
-        Map<String,String> map = new HashMap<String, String>();
-        map.put("datePattern", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        JsonSerializationSettings settings = new JsonSerializationSettings(map);
+    public void シリアライザの初期化が行われていること() {
+        final MockJsonSerializer mockJsonSerializer = new MockJsonSerializer();
+
+        JsonSerializationManager manager = new JsonSerializationManager() {
+            @Override
+            protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
+                return Arrays.asList((JsonSerializer)mockJsonSerializer);
+            }
+        };
+
+        JsonSerializationSettings settings = new JsonSerializationSettings(new HashMap<String, String>());
         manager.initialize(settings);
 
-        Calendar calendarValue = Calendar.getInstance();
-        calendarValue.set(2021,0,23,12,34,56);
-        calendarValue.set(Calendar.MILLISECOND, 789);
-        Object value = calendarValue.getTime();
-
-        JsonSerializer serializer = manager.getSerializer(value);
-        assertThat(serializer, is(instanceOf(DateToJsonSerializer.class)));
-
-        StringWriter writer = new StringWriter();
-        serializer.serialize(writer, value);
-        assertThat(writer.toString(), is("\"2021-01-23T12:34:56.789Z\""));
+        assertThat(mockJsonSerializer.settings, is(sameInstance(settings)));
     }
 
     @Test
