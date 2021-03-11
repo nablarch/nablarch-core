@@ -6,10 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -42,6 +39,7 @@ public class CalendarToJsonSerializerTest {
     public void 対象オブジェクトの判定ができること() throws Exception {
 
         assertThat(serializer.isTarget(Calendar.class), is(true));
+        assertThat(serializer.isTarget(GregorianCalendar.class), is(true));
 
         assertThat(serializer.isTarget(Integer.class), is(false));
         assertThat(serializer.isTarget(Date.class), is(false));
