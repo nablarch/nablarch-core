@@ -46,7 +46,7 @@ public class CalendarToJsonSerializerTest {
     }
 
     @Test
-    public void Dateがシリアライズできること() throws Exception {
+    public void Calendarがシリアライズできること() throws Exception {
 
         Calendar calendarValue = Calendar.getInstance();
         calendarValue.set(2021,0,23,12,34,56);
@@ -57,7 +57,7 @@ public class CalendarToJsonSerializerTest {
     }
 
     @Test
-    public void Dateが書式指定でシリアライズできること() throws Exception {
+    public void Calendarが書式指定でシリアライズできること() throws Exception {
         JsonSerializer serializer = new CalendarToJsonSerializer();
         Map<String,String> map = new HashMap<String, String>();
         map.put("datePattern", "yyyy/MM/dd HH:mm:ss");
