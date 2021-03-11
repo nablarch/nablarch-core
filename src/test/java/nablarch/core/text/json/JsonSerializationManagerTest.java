@@ -3,13 +3,13 @@ package nablarch.core.text.json;
 import org.junit.Test;
 
 import java.io.StringWriter;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * {@link JsonSerializationManager}のテストクラス
@@ -24,9 +24,47 @@ public class JsonSerializationManagerTest {
         manager.initialize();
 
         Object value = "test";
-
         JsonSerializer serializer = manager.getSerializer(value);
         assertThat(serializer, is(instanceOf(StringToJsonSerializer.class)));
+
+        value = new Date();
+        serializer = manager.getSerializer(value);
+        assertThat(serializer, is(instanceOf(DateToJsonSerializer.class)));
+
+        value = new HashMap<String, Object>();
+        serializer = manager.getSerializer(value);
+        assertThat(serializer, is(instanceOf(MapToJsonSerializer.class)));
+
+        value = new ArrayList<String>();
+        serializer = manager.getSerializer(value);
+        assertThat(serializer, is(instanceOf(ListToJsonSerializer.class)));
+
+        value = new int[0];
+        serializer = manager.getSerializer(value);
+        assertThat(serializer, is(instanceOf(ArrayToJsonSerializer.class)));
+
+        value = 123;
+        serializer = manager.getSerializer(value);
+        assertThat(serializer, is(instanceOf(NumberToJsonSerializer.class)));
+
+        value = true;
+        serializer = manager.getSerializer(value);
+        assertThat(serializer, is(instanceOf(BooleanToJsonSerializer.class)));
+    }
+
+    @Test
+    public void Java8以降でLocalDateTimeシリアライザの取得ができること() throws Exception {
+        assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
+
+        JsonSerializationManager manager = new JsonSerializationManager();
+        manager.initialize();
+
+        Class<?> clazz = Class.forName("java.time.LocalDateTime");
+        Method method = clazz.getDeclaredMethod("now");
+        Object value = method.invoke(null);
+
+        JsonSerializer serializer = manager.getSerializer(value);
+        assertThat(serializer, is(instanceOf(LocalDateTimeToJsonSerializer.class)));
     }
 
     @Test
