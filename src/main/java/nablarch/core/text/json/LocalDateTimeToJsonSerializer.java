@@ -25,6 +25,8 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
     /** 日時のフォーマットに使用するメソッド */
     private Method formatMethod;
 
+    private String datePattern;
+
     /**
      * {@inheritDoc}
      */
@@ -43,7 +45,7 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
      */
     protected Object getFormatter(JsonSerializationSettings settings) {
         String prop = settings.getProp(DATE_PATTERN_PROPERTY);
-        String datePattern = !StringUtil.isNullOrEmpty(prop) ? prop : DEFAULT_DATE_PATTERN;
+        datePattern = !StringUtil.isNullOrEmpty(prop) ? prop : DEFAULT_DATE_PATTERN;
         Object formatter = null;
         try {
             Class<?> clazz = Class.forName("java.time.format.DateTimeFormatter");
@@ -81,7 +83,7 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
      * @return フォーマットメソッド
      */
     protected Method getFormatMethod(Class<?> clazz) {
-        Method formatMethod = null;
+        Method formatMethod;
         try {
             formatMethod = clazz.getMethod("format", Class.forName("java.time.temporal.TemporalAccessor"));
         } catch (ClassNotFoundException e) {
@@ -142,7 +144,8 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
             // この catch 句に到達するケースは存在しない
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(
+                    "mismatched date pattern. pattern = [" + datePattern + "]", e);
         }
     }
 }
