@@ -1,6 +1,8 @@
 package nablarch.core.text.json;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -11,6 +13,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -20,28 +23,15 @@ import static org.junit.Assume.assumeTrue;
  */
 public class JsonSerializationManagerTest {
 
-    private static class MockJsonSerializer implements JsonSerializer {
+    JsonSerializationManager manager;
 
-        private JsonSerializationSettings settings;
-
-        @Override
-        public void initialize(JsonSerializationSettings settings) {
-            this.settings = settings;
-        }
-
-        @Override
-        public boolean isTarget(Class<?> valueClass) {
-            return false;
-        }
-
-        @Override
-        public void serialize(Writer writer, Object value) throws IOException {
-        }
+    @Before
+    public void setup() {
+        manager = new JsonSerializationManager();
     }
 
     @Test
     public void オブジェクトに応じたシリアライザの取得ができること() throws Exception {
-        JsonSerializationManager manager = new JsonSerializationManager();
         manager.initialize();
 
         Object value = "test";
@@ -127,12 +117,40 @@ public class JsonSerializationManagerTest {
         assertThat(serializer, is(instanceOf(ObjectToJsonSerializer.class)));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void 初期化していない場合エラーになること() throws Exception {
-        JsonSerializationManager manager = new JsonSerializationManager();
 
-        Object value = "test";
+        Exception e = assertThrows(IllegalStateException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                Object value = "test";
+                manager.getSerializer(value);
+            }
+        });
 
-        JsonSerializer serializer = manager.getSerializer(value);
+        assertThat(e.getMessage(), is("JsonSerializationManager is not initialized."));
     }
+
+    /**
+     * initializeメソッドの実行確認用Mockクラス。
+     */
+    private static class MockJsonSerializer implements JsonSerializer {
+
+        private JsonSerializationSettings settings;
+
+        @Override
+        public void initialize(JsonSerializationSettings settings) {
+            this.settings = settings;
+        }
+
+        @Override
+        public boolean isTarget(Class<?> valueClass) {
+            return false;
+        }
+
+        @Override
+        public void serialize(Writer writer, Object value) throws IOException {
+        }
+    }
+
 }
