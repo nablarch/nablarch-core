@@ -47,11 +47,13 @@ public class ArrayToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
-        int[] arrayValue = { 1, 23, 456 };
-        assertThat(serializer.isTarget(arrayValue.getClass()), is(true));
+        assertThat(serializer.isTarget(int[].class), is(true));
+        assertThat(serializer.isTarget(int[][].class), is(true));
+        assertThat(serializer.isTarget(String[].class), is(true));
 
-        Object booleanValue = true;
-        assertThat(serializer.isTarget(booleanValue.getClass()), is(false));
+        assertThat(serializer.isTarget(int.class), is(false));
+        assertThat(serializer.isTarget(String.class), is(false));
+        assertThat(serializer.isTarget(List.class), is(false));
     }
 
     @Test

@@ -42,14 +42,11 @@ public class ListToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
-        List<String> listValue = new ArrayList<String>();
-        listValue.add("foo");
-        listValue.add("bar");
-        listValue.add("baz");
-        assertThat(serializer.isTarget(listValue.getClass()), is(true));
+        assertThat(serializer.isTarget(List.class), is(true));
 
-        Object booleanValue = true;
-        assertThat(serializer.isTarget(booleanValue.getClass()), is(false));
+        assertThat(serializer.isTarget(Integer.class), is(false));
+        assertThat(serializer.isTarget(String.class), is(false));
+        assertThat(serializer.isTarget(String[].class), is(false));
     }
 
     @Test

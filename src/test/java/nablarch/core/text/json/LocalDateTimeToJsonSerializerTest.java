@@ -63,11 +63,9 @@ public class LocalDateTimeToJsonSerializerTest {
     public void Java8以降のとき対象オブジェクトの判定ができること() throws Exception {
         assumeTrue(Double.parseDouble(System.getProperty("java.specification.version")) >= 1.8);
 
-        Object dateValue = createLocalDateTime(2021,1,23,12,34,56, 789);
-        assertThat(serializer.isTarget(dateValue.getClass()), is(true));
+        assertThat(serializer.isTarget(Class.forName("java.time.LocalDateTime")), is(true));
 
-        Object intValue = 0;
-        assertThat(serializer.isTarget(intValue.getClass()), is(false));
+        assertThat(serializer.isTarget(Integer.class), is(false));
     }
 
     @Test

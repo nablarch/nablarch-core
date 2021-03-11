@@ -43,11 +43,9 @@ public class MapToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
-        Map<String, String> mapValue = new HashMap<String, String>();
-        assertThat(serializer.isTarget(mapValue.getClass()), is(true));
+        assertThat(serializer.isTarget(Map.class), is(true));
 
-        Object booleanValue = true;
-        assertThat(serializer.isTarget(booleanValue.getClass()), is(false));
+        assertThat(serializer.isTarget(Integer.class), is(false));
     }
 
     @Test

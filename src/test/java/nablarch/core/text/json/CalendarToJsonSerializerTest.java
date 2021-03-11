@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,11 +41,10 @@ public class CalendarToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
-        Calendar calendarValue = Calendar.getInstance();
-        assertThat(serializer.isTarget(calendarValue.getClass()), is(true));
+        assertThat(serializer.isTarget(Calendar.class), is(true));
 
-        Object intValue = 0;
-        assertThat(serializer.isTarget(intValue.getClass()), is(false));
+        assertThat(serializer.isTarget(Integer.class), is(false));
+        assertThat(serializer.isTarget(Date.class), is(false));
     }
 
     @Test

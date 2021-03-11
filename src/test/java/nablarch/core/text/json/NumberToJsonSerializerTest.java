@@ -42,38 +42,25 @@ public class NumberToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
-        Object intValue = 0;
-        assertThat(serializer.isTarget(intValue.getClass()), is(true));
+        assertThat(serializer.isTarget(Integer.class), is(true));
+        assertThat(serializer.isTarget(Short.class), is(true));
+        assertThat(serializer.isTarget(Long.class), is(true));
+        assertThat(serializer.isTarget(Byte.class), is(true));
+        assertThat(serializer.isTarget(Float.class), is(true));
+        assertThat(serializer.isTarget(Double.class), is(true));
+        assertThat(serializer.isTarget(BigDecimal.class), is(true));
+        assertThat(serializer.isTarget(BigInteger.class), is(true));
+        assertThat(serializer.isTarget(AtomicInteger.class), is(true));
+        assertThat(serializer.isTarget(AtomicLong.class), is(true));
 
-        Object shortValue = (short)0;
-        assertThat(serializer.isTarget(shortValue.getClass()), is(true));
+        assertThat(serializer.isTarget(int.class), is(false));
+        assertThat(serializer.isTarget(short.class), is(false));
+        assertThat(serializer.isTarget(long.class), is(false));
+        assertThat(serializer.isTarget(byte.class), is(false));
+        assertThat(serializer.isTarget(float.class), is(false));
+        assertThat(serializer.isTarget(double.class), is(false));
 
-        Object longValue = 0l;
-        assertThat(serializer.isTarget(longValue.getClass()), is(true));
-
-        Object byteValue = (byte)0;
-        assertThat(serializer.isTarget(byteValue.getClass()), is(true));
-
-        Object floatValue = 0.0f;
-        assertThat(serializer.isTarget(floatValue.getClass()), is(true));
-
-        Object doubleValue = 0.0d;
-        assertThat(serializer.isTarget(doubleValue.getClass()), is(true));
-
-        Object bigDecimalValue = new BigDecimal(0.0);
-        assertThat(serializer.isTarget(bigDecimalValue.getClass()), is(true));
-
-        Object bigIntegerValue = new BigInteger("0", 10);
-        assertThat(serializer.isTarget(bigIntegerValue.getClass()), is(true));
-
-        Object atomicIntegerValue = new AtomicInteger(0);
-        assertThat(serializer.isTarget(atomicIntegerValue.getClass()), is(true));
-
-        Object atomicLongValue = new AtomicLong(0);
-        assertThat(serializer.isTarget(atomicLongValue.getClass()), is(true));
-
-        Object booleanValue = true;
-        assertThat(serializer.isTarget(booleanValue.getClass()), is(false));
+        assertThat(serializer.isTarget(Boolean.class), is(false));
     }
 
     @Test

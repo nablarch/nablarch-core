@@ -38,12 +38,9 @@ public class StringToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
-        Object stringValue = "";
-        assertThat(serializer.isTarget(stringValue.getClass()), is(true));
+        assertThat(serializer.isTarget(String.class), is(true));
 
-        Object intValue = 0;
-        assertThat(serializer.isTarget(intValue.getClass()), is(false));
-
+        assertThat(serializer.isTarget(Integer.class), is(false));
     }
 
     @Test

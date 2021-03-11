@@ -40,12 +40,10 @@ public class DateToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
-        Object dateValue = new Date();
-        assertThat(serializer.isTarget(dateValue.getClass()), is(true));
+        assertThat(serializer.isTarget(Date.class), is(true));
 
-        Object intValue = 0;
-        assertThat(serializer.isTarget(intValue.getClass()), is(false));
-
+        assertThat(serializer.isTarget(Integer.class), is(false));
+        assertThat(serializer.isTarget(Calendar.class), is(false));
     }
 
     @Test

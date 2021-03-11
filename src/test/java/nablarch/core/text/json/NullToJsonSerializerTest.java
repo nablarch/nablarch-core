@@ -38,11 +38,10 @@ public class NullToJsonSerializerTest {
     @Test
     public void 対象オブジェクトに寄らず常にtrueを返すこと() throws Exception {
 
-        Object booleanValue = true;
-        assertThat(serializer.isTarget(booleanValue.getClass()), is(true));
-
-        Object intValue = 0;
-        assertThat(serializer.isTarget(intValue.getClass()), is(true));
+        assertThat(serializer.isTarget(Boolean.class), is(true));
+        assertThat(serializer.isTarget(Integer.class), is(true));
+        assertThat(serializer.isTarget(String.class), is(true));
+        assertThat(serializer.isTarget(Object.class), is(true));
     }
 
     @Test
