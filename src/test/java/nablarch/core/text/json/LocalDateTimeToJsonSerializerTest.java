@@ -7,7 +7,6 @@ import org.junit.function.ThrowingRunnable;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,25 +40,14 @@ public class LocalDateTimeToJsonSerializerTest {
         writer.close();
     }
 
-    private Object createLocalDateTime(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond) {
-        try {
-            Class<?> monthClazz = Class.forName("java.time.Month");
-            Method monthMethod = monthClazz.getDeclaredMethod("of", int.class);
-            Object monthObject = monthMethod.invoke(null, month);
+    private Object createLocalDateTime(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond) throws Exception {
+        Class<?> monthClazz = Class.forName("java.time.Month");
+        Method monthMethod = monthClazz.getDeclaredMethod("of", int.class);
+        Object monthObject = monthMethod.invoke(null, month);
 
-            Class<?> clazz = Class.forName("java.time.LocalDateTime");
-            Method method = clazz.getDeclaredMethod("of", int.class, monthClazz, int.class, int.class, int.class, int.class, int.class);
-            return method.invoke(null, year, monthObject, dayOfMonth, hour, minute, second, nanoOfSecond);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Class<?> clazz = Class.forName("java.time.LocalDateTime");
+        Method method = clazz.getDeclaredMethod("of", int.class, monthClazz, int.class, int.class, int.class, int.class, int.class);
+        return method.invoke(null, year, monthObject, dayOfMonth, hour, minute, second, nanoOfSecond);
     }
 
     @Test
