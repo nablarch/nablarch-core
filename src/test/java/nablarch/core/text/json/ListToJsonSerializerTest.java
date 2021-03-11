@@ -6,10 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -43,6 +40,8 @@ public class ListToJsonSerializerTest {
     public void 対象オブジェクトの判定ができること() throws Exception {
 
         assertThat(serializer.isTarget(List.class), is(true));
+        assertThat(serializer.isTarget(ArrayList.class), is(true));
+        assertThat(serializer.isTarget(LinkedList.class), is(true));
 
         assertThat(serializer.isTarget(Integer.class), is(false));
         assertThat(serializer.isTarget(String.class), is(false));
