@@ -180,7 +180,7 @@ public class MapToJsonSerializerTest {
     }
 
     @Test
-    public void nameが不正な場合は項目ごとスキップすること() throws Exception {
+    public void nameがStringでない場合は項目ごとスキップすること() throws Exception {
 
         Map<Object, String> mapValue = new HashMap<Object, String>();
         mapValue.put(null,"value1");
