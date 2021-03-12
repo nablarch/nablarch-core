@@ -45,6 +45,7 @@ public class NumberToJsonSerializerTest {
     @Test
     public void 対象オブジェクトの判定ができること() throws Exception {
 
+        assertThat(serializer.isTarget(Number.class), is(true));
         assertThat(serializer.isTarget(Integer.class), is(true));
         assertThat(serializer.isTarget(Short.class), is(true));
         assertThat(serializer.isTarget(Long.class), is(true));
