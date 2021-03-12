@@ -157,7 +157,6 @@ public class NumberToJsonSerializerTest {
     @Test
     public void BigDecimalがシリアライズできること() throws Exception {
 
-        // TODO 末尾のゼロは出力されるべき？
         BigDecimal value = new BigDecimal("123.4567890");
         serializer.serialize(writer, value);
         assertThat(writer.toString(), is("123.4567890"));
