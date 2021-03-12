@@ -28,7 +28,7 @@ public class MapToJsonSerializer implements JsonSerializer {
     private final JsonSerializationManager manager;
 
     /** nameに使用するシリアライザ */
-    private JsonSerializer nameSerializer;
+    private JsonSerializer memberNameSerializer;
 
     /**
      * コンストラクタ。
@@ -47,17 +47,6 @@ public class MapToJsonSerializer implements JsonSerializer {
     }
 
     /**
-     * nameに使用するシリアライザを取得します。
-     * @return nameに使用するシリアライザ
-     */
-    protected JsonSerializer getNameSerializer() {
-        if (nameSerializer == null) {
-            nameSerializer = getJsonSerializationManager().getSerializer("");
-        }
-        return nameSerializer;
-    }
-
-    /**
      * 値がnullの場合に使用するシリアライザを取得します。<br>
      * このメソッドがnullを返す時、値がnullの項目をスキップします。
      * @return nullに使用するシリアライザ
@@ -71,7 +60,7 @@ public class MapToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void initialize(JsonSerializationSettings settings) {
-        //NOOP
+        this.memberNameSerializer = manager.getSerializer("");
     }
 
     /**
@@ -87,13 +76,12 @@ public class MapToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void serialize(Writer writer, Object value) throws IOException {
-        JsonSerializer nameSerializer = getNameSerializer();
         JsonSerializer nullSerializer = getNullSerializer();
         Map<?, ?> map = (Map<?, ?>) value;
         boolean isFirst = true;
         writer.append(BEGIN_OBJECT);
         for (Object memberName: map.keySet()) {
-            if (memberName != null && nameSerializer.isTarget(memberName.getClass())) {
+            if (memberName != null && memberNameSerializer.isTarget(memberName.getClass())) {
                 Object memberValue = map.get(memberName);
                 if (memberValue == null) {
                     if (nullSerializer != null) {
@@ -102,7 +90,7 @@ public class MapToJsonSerializer implements JsonSerializer {
                         } else {
                             isFirst = false;
                         }
-                        nameSerializer.serialize(writer, memberName);
+                        memberNameSerializer.serialize(writer, memberName);
                         writer.append(NAME_SEPARATOR);
                         nullSerializer.serialize(writer, memberValue);
                     }
@@ -122,7 +110,7 @@ public class MapToJsonSerializer implements JsonSerializer {
                     } else {
                         isFirst = false;
                     }
-                    nameSerializer.serialize(writer, memberName);
+                    memberNameSerializer.serialize(writer, memberName);
                     writer.append(NAME_SEPARATOR);
                     manager.getSerializer(memberValue).serialize(writer, memberValue);
                 }
