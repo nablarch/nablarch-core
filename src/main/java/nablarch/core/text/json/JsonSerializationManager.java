@@ -55,7 +55,7 @@ public class JsonSerializationManager {
      * @return デフォルトのシリアライザ
      */
     protected JsonSerializer createDefaultSerializer() {
-        return new ObjectToJsonSerializer();
+        return new ObjectToJsonSerializer(this);
     }
 
     /**
@@ -68,13 +68,14 @@ public class JsonSerializationManager {
     protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
         return Arrays.asList(
                 new StringToJsonSerializer(),
-                new DateToJsonSerializer(),
+                new DateToJsonSerializer(this),
                 new MapToJsonSerializer(this),
                 new ListToJsonSerializer(this),
                 new ArrayToJsonSerializer(this),
-                new NumberToJsonSerializer(),
+                new NumberToJsonSerializer(this),
                 new BooleanToJsonSerializer(),
-                new LocalDateTimeToJsonSerializer());
+                new CalendarToJsonSerializer(this),
+                new LocalDateTimeToJsonSerializer(this));
     }
 
     /**

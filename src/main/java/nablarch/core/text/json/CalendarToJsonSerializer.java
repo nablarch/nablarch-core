@@ -1,7 +1,10 @@
 package nablarch.core.text.json;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Calendarの値をシリアライズするクラス。<br>
@@ -9,7 +12,33 @@ import java.util.Date;
  * シリアライズによりJsonのstringとして出力する。
  * @author Shuji Kitamura
  */
-public class CalendarToJsonSerializer extends DateToJsonSerializer {
+public class CalendarToJsonSerializer implements JsonSerializer {
+
+    /** 日時のフォーマッタ */
+    private DateFormat dateFormat;
+
+    /** シリアライズ管理クラス */
+    private final JsonSerializationManager manager;
+
+    /** stringシリアライザ */
+    private JsonSerializer stringSerializer;
+
+    /**
+     * コンストラクタ。
+     * @param manager シリアライズ管理クラス
+     */
+    public CalendarToJsonSerializer(JsonSerializationManager manager) {
+        this.manager = manager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initialize(JsonSerializationSettings settings) {
+        dateFormat = new SimpleDateFormat(settings.getDatePattern());
+        stringSerializer = manager.getSerializer("");
+    }
 
     /**
      * {@inheritDoc}
@@ -23,7 +52,8 @@ public class CalendarToJsonSerializer extends DateToJsonSerializer {
      * {@inheritDoc}
      */
     @Override
-    protected Date convertDate(Object value) {
-        return ((Calendar)value).getTime();
+    public void serialize(Writer writer, Object value) throws IOException {
+        stringSerializer.serialize(writer,
+                dateFormat.format(((Calendar)value).getTime()));
     }
 }

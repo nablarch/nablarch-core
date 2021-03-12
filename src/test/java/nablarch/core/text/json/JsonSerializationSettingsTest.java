@@ -100,4 +100,29 @@ public class JsonSerializationSettingsTest {
 
         assertThat(e.getMessage(), is("'xxxFormatter.porkPattern' was not specified."));
     }
+
+    @Test
+    public void デフォルトの日時フォーマットが取得できること() throws Exception {
+        JsonSerializationSettings settings = new JsonSerializationSettings();
+
+        assertThat(settings.getDatePattern(), is("yyyy-MM-dd HH:mm:ss.SSS"));
+    }
+
+    @Test
+    public void コンストラクタで設定した日時フォーマットが取得できること() throws Exception {
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("datePattern", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        JsonSerializationSettings settings = new JsonSerializationSettings(map);
+
+        assertThat(settings.getDatePattern(), is("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+    }
+
+    @Test
+    public void セッターで設定した日時フォーマットが取得できること() throws Exception {
+        JsonSerializationSettings settings = new JsonSerializationSettings();
+        settings.setDatePattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        assertThat(settings.getDatePattern(), is("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+    }
+
 }

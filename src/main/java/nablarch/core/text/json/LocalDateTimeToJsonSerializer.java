@@ -2,6 +2,8 @@ package nablarch.core.text.json;
 
 import nablarch.core.util.StringUtil;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -11,7 +13,7 @@ import java.lang.reflect.Method;
  * シリアライズによりJsonのstringとして出力する。
  * @author Shuji Kitamura
  */
-public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
+public class LocalDateTimeToJsonSerializer implements JsonSerializer {
 
     /** 設定から取得する日時フォーマットのプロパティ名 */
     private static final String DATE_PATTERN_PROPERTY = "datePattern";
@@ -27,6 +29,20 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
 
     private String datePattern;
 
+    /** シリアライズ管理クラス */
+    private final JsonSerializationManager manager;
+
+    /** stringシリアライザ */
+    private JsonSerializer stringSerializer;
+
+    /**
+     * コンストラクタ。
+     * @param manager シリアライズ管理クラス
+     */
+    public LocalDateTimeToJsonSerializer(JsonSerializationManager manager) {
+        this.manager = manager;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -35,6 +51,8 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
         formatter = getFormatter(settings);
         if (formatter != null) formatMethod = getFormatMethod(formatter.getClass());
         // (coverage) Java7以前の場合に formatter == null が成立する
+
+        stringSerializer = manager.getSerializer("");
     }
 
     /**
@@ -123,14 +141,23 @@ public class LocalDateTimeToJsonSerializer extends StringToJsonSerializer {
     }
 
     /**
-     * {@inheritDoc}<br>
+     * {@inheritDoc}
+     */
+    @Override
+    public void serialize(Writer writer, Object value) throws IOException {
+        stringSerializer.serialize(writer, format(value));
+    }
+
+    /**
+     * TemporalAccessorのオブジェクトをフォーマットする。<br>
      * <br>
      * java.time.format.DateTimeFormatter#format(TemporalAccessor)において、
      * 書式設定中にエラーが発生した場合は、DateTimeExceptionがスローされるが、
-     * 本クラスでは代替として、IllegalArgumentExceptionをスローする。
+     * 本クラスでは代替として、IllegalArgumentExceptionをスローする。<br>
+     * @param value フォーマットするオブジェクト(java.time.TemporalAccessor)
+     * @return フォーマットした文字列
      */
-    @Override
-    protected String convertString(Object value) {
+    private String format(Object value) {
         if (value == null) {
             throw new NullPointerException();
         }

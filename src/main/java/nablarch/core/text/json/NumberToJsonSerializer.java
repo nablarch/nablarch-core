@@ -19,14 +19,28 @@ import java.io.Writer;
  * シリアライズによりJsonのnumberとして出力する。
  * @author Shuji Kitamura
  */
-public class NumberToJsonSerializer extends StringToJsonSerializer {
+public class NumberToJsonSerializer implements JsonSerializer {
+
+    /** シリアライズ管理クラス */
+    private final JsonSerializationManager manager;
+
+    /** stringシリアライザ */
+    private JsonSerializer stringSerializer;
+
+    /**
+     * コンストラクタ。
+     * @param manager シリアライズ管理クラス
+     */
+    public NumberToJsonSerializer(JsonSerializationManager manager) {
+        this.manager = manager;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void initialize(JsonSerializationSettings settings) {
-        //NOOP
+        stringSerializer = manager.getSerializer("");
     }
 
     /**
@@ -59,7 +73,7 @@ public class NumberToJsonSerializer extends StringToJsonSerializer {
      */
     protected void serializeFloat(Writer writer, Float value)throws IOException {
         if (Float.isNaN(value) || Float.isInfinite(value)) {
-            super.serialize(writer, value.toString());
+            stringSerializer.serialize(writer, value.toString());
         } else {
             writer.append(value.toString());
         }
@@ -73,7 +87,7 @@ public class NumberToJsonSerializer extends StringToJsonSerializer {
      */
     protected void serializeDouble(Writer writer, Double value)throws IOException {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
-            super.serialize(writer, value.toString());
+            stringSerializer.serialize(writer, value.toString());
         } else {
             writer.append(value.toString());
         }

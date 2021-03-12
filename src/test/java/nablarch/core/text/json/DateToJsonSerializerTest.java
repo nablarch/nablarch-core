@@ -21,12 +21,16 @@ import static org.hamcrest.core.Is.is;
  */
 public class DateToJsonSerializerTest {
 
+    private JsonSerializationManager manager;
     private JsonSerializer serializer;
     private StringWriter writer = new StringWriter();
 
     @Before
     public void setup() {
-        serializer = new DateToJsonSerializer();
+        manager = new JsonSerializationManager();
+        manager.initialize();
+
+        serializer = new DateToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
@@ -64,7 +68,7 @@ public class DateToJsonSerializerTest {
     @Test
     public void Dateが書式指定でシリアライズできること() throws Exception {
 
-        JsonSerializer serializer = new DateToJsonSerializer();
+        JsonSerializer serializer = new DateToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         map.put("datePattern", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         JsonSerializationSettings settings = new JsonSerializationSettings(map);

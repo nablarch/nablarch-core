@@ -158,12 +158,7 @@ public class MapToJsonSerializerTest {
             protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
                 return Arrays.asList(
                         new StringToJsonSerializer(),
-                        new DateToJsonSerializer(),
-                        new CustomMapToJsonSerializer(this),
-                        new ListToJsonSerializer(this),
-                        new ArrayToJsonSerializer(this),
-                        new NumberToJsonSerializer(),
-                        new BooleanToJsonSerializer());
+                        new CustomMapToJsonSerializer(this));
             }
         };
         Map<String,String> map = new HashMap<String, String>();

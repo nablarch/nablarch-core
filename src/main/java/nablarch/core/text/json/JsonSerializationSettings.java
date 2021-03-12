@@ -11,6 +11,12 @@ import java.util.Map;
  */
 public class JsonSerializationSettings {
 
+    /** 設定から取得する日時フォーマットのプロパティ名 */
+    private static final String DATE_PATTERN_PROPERTY = "datePattern";
+
+    /** デフォルトの日時フォーマット */
+    private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+
     /** 設定内容 */
     private Map<String, String> props;
 
@@ -19,6 +25,13 @@ public class JsonSerializationSettings {
 
     /** 設定取り込み元のファイルパス */
     private String filePath;
+
+    /**
+     * コンストラクタ。
+     */
+    public JsonSerializationSettings() {
+        this(new HashMap<String, String>(),null,null);
+    }
 
     /**
      * コンストラクタ。
@@ -111,4 +124,25 @@ public class JsonSerializationSettings {
         }
         return propValue;
     }
+
+    /**
+     * 日時フォーマットを取得する。<br>
+     * 日時フォーマットのプロパティ名は"datePattern"。
+     * プロパティの値が設定されていない、もしくはnull、空の文字列の場合、デフォルトの日時フォーマットとして、
+     * "yyyy-MM-dd HH:mm:ss.SSS"を返す。
+     * @return 日時フォーマット
+     */
+    public String getDatePattern() {
+        String datePattern = getProp(DATE_PATTERN_PROPERTY);
+        return !StringUtil.isNullOrEmpty(datePattern) ?  datePattern : DEFAULT_DATE_PATTERN;
+    }
+
+    /**
+     * 日時フォーマットを設定する。
+     * @param datePattern 日時フォーマット
+     */
+    public void setDatePattern(String datePattern) {
+        getProps().put(DATE_PATTERN_PROPERTY, datePattern);
+    }
+
 }

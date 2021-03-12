@@ -18,12 +18,16 @@ import static org.hamcrest.core.Is.is;
  */
 public class CalendarToJsonSerializerTest {
 
+    private JsonSerializationManager manager;
     private JsonSerializer serializer;
     private StringWriter writer = new StringWriter();
 
     @Before
     public void setup() {
-        serializer = new CalendarToJsonSerializer();
+        manager = new JsonSerializationManager();
+        manager.initialize();
+
+        serializer = new CalendarToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
@@ -58,7 +62,7 @@ public class CalendarToJsonSerializerTest {
 
     @Test
     public void Calendarが書式指定でシリアライズできること() throws Exception {
-        JsonSerializer serializer = new CalendarToJsonSerializer();
+        JsonSerializer serializer = new CalendarToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         map.put("datePattern", "yyyy/MM/dd HH:mm:ss");
         JsonSerializationSettings settings = new JsonSerializationSettings(map);

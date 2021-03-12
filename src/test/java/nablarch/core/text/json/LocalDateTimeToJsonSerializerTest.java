@@ -24,12 +24,16 @@ import static org.junit.Assume.assumeTrue;
  */
 public class LocalDateTimeToJsonSerializerTest {
 
+    private JsonSerializationManager manager;
     private JsonSerializer serializer;
     private StringWriter writer = new StringWriter();
 
     @Before
     public void setup() {
-        serializer = new LocalDateTimeToJsonSerializer();
+        manager = new JsonSerializationManager();
+        manager.initialize();
+
+        serializer = new LocalDateTimeToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
@@ -81,7 +85,7 @@ public class LocalDateTimeToJsonSerializerTest {
     public void Java8以降のときLocalDateTimeが書式指定でシリアライズできること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
-        JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
+        JsonSerializer serializer = new LocalDateTimeToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         map.put("datePattern", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
@@ -100,7 +104,7 @@ public class LocalDateTimeToJsonSerializerTest {
         Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
+                JsonSerializer serializer = new LocalDateTimeToJsonSerializer(manager);
                 Map<String,String> map = new HashMap<String, String>();
                 map.put("datePattern", "ABCDEFG");
                 JsonSerializationSettings settings = new JsonSerializationSettings(map);
@@ -132,7 +136,7 @@ public class LocalDateTimeToJsonSerializerTest {
         Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                JsonSerializer serializer = new LocalDateTimeToJsonSerializer();
+                JsonSerializer serializer = new LocalDateTimeToJsonSerializer(manager);
                 Map<String,String> map = new HashMap<String, String>();
                 map.put("datePattern", "Z");
                 JsonSerializationSettings settings = new JsonSerializationSettings(map);

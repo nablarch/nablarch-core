@@ -24,7 +24,10 @@ public class ObjectToJsonSerializerTest {
 
     @Before
     public void setup() {
-        serializer = new ObjectToJsonSerializer();
+        JsonSerializationManager manager = new JsonSerializationManager();
+        manager.initialize();
+
+        serializer = new ObjectToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);

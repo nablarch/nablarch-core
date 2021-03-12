@@ -1,5 +1,8 @@
 package nablarch.core.text.json;
 
+import java.io.IOException;
+import java.io.Writer;
+
 /**
  * 任意のオブジェクトを文字列としてシリアライズするクラス。<br>
  * 本クラスは全てのObjectを受け入れてシリアライズする。<br>
@@ -7,7 +10,29 @@ package nablarch.core.text.json;
  * シリアライズによりJsonのstringとして出力する。
  * @author Shuji Kitamura
  */
-public class ObjectToJsonSerializer extends StringToJsonSerializer {
+public class ObjectToJsonSerializer implements JsonSerializer {
+
+    /** シリアライズ管理クラス */
+    private final JsonSerializationManager manager;
+
+    /** stringシリアライザ */
+    private JsonSerializer stringSerializer;
+
+    /**
+     * コンストラクタ。
+     * @param manager シリアライズ管理クラス
+     */
+    public ObjectToJsonSerializer(JsonSerializationManager manager) {
+        this.manager = manager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initialize(JsonSerializationSettings settings) {
+        stringSerializer = manager.getSerializer("");
+    }
 
     /**
      * {@inheritDoc}
@@ -21,7 +46,8 @@ public class ObjectToJsonSerializer extends StringToJsonSerializer {
      * {@inheritDoc}
      */
     @Override
-    protected String convertString(Object value) {
-        return value.toString();
+    public void serialize(Writer writer, Object value) throws IOException {
+        stringSerializer.serialize(writer, value.toString());
     }
+
 }

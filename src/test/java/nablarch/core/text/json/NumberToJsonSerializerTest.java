@@ -28,7 +28,10 @@ public class NumberToJsonSerializerTest {
 
     @Before
     public void setup() {
-        serializer = new NumberToJsonSerializer();
+        JsonSerializationManager manager = new JsonSerializationManager();
+        manager.initialize();
+
+        serializer = new NumberToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
         serializer.initialize(settings);
@@ -169,11 +172,6 @@ public class NumberToJsonSerializerTest {
 
     @Test
     public void AtomicIntegerがシリアライズできること() throws Exception {
-
-        JsonSerializer serializer = new NumberToJsonSerializer();
-        Map<String,String> map = new HashMap<String, String>();
-        JsonSerializationSettings settings = new JsonSerializationSettings(map);
-        serializer.initialize(settings);
 
         AtomicInteger value = new AtomicInteger(123);
         serializer.serialize(writer, value);
