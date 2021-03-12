@@ -69,6 +69,7 @@ public class MapToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         //NOOP
     }
@@ -76,6 +77,7 @@ public class MapToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return Map.class.isAssignableFrom(valueClass);
     }
@@ -83,6 +85,7 @@ public class MapToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void serialize(Writer writer, Object value) throws IOException {
         JsonSerializer nameSerializer = getNameSerializer();
         JsonSerializer nullSerializer = getNullSerializer();

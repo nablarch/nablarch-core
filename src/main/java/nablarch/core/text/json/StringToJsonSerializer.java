@@ -18,6 +18,7 @@ public class StringToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         //NOOP
     }
@@ -25,6 +26,7 @@ public class StringToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return String.class.isAssignableFrom(valueClass);
     }
@@ -32,6 +34,7 @@ public class StringToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void serialize(Writer writer, Object value) throws IOException {
         writeEscapedString(writer, convertString(value));
     }

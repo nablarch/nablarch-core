@@ -14,6 +14,7 @@ public class BooleanToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         //NOOP
     }
@@ -21,6 +22,7 @@ public class BooleanToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return Boolean.class.isAssignableFrom(valueClass);
     }
@@ -28,6 +30,7 @@ public class BooleanToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void serialize(Writer writer, Object value) throws IOException {
         writer.append(value.toString());
     }

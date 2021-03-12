@@ -15,6 +15,7 @@ public class NullToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         //NOOP
     }
@@ -22,6 +23,7 @@ public class NullToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return true;
     }
@@ -29,6 +31,7 @@ public class NullToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void serialize(Writer writer, Object value) throws IOException {
         writer.append("null");
     }

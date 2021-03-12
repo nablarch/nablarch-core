@@ -35,6 +35,7 @@ public class ArrayToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(JsonSerializationSettings settings) {
         //NOOP
     }
@@ -42,6 +43,7 @@ public class ArrayToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isTarget(Class<?> valueClass) {
         return valueClass.isArray();
     }
@@ -49,6 +51,7 @@ public class ArrayToJsonSerializer implements JsonSerializer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void serialize(Writer writer, Object value) throws IOException {
         writer.append(BEGIN_ARRAY);
         int len = Array.getLength(value);
