@@ -112,7 +112,7 @@ public class LocalDateTimeToJsonSerializerTest {
             }
         });
 
-        assertThat(e.getMessage(), is("illegal date pattern. pattern = [ABCDEFG], property name = [datePattern]"));
+        assertThat(e.getMessage(), is("illegal date pattern. pattern = [ABCDEFG]"));
     }
 
     @Test
