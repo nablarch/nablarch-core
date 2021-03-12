@@ -33,22 +33,6 @@ public class ListToJsonSerializer implements JsonSerializer {
     }
 
     /**
-     * シリアライズ管理クラスを取得します。
-     * @return シリアライズ管理クラス
-     */
-    protected JsonSerializationManager getJsonSerializationManager() {
-        return manager;
-    }
-
-    /**
-     * 値がnullの場合に使用するシリアライザを取得します。
-     * @return nullに使用するシリアライザ
-     */
-    protected JsonSerializer getNullSerializer() {
-        return getJsonSerializationManager().getSerializer(null);
-    }
-
-    /**
      * {@inheritDoc}
      */
     public void initialize(JsonSerializationSettings settings) {
@@ -66,30 +50,15 @@ public class ListToJsonSerializer implements JsonSerializer {
      * {@inheritDoc}
      */
     public void serialize(Writer writer, Object value) throws IOException {
-        JsonSerializer nullSerializer = null;
-
         writer.append(BEGIN_ARRAY);
         List<?> list = (List<?>) value;
         int len = list.size();
-        Class<?> prevClass = null;
-        JsonSerializer serializer = null;
         for (int i = 0; i < len; i++) {
             if (i > 0) {
                 writer.append(VALUE_SEPARATOR);
             }
             Object o = list.get(i);
-            if (o == null) {
-                if (nullSerializer == null) {
-                    nullSerializer = getNullSerializer();
-                }
-                nullSerializer.serialize(writer, o);
-            } else {
-                if (prevClass == null || prevClass != o.getClass()) {
-                    serializer = manager.getSerializer(o);
-                    prevClass = o.getClass();
-                }
-                serializer.serialize(writer, o);
-            }
+            manager.getSerializer(o).serialize(writer, o);
         }
         writer.append(END_ARRAY);
     }

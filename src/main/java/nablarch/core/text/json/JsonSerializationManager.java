@@ -3,6 +3,7 @@ package nablarch.core.text.json;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Jsonのシリアライザを管理するクラス。
@@ -18,6 +19,10 @@ public class JsonSerializationManager {
 
     /** デフォルトのシリアライザ */
     private JsonSerializer defaultSerializer;
+
+    /** ClassごとのJsonSerializerのキャッシュ */
+    private final Map<Class<?>, JsonSerializer> jsonSerializerCache
+            = new HashMap<Class<?>, JsonSerializer>();
 
     /**
      * 初期化する。
@@ -89,8 +94,14 @@ public class JsonSerializationManager {
             return nullSerializer;
         } else {
             Class<?> cls = value.getClass();
+            if (jsonSerializerCache.containsKey(cls)) {
+                return jsonSerializerCache.get(cls);
+            }
             for (JsonSerializer serializer : serializers) {
-                if (serializer.isTarget(cls)) return serializer;
+                if (serializer.isTarget(cls)) {
+                    jsonSerializerCache.put(cls, serializer);
+                    return serializer;
+                }
             }
         }
         return defaultSerializer;
