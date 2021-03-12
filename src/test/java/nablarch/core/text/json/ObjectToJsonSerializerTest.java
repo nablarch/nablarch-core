@@ -53,8 +53,13 @@ public class ObjectToJsonSerializerTest {
     @Test
     public void toStringの結果でstringとしてシリアライズできること() throws Exception {
 
-        serializer.serialize(writer, true);
-        assertThat(writer.toString(), is("\"true\""));
+        serializer.serialize(writer, new Object() {
+            @Override
+            public String toString() {
+                return "TEST";
+            }
+        });
+        assertThat(writer.toString(), is("\"TEST\""));
     }
 
     @Test
