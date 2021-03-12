@@ -65,13 +65,13 @@ public class StringToJsonSerializerTest {
 
         writer = new StringWriter();
 
-        serializer.serialize(writer, "\"ABC\"");
-        assertThat(writer.toString(), is("\"\\\"ABC\\\"\""));
+        serializer.serialize(writer, "\"\"");
+        assertThat(writer.toString(), is("\"\\\"\\\"\""));
 
         writer = new StringWriter();
 
-        serializer.serialize(writer, "123\\\"a\b\f\tb\u001fc\r\nABC");
-        assertThat(writer.toString(), is("\"123\\\\\\\"a\\b\\f\\tb\\u001fc\\r\\nABC\""));
+        serializer.serialize(writer, "123,\\,\",\b,\f,\t,\u001f,\r,\n,ABC");
+        assertThat(writer.toString(), is("\"123,\\\\,\\\",\\b,\\f,\\t,\\u001f,\\r,\\n,ABC\""));
     }
 
     @Test
