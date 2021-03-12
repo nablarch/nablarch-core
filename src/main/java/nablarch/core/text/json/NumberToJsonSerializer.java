@@ -4,19 +4,25 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Numberの値をシリアライズするクラス。<br>
- * 受入れ可能なオブジェクトの型は java.lang.Numbe、及び、そのサブクラスとして下記などが対象となる。<br>
- * java.lang.Integer<br>
- * java.lang.Long<br>
- * java.lang.Short<br>
- * java.lang.Byte<br>
- * java.lang.Float<br>
- * java.lang.Double<br>
- * java.util.concurrent.atomic.AtomicInteger<br>
- * java.util.concurrent.atomic.AtomicLong<br>
- * java.math.BigInteger<br>
- * java.math.BigDecimal<br>
+ * Numberの値をシリアライズするクラス。
+ * <p>
+ * 受入れ可能なオブジェクトの型は {@link Number} 及び、そのサブクラスとして下記などが対象となる。
+ * </p>
+ * <ul>
+ *   <li>{@link Integer}</li>
+ *   <li>{@link Long}</li>
+ *   <li>{@link Short}</li>
+ *   <li>{@link Byte}</li>
+ *   <li>{@link Float}</li>
+ *   <li>{@link Double}</li>
+ *   <li>{@link java.util.concurrent.atomic.AtomicInteger AtomicInteger}</li>
+ *   <li>{@link java.util.concurrent.atomic.AtomicLong AtomicLong}</li>
+ *   <li>{@link java.math.BigInteger BigInteger}</li>
+ *   <li>{@link java.math.BigDecimal BigDecimal}</li>
+ * </ul>
+ * <p>
  * シリアライズによりJsonのnumberとして出力する。
+ * </p>
  * @author Shuji Kitamura
  */
 public class NumberToJsonSerializer implements JsonSerializer {
