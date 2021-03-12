@@ -53,28 +53,15 @@ public class MapToJsonSerializerTest {
     @Test
     public void Mapがシリアライズできること() throws Exception {
 
-        Map<String, String> stringMapValue = new HashMap<String, String>();
-        stringMapValue.put("key1","value1");
-        stringMapValue.put("key2","value2");
-        stringMapValue.put("key3","value3");
-
-        serializer.serialize(writer, stringMapValue);
-        assertThat(writer.toString(), isJson(allOf(
-                withJsonPath("$", hasEntry("key1", "value1")),
-                withJsonPath("$", hasEntry("key2", "value2")),
-                withJsonPath("$", hasEntry("key3", "value3")))));
-
-        writer = new StringWriter();
-
-        Map<String, Integer> intMapValue = new HashMap<String, Integer>();
+        Map<String, Object> intMapValue = new HashMap<String, Object>();
         intMapValue.put("key1",123);
-        intMapValue.put("key2",45);
+        intMapValue.put("key2","45");
         intMapValue.put("key3",678);
 
         serializer.serialize(writer, intMapValue);
         assertThat(writer.toString(), isJson(allOf(
                 withJsonPath("$", hasEntry("key1", 123)),
-                withJsonPath("$", hasEntry("key2", 45)),
+                withJsonPath("$", hasEntry("key2", "45")),
                 withJsonPath("$", hasEntry("key3", 678)))));
     }
 
