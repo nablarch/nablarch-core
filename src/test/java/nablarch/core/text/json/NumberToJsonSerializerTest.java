@@ -93,9 +93,9 @@ public class NumberToJsonSerializerTest {
     @Test
     public void floatがシリアライズできること() throws Exception {
 
-        float value = 100.0f / 3;
+        float value = 0.12345678f;
         serializer.serialize(writer, value);
-        assertThat(writer.toString(), is("33.333332"));
+        assertThat(writer.toString(), is("0.12345678"));
     }
 
     @Test
@@ -125,9 +125,9 @@ public class NumberToJsonSerializerTest {
     @Test
     public void doubleがシリアライズできること() throws Exception {
 
-        double value = 100.0d / 3;
+        double value = 0.1234567890123456;
         serializer.serialize(writer, value);
-        assertThat(writer.toString(), is("33.333333333333336"));
+        assertThat(writer.toString(), is("0.1234567890123456"));
     }
 
     @Test
@@ -166,9 +166,9 @@ public class NumberToJsonSerializerTest {
     @Test
     public void BigIntegerがシリアライズできること() throws Exception {
 
-        BigInteger value = new BigInteger("ffff", 16);
+        BigInteger value = new BigInteger("123456789012345678901234567890");
         serializer.serialize(writer, value);
-        assertThat(writer.toString(), is("65535"));
+        assertThat(writer.toString(), is("123456789012345678901234567890"));
     }
 
     @Test
