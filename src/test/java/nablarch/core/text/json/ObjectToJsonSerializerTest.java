@@ -3,14 +3,17 @@ package nablarch.core.text.json;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 
 /**
  * {@link ObjectToJsonSerializer}のテストクラス
@@ -52,6 +55,19 @@ public class ObjectToJsonSerializerTest {
 
         serializer.serialize(writer, true);
         assertThat(writer.toString(), is("\"true\""));
+    }
+
+    @Test
+    public void nullはserializeで例外になること() throws Exception {
+
+        Exception e = assertThrows(NullPointerException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                serializer.serialize(writer, null);
+            }
+        });
+
+        assertThat(e.getMessage(), is(nullValue()));
     }
 
 }
