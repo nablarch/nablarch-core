@@ -73,7 +73,7 @@ public class JsonSerializationSettings {
      *
      * @return プレフィックスにマッチする設定
      */
-    protected Map<String, String> getSettingsByPrefix(Map<String, String> settings, String prefix) {
+    private Map<String, String> getSettingsByPrefix(Map<String, String> settings, String prefix) {
         int prefixLength = prefix.length();
         Map<String, String> settingsForPrefix = new HashMap<String, String>();
         for (Map.Entry<String, String> prop : settings.entrySet()) {
