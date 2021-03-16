@@ -89,7 +89,9 @@ public class JsonSerializationManager {
      * @return 引数に渡した値をシリアライズするためのシリアライザ
      */
     public JsonSerializer getSerializer(Object value) {
-        if (serializers == null) throw new IllegalStateException("JsonSerializationManager is not initialized.");
+        if (serializers == null) {
+            throw new IllegalStateException("JsonSerializationManager is not initialized.");
+        }
         if (value == null) {
             return nullSerializer;
         } else {

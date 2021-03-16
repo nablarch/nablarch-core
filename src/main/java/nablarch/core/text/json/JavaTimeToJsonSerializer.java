@@ -44,7 +44,9 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
     @Override
     public void initialize(JsonSerializationSettings settings) {
         formatter = getFormatter(settings);
-        if (formatter != null) formatMethod = getFormatMethod(formatter.getClass());
+        if (formatter != null) {
+            formatMethod = getFormatMethod(formatter.getClass());
+        }
         // (coverage) Java7以前の場合に formatter == null が成立する
 
         stringSerializer = manager.getSerializer("");
