@@ -18,13 +18,13 @@ public class JsonSerializationSettings {
     private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /** 設定内容 */
-    private Map<String, String> props;
+    private final Map<String, String> props;
 
     /** 設定取り込み対象とするプレフィックスとする文字列 */
-    private String prefix;
+    private final String prefix;
 
     /** 設定取り込み元のファイルパス */
-    private String filePath;
+    private final String filePath;
 
     /**
      * コンストラクタ。
@@ -56,22 +56,6 @@ public class JsonSerializationSettings {
         } else {
             props = getSettingsByPrefix(settings, prefix);
         }
-    }
-
-    /**
-     * 取り込み元のプロパティファイルのファイルパスを取得する。
-     * @return 取り込み元のプロパティファイルのファイルパス
-     */
-    protected String getFilePath() {
-        return filePath;
-    }
-
-    /**
-     * 取り込み対象のプレフィックスとする文字列を取得する。
-     * @return 取り込み対象のプレフィックスとする文字列
-     */
-    protected String getPrefix() {
-        return prefix;
     }
 
     /**
@@ -119,8 +103,8 @@ public class JsonSerializationSettings {
         String propValue = getProps().get(propName);
         if (propValue == null || propValue.length() == 0) {
             throw new IllegalArgumentException(
-                    "'" + (getPrefix() != null ? getPrefix() : "") + propName + "' was not specified."
-                    + (!StringUtil.isNullOrEmpty(getFilePath()) ? " file path = [" + getFilePath() + "]" : ""));
+                    "'" + (prefix != null ? prefix : "") + propName + "' was not specified."
+                    + (!StringUtil.isNullOrEmpty(filePath) ? " file path = [" + filePath + "]" : ""));
         }
         return propValue;
     }
