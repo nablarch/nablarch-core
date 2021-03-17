@@ -1,12 +1,15 @@
 package nablarch.core.text.json;
 
 /**
- * Jsonのobjectへの埋め込み用クラス。<br>
+ * Jsonのobjectへの埋め込み用クラス。
+ * <p>
  * {@link MapToJsonSerializer}で組み立て済みのJSON構文となる文字列を埋め込むために使用する。<br>
- * 組み立て済みのJSON構文は、objectのmember要素とし、前後にオブジェクトの開始、終了マーカーや値のセパレーターは含まないこと。
+ * 組み立て済みのJSON構文は、objectのmember要素とし、前後にオブジェクトの開始、終了マーカーや値のセパレーターは含まないこと。<br>
+ * 例：{@code "\"key1\":\"value1\",\"key2\":\"value2\""}
+ * </p>
  * @author Shuji Kitamura
  */
-public class InplaceMapEntries {
+public class RawJsonObjectMembers {
 
     /** 組み立て済みのJSON構文 */
     private final String rawJsonText;
@@ -15,7 +18,7 @@ public class InplaceMapEntries {
      * コンストラクタ
      * @param rawJsonText 組み立て済みのJSON構文
      */
-    public InplaceMapEntries(String rawJsonText) {
+    public RawJsonObjectMembers(String rawJsonText) {
         this.rawJsonText = rawJsonText;
     }
 

@@ -94,8 +94,8 @@ public class MapToJsonSerializer implements JsonSerializer {
                         writer.append(NAME_SEPARATOR);
                         nullSerializer.serialize(writer, memberValue);
                     }
-                } else if (memberValue instanceof InplaceMapEntries) {
-                    InplaceMapEntries rawMembers = (InplaceMapEntries)memberValue;
+                } else if (memberValue instanceof RawJsonObjectMembers) {
+                    RawJsonObjectMembers rawMembers = (RawJsonObjectMembers)memberValue;
                     if (!rawMembers.isJsonWhitespace()) {
                         if (!isFirst) {
                             writer.append(VALUE_SEPARATOR);

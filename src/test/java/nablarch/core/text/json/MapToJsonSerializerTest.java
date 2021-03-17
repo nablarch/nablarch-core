@@ -94,7 +94,7 @@ public class MapToJsonSerializerTest {
 
         Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
         mapValue.put("key1","value1");
-        mapValue.put("key2",new InplaceMapEntries("\"keyA\":1,\"keyB\":2"));
+        mapValue.put("key2",new RawJsonObjectMembers("\"keyA\":1,\"keyB\":2"));
         mapValue.put("key3","value3");
 
         serializer.serialize(writer, mapValue);
@@ -110,7 +110,7 @@ public class MapToJsonSerializerTest {
     public void 先頭への挿入処理を含むMapがシリアライズできること() throws Exception {
 
         Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
-        mapValue.put("key1",new InplaceMapEntries("\"keyA\":1,\"keyB\":2"));
+        mapValue.put("key1",new RawJsonObjectMembers("\"keyA\":1,\"keyB\":2"));
         mapValue.put("key2","value2");
         mapValue.put("key3","value3");
 
@@ -128,7 +128,7 @@ public class MapToJsonSerializerTest {
 
         Map<String, Object> mapValue = new HashMap<String, Object>();
         mapValue.put("key1","value1");
-        mapValue.put("key2",new InplaceMapEntries(" \t\r\n"));
+        mapValue.put("key2",new RawJsonObjectMembers(" \t\r\n"));
         mapValue.put("key3","value3");
 
         serializer.serialize(writer, mapValue);
