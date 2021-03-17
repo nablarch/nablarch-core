@@ -29,7 +29,6 @@ public class InplaceMapEntries {
 
     /**
      * 文字列がJsonのwhitespaceのみで構成されるか判定します。
-     * @param s 判定する文字列
      * @return 半角スペース, 水平タブ, 改行(Line feed), 復帰改行(Carriage return)のみで構成されるときtrue
      */
     public boolean isJsonWhitespace() {
