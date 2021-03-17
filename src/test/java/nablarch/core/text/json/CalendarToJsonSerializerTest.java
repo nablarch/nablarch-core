@@ -24,7 +24,7 @@ public class CalendarToJsonSerializerTest {
 
     @Before
     public void setup() {
-        manager = new JsonSerializationManager();
+        manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         serializer = new CalendarToJsonSerializer(manager);

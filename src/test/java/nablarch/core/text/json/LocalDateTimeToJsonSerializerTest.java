@@ -30,7 +30,7 @@ public class LocalDateTimeToJsonSerializerTest {
 
     @Before
     public void setup() {
-        manager = new JsonSerializationManager();
+        manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         serializer = new LocalDateTimeToJsonSerializer(manager);

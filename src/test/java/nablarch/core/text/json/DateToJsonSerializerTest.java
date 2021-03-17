@@ -27,7 +27,7 @@ public class DateToJsonSerializerTest {
 
     @Before
     public void setup() {
-        manager = new JsonSerializationManager();
+        manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         serializer = new DateToJsonSerializer(manager);

@@ -24,12 +24,13 @@ import static org.hamcrest.core.Is.is;
  */
 public class MapToJsonSerializerTest {
 
+    private JsonSerializationManager manager;
     private JsonSerializer serializer;
     private StringWriter writer = new StringWriter();
 
     @Before
     public void setup() {
-        JsonSerializationManager manager = new JsonSerializationManager();
+        manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         serializer = new MapToJsonSerializer(manager);
@@ -143,9 +144,6 @@ public class MapToJsonSerializerTest {
 
     @Test
     public void ignoreNullValueMemberの設定でnullを出力できること() throws Exception {
-
-        JsonSerializationManager manager = new JsonSerializationManager();
-        manager.initialize();
 
         JsonSerializer serializer = new MapToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();

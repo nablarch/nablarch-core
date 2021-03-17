@@ -17,17 +17,17 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeTrue;
 
 /**
- * {@link JsonSerializationManager}のテストクラス
+ * {@link BasicJsonSerializationManager}のテストクラス
  *
  * @author Shuji Kitamura
  */
 public class JsonSerializationManagerTest {
 
-    JsonSerializationManager manager;
+    BasicJsonSerializationManager manager;
 
     @Before
     public void setup() {
-        manager = new JsonSerializationManager();
+        manager = new BasicJsonSerializationManager();
     }
 
     private boolean isRunningOnJava8OrHigher() {
@@ -76,7 +76,7 @@ public class JsonSerializationManagerTest {
     public void Java8以降でLocalDateTimeシリアライザの取得ができること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
-        JsonSerializationManager manager = new JsonSerializationManager();
+        BasicJsonSerializationManager manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         Class<?> clazz = Class.forName("java.time.LocalDateTime");
@@ -91,7 +91,7 @@ public class JsonSerializationManagerTest {
     public void シリアライザの初期化が行われていること() {
         final MockJsonSerializer mockJsonSerializer = new MockJsonSerializer();
 
-        JsonSerializationManager manager = new JsonSerializationManager() {
+        BasicJsonSerializationManager manager = new BasicJsonSerializationManager() {
             @Override
             protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
                 return Arrays.asList((JsonSerializer)mockJsonSerializer);
@@ -106,7 +106,7 @@ public class JsonSerializationManagerTest {
 
     @Test
     public void nullのシリアライザの取得ができること() throws Exception {
-        JsonSerializationManager manager = new JsonSerializationManager();
+        BasicJsonSerializationManager manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         Object value = null;
@@ -117,7 +117,7 @@ public class JsonSerializationManagerTest {
 
     @Test
     public void デフォルトのシリアライザの取得ができること() throws Exception {
-        JsonSerializationManager manager = new JsonSerializationManager();
+        BasicJsonSerializationManager manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         Object value = this;

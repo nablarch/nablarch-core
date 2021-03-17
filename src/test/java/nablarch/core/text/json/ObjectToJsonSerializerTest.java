@@ -27,7 +27,7 @@ public class ObjectToJsonSerializerTest {
 
     @Before
     public void setup() {
-        JsonSerializationManager manager = new JsonSerializationManager();
+        JsonSerializationManager manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         serializer = new ObjectToJsonSerializer(manager);

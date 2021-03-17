@@ -27,7 +27,7 @@ public class ListToJsonSerializerTest {
 
     @Before
     public void setup() {
-        JsonSerializationManager manager = new JsonSerializationManager();
+        JsonSerializationManager manager = new BasicJsonSerializationManager();
         manager.initialize();
         serializer = new ListToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();

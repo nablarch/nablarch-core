@@ -30,7 +30,7 @@ public class ArrayToJsonSerializerTest {
 
     @Before
     public void setup() {
-        JsonSerializationManager manager = new JsonSerializationManager();
+        JsonSerializationManager manager = new BasicJsonSerializationManager();
         manager.initialize();
 
         serializer = new ArrayToJsonSerializer(manager);
