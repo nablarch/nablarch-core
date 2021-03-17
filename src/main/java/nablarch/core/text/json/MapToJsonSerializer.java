@@ -1,13 +1,20 @@
 package nablarch.core.text.json;
 
+import nablarch.core.util.StringUtil;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
 /**
- * Mapオブジェクトをシリアライズするクラス。<br>
+ * Mapオブジェクトをシリアライズするクラス。
+ * <p>
  * 受入れ可能なオブジェクトの型は java.util.Map。<br>
- * シリアライズによりJsonのobjectとして出力する。
+ * シリアライズによりJsonのobjectとして出力する。<br>
+ * 値がnullとなるmemberはデフォルト設定で出力しない。
+ * 出力対象とする場合は、{@link JsonSerializationSettings}で
+ * ignoreNullValueMemberプロパティにfalseを設定する。<br>
+ * </p>
  * @author Shuji Kitamura
  */
 public class MapToJsonSerializer implements JsonSerializer {
@@ -24,11 +31,20 @@ public class MapToJsonSerializer implements JsonSerializer {
     /** 値のセパレータとなる文字 */
     private static final char VALUE_SEPARATOR = ',';
 
+    /** 値がNULLのmemberを無視するか否かのプロパティ名 */
+    private static final String IGNORE_NULL_VALUE_MEMBER_PROPERTY = "ignoreNullValueMember";
+
+    /** デフォルトの値がNULLのmemberを無視するか否か */
+    private static final boolean DEFAULT_IGNORE_NULL_VALUE_MEMBER = true;
+
     /** シリアライズ管理クラス */
     private final JsonSerializationManager manager;
 
     /** nameに使用するシリアライザ */
     private JsonSerializer memberNameSerializer;
+
+    /** 値がNULLのmemberを無視するか否か */
+    private boolean isIgnoreNullValueMember;
 
     /**
      * コンストラクタ。
@@ -39,28 +55,24 @@ public class MapToJsonSerializer implements JsonSerializer {
     }
 
     /**
-     * シリアライズ管理クラスを取得します。
-     * @return シリアライズ管理クラス
-     */
-    protected JsonSerializationManager getJsonSerializationManager() {
-        return manager;
-    }
-
-    /**
-     * 値がnullの場合に使用するシリアライザを取得します。<br>
-     * このメソッドがnullを返す時、値がnullの項目をスキップします。
-     * @return nullに使用するシリアライザ
-     */
-    protected JsonSerializer getNullSerializer() {
-        return null;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public void initialize(JsonSerializationSettings settings) {
-        this.memberNameSerializer = manager.getSerializer("");
+        memberNameSerializer = manager.getSerializer("");
+        isIgnoreNullValueMember = isIgnoreNullValueMember(settings);
+    }
+
+    /**
+     * 値がNULLのmemberを無視するか否かを取得する。<br>
+     * 取得元のプロパティ名は"ignoreNullValueMember"。
+     * プロパティの値が設定されていない、もしくはnull、空の文字列の場合、デフォルト値としてtrueを返す。
+     * @param settings シリアライザの設定
+     * @return 値がNULLのmemberを無視するときtrue、出力対象ととするときfalse
+     */
+    private boolean isIgnoreNullValueMember(JsonSerializationSettings settings) {
+        String ignore = settings.getProp(IGNORE_NULL_VALUE_MEMBER_PROPERTY);
+        return !StringUtil.isNullOrEmpty(ignore) ?  Boolean.parseBoolean(ignore) : DEFAULT_IGNORE_NULL_VALUE_MEMBER;
     }
 
     /**
@@ -76,15 +88,24 @@ public class MapToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void serialize(Writer writer, Object value) throws IOException {
-        JsonSerializer nullSerializer = getNullSerializer();
         Map<?, ?> map = (Map<?, ?>) value;
         boolean isFirst = true;
         writer.append(BEGIN_OBJECT);
         for (Object memberName: map.keySet()) {
             if (memberName != null && memberNameSerializer.isTarget(memberName.getClass())) {
                 Object memberValue = map.get(memberName);
-                if (memberValue == null) {
-                    if (nullSerializer != null) {
+                if (memberValue != null || !isIgnoreNullValueMember) {
+                    if (memberValue instanceof RawJsonObjectMembers) {
+                        RawJsonObjectMembers rawMembers = (RawJsonObjectMembers) memberValue;
+                        if (!rawMembers.isJsonWhitespace()) {
+                            if (!isFirst) {
+                                writer.append(VALUE_SEPARATOR);
+                            } else {
+                                isFirst = false;
+                            }
+                        }
+                        writer.append(rawMembers.getRawJsonText());
+                    } else {
                         if (!isFirst) {
                             writer.append(VALUE_SEPARATOR);
                         } else {
@@ -92,27 +113,8 @@ public class MapToJsonSerializer implements JsonSerializer {
                         }
                         memberNameSerializer.serialize(writer, memberName);
                         writer.append(NAME_SEPARATOR);
-                        nullSerializer.serialize(writer, memberValue);
+                        manager.getSerializer(memberValue).serialize(writer, memberValue);
                     }
-                } else if (memberValue instanceof RawJsonObjectMembers) {
-                    RawJsonObjectMembers rawMembers = (RawJsonObjectMembers)memberValue;
-                    if (!rawMembers.isJsonWhitespace()) {
-                        if (!isFirst) {
-                            writer.append(VALUE_SEPARATOR);
-                        } else {
-                            isFirst = false;
-                        }
-                    }
-                    writer.append(rawMembers.getRawJsonText());
-                } else {
-                    if (!isFirst) {
-                        writer.append(VALUE_SEPARATOR);
-                    } else {
-                        isFirst = false;
-                    }
-                    memberNameSerializer.serialize(writer, memberName);
-                    writer.append(NAME_SEPARATOR);
-                    manager.getSerializer(memberValue).serialize(writer, memberValue);
                 }
             }
         }

@@ -6,7 +6,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -139,25 +142,21 @@ public class MapToJsonSerializerTest {
     }
 
     @Test
-    public void Nullシリアライザを使用したシリアライズができること() throws Exception {
+    public void ignoreNullValueMemberの設定でnullを出力できること() throws Exception {
 
-        JsonSerializationManager manager = new JsonSerializationManager() {
-            protected List<JsonSerializer> createSerializers(JsonSerializationSettings settings) {
-                return Arrays.asList(
-                        new StringToJsonSerializer(),
-                        new CustomMapToJsonSerializer(this));
-            }
-        };
+        JsonSerializationManager manager = new JsonSerializationManager();
+        manager.initialize();
+
+        JsonSerializer serializer = new MapToJsonSerializer(manager);
         Map<String,String> map = new HashMap<String, String>();
+        map.put("ignoreNullValueMember", "false");
         JsonSerializationSettings settings = new JsonSerializationSettings(map);
-        manager.initialize(settings);
+        serializer.initialize(settings);
 
         Map<String, String> mapValue = new HashMap<String, String>();
         mapValue.put("key1",null);
         mapValue.put("key2", "value2");
         mapValue.put("key3",null);
-
-        JsonSerializer serializer = manager.getSerializer(mapValue);
 
         serializer.serialize(writer, mapValue);
         assertThat(writer.toString(), isJson(allOf(
@@ -176,27 +175,6 @@ public class MapToJsonSerializerTest {
 
         serializer.serialize(writer, mapValue);
         assertThat(writer.toString(), is("{\"key2\":\"value2\"}"));
-    }
-
-    /**
-     * nullを出力するMapシリアライザ。
-     */
-    public class CustomMapToJsonSerializer extends MapToJsonSerializer {
-
-        private JsonSerializer nullSerializer = null;
-
-        /** コンストラクタ。 */
-        public CustomMapToJsonSerializer(JsonSerializationManager manager) {
-            super(manager);
-        }
-
-        /** {@inheritDoc} */
-        protected JsonSerializer getNullSerializer() {
-            if (nullSerializer == null) {
-                nullSerializer = getJsonSerializationManager().getSerializer(null);
-            }
-            return nullSerializer;
-        }
     }
 
 }
