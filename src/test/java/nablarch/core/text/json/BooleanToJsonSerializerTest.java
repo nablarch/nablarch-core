@@ -39,8 +39,8 @@ public class BooleanToJsonSerializerTest {
     public void 対象オブジェクトの判定ができること() throws Exception {
 
         assertThat(serializer.isTarget(Boolean.class), is(true));
+        assertThat(serializer.isTarget(boolean.class), is(true));
 
-        assertThat(serializer.isTarget(boolean.class), is(false));
         assertThat(serializer.isTarget(Integer.class), is(false));
 
     }

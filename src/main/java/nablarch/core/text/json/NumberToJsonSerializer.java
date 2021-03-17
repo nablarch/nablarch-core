@@ -21,7 +21,9 @@ import java.io.Writer;
  *   <li>{@link java.math.BigDecimal BigDecimal}</li>
  * </ul>
  * <p>
- * シリアライズによりJsonのnumberとして出力する。
+ * (オートボクシングにより int, long, short, byte, float, double も対象となる。)<br>
+ * シリアライズによりJsonのnumberとして出力するが、
+ * NaNおよび無限量については、stringとして出力する。
  * </p>
  * @author Shuji Kitamura
  */
@@ -54,7 +56,13 @@ public class NumberToJsonSerializer implements JsonSerializer {
      */
     @Override
     public boolean isTarget(Class<?> valueClass) {
-        return Number.class.isAssignableFrom(valueClass);
+        return Number.class.isAssignableFrom(valueClass)
+                || int.class.equals(valueClass)
+                || short.class.equals(valueClass)
+                || long.class.equals(valueClass)
+                || byte.class.equals(valueClass)
+                || float.class.equals(valueClass)
+                || double.class.equals(valueClass);
     }
 
     /**

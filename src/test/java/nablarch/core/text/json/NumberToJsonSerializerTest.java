@@ -57,12 +57,12 @@ public class NumberToJsonSerializerTest {
         assertThat(serializer.isTarget(AtomicInteger.class), is(true));
         assertThat(serializer.isTarget(AtomicLong.class), is(true));
 
-        assertThat(serializer.isTarget(int.class), is(false));
-        assertThat(serializer.isTarget(short.class), is(false));
-        assertThat(serializer.isTarget(long.class), is(false));
-        assertThat(serializer.isTarget(byte.class), is(false));
-        assertThat(serializer.isTarget(float.class), is(false));
-        assertThat(serializer.isTarget(double.class), is(false));
+        assertThat(serializer.isTarget(int.class), is(true));
+        assertThat(serializer.isTarget(short.class), is(true));
+        assertThat(serializer.isTarget(long.class), is(true));
+        assertThat(serializer.isTarget(byte.class), is(true));
+        assertThat(serializer.isTarget(float.class), is(true));
+        assertThat(serializer.isTarget(double.class), is(true));
 
         assertThat(serializer.isTarget(Boolean.class), is(false));
     }
