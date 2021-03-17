@@ -101,7 +101,7 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
      * @param clazz フォーマッタのクラス
      * @return フォーマットメソッド
      */
-    protected Method getFormatMethod(Class<?> clazz) {
+    private Method getFormatMethod(Class<?> clazz) {
         Method formatMethod;
         try {
             formatMethod = clazz.getMethod("format", Class.forName("java.time.temporal.TemporalAccessor"));
