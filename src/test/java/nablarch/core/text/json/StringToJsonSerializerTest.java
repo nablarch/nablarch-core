@@ -60,16 +60,20 @@ public class StringToJsonSerializerTest {
     @Test
     public void Escape処理ができること() throws Exception {
 
+        // (note) c0 100%の為に、0x00～0x1f, ", \ のそれぞれが
+        //        最初のエスケープとして現れるケースについてテストが必要
+
+        // 単独のエスケープ処理の確認
         serializer.serialize(writer, "\u001f");
         assertThat(writer.toString(), is("\"\\u001f\""));
 
+        // 連続したエスケープ処理の確認
         writer = new StringWriter();
-
         serializer.serialize(writer, "\"\"");
         assertThat(writer.toString(), is("\"\\\"\\\"\""));
 
+        // その他エスケープ対象文字の確認
         writer = new StringWriter();
-
         serializer.serialize(writer, "123,\\,\",\b,\f,\t,\u001f,\r,\n,ABC");
         assertThat(writer.toString(), is("\"123,\\\\,\\\",\\b,\\f,\\t,\\u001f,\\r,\\n,ABC\""));
     }
