@@ -22,7 +22,7 @@ public class ListToJsonSerializer implements JsonSerializer {
     private static final char VALUE_SEPARATOR = ',';
 
     /** シリアライズ管理クラス */
-    private JsonSerializationManager manager;
+    private final JsonSerializationManager manager;
 
     /**
      * コンストラクタ。
