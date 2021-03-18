@@ -11,6 +11,10 @@ import java.lang.reflect.Method;
  * java.time.TemporalAccessorの実装クラスを対象としたシリアライザの共通機能を提供する。<br>
  * シリアライズによりJsonのstringとして出力する。
  * </p>
+ * <p>
+ * Nablarch は Java 1.6 以上をサポート対象としている為、
+ * 1.6 の環境で動いたときにエラーにならないよう、リフレクションを用いた実装としている。
+ * </p>
  * @author Shuji Kitamura
  */
 public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
