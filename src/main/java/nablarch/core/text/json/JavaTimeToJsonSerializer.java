@@ -49,7 +49,7 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
         }
         // (coverage) Java7以前の場合に formatter == null が成立する
 
-        stringSerializer = manager.getSerializer("");
+        stringSerializer = manager.getStringSerializer();
     }
 
     /**

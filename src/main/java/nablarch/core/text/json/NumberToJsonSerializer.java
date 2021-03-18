@@ -48,7 +48,7 @@ public class NumberToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void initialize(JsonSerializationSettings settings) {
-        stringSerializer = manager.getSerializer("");
+        stringSerializer = manager.getStringSerializer();
     }
 
     /**

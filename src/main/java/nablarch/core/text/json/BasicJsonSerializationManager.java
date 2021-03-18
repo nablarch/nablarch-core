@@ -20,6 +20,9 @@ public class BasicJsonSerializationManager implements JsonSerializationManager {
     /** デフォルトのシリアライザ */
     private JsonSerializer defaultSerializer;
 
+    /** objectのmember name用のシリアライザ */
+    private JsonSerializer memberNameSerializer;
+
     /** ClassごとのJsonSerializerのキャッシュ */
     private final Map<Class<?>, JsonSerializer> jsonSerializerCache
             = new HashMap<Class<?>, JsonSerializer>();
@@ -39,6 +42,7 @@ public class BasicJsonSerializationManager implements JsonSerializationManager {
     public void initialize(JsonSerializationSettings settings) {
         nullSerializer = createNullSerializer();
         defaultSerializer = createDefaultSerializer();
+        memberNameSerializer = createMemberNameSerializer();
         serializers = createSerializers(settings);
 
         for (JsonSerializer serializer : serializers) {
@@ -65,6 +69,14 @@ public class BasicJsonSerializationManager implements JsonSerializationManager {
     }
 
     /**
+     * objectのmember name用のシリアライザを生成する。
+     * @return objectのmember name用のシリアライザ
+     */
+    protected JsonSerializer createMemberNameSerializer() {
+        return new StringToJsonSerializer();
+    }
+
+    /**
      * 使用するシリアライザを生成する。
      * オブジェクトに対応したシリアライザかの評価は先頭から順に行われる。
      * デフォルトのシリアライザのみで使用する場合であっても、
@@ -82,6 +94,22 @@ public class BasicJsonSerializationManager implements JsonSerializationManager {
                 new BooleanToJsonSerializer(),
                 new CalendarToJsonSerializer(this),
                 new LocalDateTimeToJsonSerializer(this));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JsonSerializer getMemberNameSerializer() {
+        return memberNameSerializer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JsonSerializer getStringSerializer() {
+        return getSerializer("");
     }
 
     /**

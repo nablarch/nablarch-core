@@ -37,7 +37,7 @@ public class CalendarToJsonSerializer implements JsonSerializer {
     @Override
     public void initialize(JsonSerializationSettings settings) {
         dateFormat = new SimpleDateFormat(settings.getDatePattern());
-        stringSerializer = manager.getSerializer("");
+        stringSerializer = manager.getStringSerializer();
     }
 
     /**

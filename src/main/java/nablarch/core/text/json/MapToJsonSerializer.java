@@ -59,7 +59,7 @@ public class MapToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void initialize(JsonSerializationSettings settings) {
-        memberNameSerializer = manager.getSerializer("");
+        memberNameSerializer = manager.getMemberNameSerializer();
         isIgnoreNullValueMember = isIgnoreNullValueMember(settings);
     }
 
