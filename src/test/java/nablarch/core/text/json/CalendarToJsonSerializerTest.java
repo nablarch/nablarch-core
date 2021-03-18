@@ -57,7 +57,7 @@ public class CalendarToJsonSerializerTest {
     public void Calendarがシリアライズできること() throws Exception {
 
         Calendar calendarValue = Calendar.getInstance();
-        calendarValue.set(2021,0,23,12,34,56);
+        calendarValue.set(2021,Calendar.JANUARY,23,12,34,56);
         calendarValue.set(Calendar.MILLISECOND, 789);
 
         serializer.serialize(writer, calendarValue);
@@ -73,7 +73,7 @@ public class CalendarToJsonSerializerTest {
         serializer.initialize(settings);
 
         Calendar calendarValue = Calendar.getInstance();
-        calendarValue.set(2021,0,23,12,34,56);
+        calendarValue.set(2021, Calendar.JANUARY,23,12,34,56);
         calendarValue.set(Calendar.MILLISECOND, 789);
 
         serializer.serialize(writer, calendarValue);
