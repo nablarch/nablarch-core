@@ -3,7 +3,6 @@ package nablarch.core.text.json;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -13,13 +12,14 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeTrue;
 
 /**
  * {@link LocalDateTimeToJsonSerializer}のテストクラス
- *
+ * <p>
+ * 本テストクラスでは、LocalDateTimeを扱うため、Java8以上をテスト対象とする。
+ * Javaのバージョンに関係なく判定が行えるかのテストは{@link JavaTimeToJsonSerializer}にて実施する。
+ * </p>
  * @author Shuji Kitamura
  */
 public class LocalDateTimeToJsonSerializerTest {
@@ -63,16 +63,17 @@ public class LocalDateTimeToJsonSerializerTest {
         }
     }
     @Test
-    public void Java8以降のとき対象オブジェクトの判定ができること() throws Exception {
+    public void 対象オブジェクトの判定ができること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
         assertThat(serializer.isTarget(Class.forName("java.time.LocalDateTime")), is(true));
 
         assertThat(serializer.isTarget(Integer.class), is(false));
+        assertThat(serializer.isTarget(Class.forName("java.time.LocalDate")), is(false));
     }
 
     @Test
-    public void Java8以降のときLocalDateTimeがシリアライズできること() throws Exception {
+    public void LocalDateTimeがシリアライズできること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
         Object dateValue = createLocalDateTime(2021,1,23,12,34,56, 789012345);
@@ -82,7 +83,7 @@ public class LocalDateTimeToJsonSerializerTest {
     }
 
     @Test
-    public void Java8以降のときLocalDateTimeが書式指定でシリアライズできること() throws Exception {
+    public void LocalDateTimeが書式指定でシリアライズできること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
         JsonSerializer serializer = new LocalDateTimeToJsonSerializer(manager);
@@ -95,80 +96,5 @@ public class LocalDateTimeToJsonSerializerTest {
 
         serializer.serialize(writer, dateValue);
         assertThat(writer.toString(), is("\"2021-01-23T12:34:56.789Z\""));
-    }
-
-    @Test
-    public void Java8以降でLocalDateTimeが書式指定がエラーのとき例外がスローされること() throws Exception {
-        assumeTrue(isRunningOnJava8OrHigher());
-
-        Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                JsonSerializer serializer = new LocalDateTimeToJsonSerializer(manager);
-                Map<String,String> map = new HashMap<String, String>();
-                map.put("datePattern", "ABCDEFG");
-                JsonSerializationSettings settings = new JsonSerializationSettings(map);
-                serializer.initialize(settings);
-            }
-        });
-
-        assertThat(e.getMessage(), is("illegal date pattern. pattern = [ABCDEFG]"));
-    }
-
-    @Test
-    public void Java8以降で不正なオブジェクトのとき例外がスローされること() throws Exception {
-        assumeTrue(isRunningOnJava8OrHigher());
-
-        Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                serializer.serialize(writer, "dummy");
-            }
-        });
-
-        assertThat(e.getMessage(), is("argument type mismatch"));
-    }
-
-    @Test
-    public void Java8以降で書式指定がLocalDateTimeでエラーとなるとき例外がスローされること() throws Exception {
-        assumeTrue(isRunningOnJava8OrHigher());
-
-        Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                JsonSerializer serializer = new LocalDateTimeToJsonSerializer(manager);
-                Map<String,String> map = new HashMap<String, String>();
-                map.put("datePattern", "Z");
-                JsonSerializationSettings settings = new JsonSerializationSettings(map);
-                serializer.initialize(settings);
-
-                Object dateValue = createLocalDateTime(2021,1,23,12,34,56, 789012345);
-
-                serializer.serialize(writer, dateValue);
-            }
-        });
-
-        assertThat(e.getMessage(), is("mismatched date pattern. pattern = [Z]"));
-    }
-
-    @Test
-    public void Java8以降で値がnullのとき例外がスローされること() throws Exception {
-        assumeTrue(isRunningOnJava8OrHigher());
-
-        Exception e = assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                serializer.serialize(writer, null);
-            }
-        });
-
-        assertThat(e.getMessage(), is(nullValue()));
-    }
-
-    @Test
-    public void Java8未満でもオブジェクトの判定に影響しないこと() throws Exception {
-
-        Object intValue = 0;
-        assertThat(serializer.isTarget(intValue.getClass()), is(false));
     }
 }
