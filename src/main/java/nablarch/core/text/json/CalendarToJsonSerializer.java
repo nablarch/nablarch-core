@@ -14,8 +14,8 @@ import java.util.Calendar;
  */
 public class CalendarToJsonSerializer implements JsonSerializer {
 
-    /** 日時のフォーマッタ */
-    private DateFormat dateFormat;
+    /** 日時フォーマット */
+    private String datePattern;
 
     /** シリアライズ管理クラス */
     private final JsonSerializationManager manager;
@@ -36,7 +36,7 @@ public class CalendarToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void initialize(JsonSerializationSettings settings) {
-        dateFormat = new SimpleDateFormat(settings.getDatePattern());
+        datePattern = settings.getDatePattern();
         stringSerializer = manager.getStringSerializer();
     }
 
@@ -53,6 +53,7 @@ public class CalendarToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void serialize(Writer writer, Object value) throws IOException {
+        DateFormat dateFormat = new SimpleDateFormat(datePattern);
         stringSerializer.serialize(writer,
                 dateFormat.format(((Calendar)value).getTime()));
     }
