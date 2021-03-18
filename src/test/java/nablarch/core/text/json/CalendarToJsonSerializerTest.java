@@ -6,7 +6,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
