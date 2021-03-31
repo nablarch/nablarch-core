@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -93,55 +92,6 @@ public class MapToJsonSerializerTest {
                 withoutJsonPath("$.key1"),
                 withJsonPath("$", hasEntry("key2", "value2")),
                 withoutJsonPath("$.key3"))));
-    }
-
-    @Test
-    public void 挿入処理を含むMapがシリアライズできること() throws Exception {
-
-        Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
-        mapValue.put("key1","value1");
-        mapValue.put("key2",new RawJsonObjectMembers("\"keyA\":1,\"keyB\":2"));
-        mapValue.put("key3","value3");
-
-        serializer.serialize(writer, mapValue);
-        assertThat(writer.toString(), isJson(allOf(
-                withJsonPath("$", hasEntry("key1", "value1")),
-                withoutJsonPath("$.key2"),
-                withJsonPath("$", hasEntry("key3", "value3")),
-                withJsonPath("$", hasEntry("keyA", 1)),
-                withJsonPath("$", hasEntry("keyB", 2)))));
-    }
-
-    @Test
-    public void 先頭への挿入処理を含むMapがシリアライズできること() throws Exception {
-
-        Map<String, Object> mapValue = new LinkedHashMap<String, Object>();
-        mapValue.put("key1",new RawJsonObjectMembers("\"keyA\":1,\"keyB\":2"));
-        mapValue.put("key2","value2");
-        mapValue.put("key3","value3");
-
-        serializer.serialize(writer, mapValue);
-        assertThat(writer.toString(), isJson(allOf(
-                withoutJsonPath("$.key1"),
-                withJsonPath("$", hasEntry("key2", "value2")),
-                withJsonPath("$", hasEntry("key3", "value3")),
-                withJsonPath("$", hasEntry("keyA", 1)),
-                withJsonPath("$", hasEntry("keyB", 2)))));
-    }
-
-    @Test
-    public void 挿入部分がWSの場合に無視してシリアライズできること() throws Exception {
-
-        Map<String, Object> mapValue = new HashMap<String, Object>();
-        mapValue.put("key1","value1");
-        mapValue.put("key2",new RawJsonObjectMembers(" \t\r\n"));
-        mapValue.put("key3","value3");
-
-        serializer.serialize(writer, mapValue);
-        assertThat(writer.toString(), isJson(allOf(
-                withJsonPath("$", hasEntry("key1", "value1")),
-                withoutJsonPath("$.key2"),
-                withJsonPath("$", hasEntry("key3", "value3")))));
     }
 
     @Test

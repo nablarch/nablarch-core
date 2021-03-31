@@ -95,26 +95,14 @@ public class MapToJsonSerializer implements JsonSerializer {
             if (memberName != null && memberNameSerializer.isTarget(memberName.getClass())) {
                 Object memberValue = map.get(memberName);
                 if (memberValue != null || !isIgnoreNullValueMember) {
-                    if (memberValue instanceof RawJsonObjectMembers) {
-                        RawJsonObjectMembers rawMembers = (RawJsonObjectMembers) memberValue;
-                        if (!rawMembers.isJsonWhitespace()) {
-                            if (!isFirst) {
-                                writer.append(VALUE_SEPARATOR);
-                            } else {
-                                isFirst = false;
-                            }
-                        }
-                        writer.append(rawMembers.getRawJsonText());
+                    if (!isFirst) {
+                        writer.append(VALUE_SEPARATOR);
                     } else {
-                        if (!isFirst) {
-                            writer.append(VALUE_SEPARATOR);
-                        } else {
-                            isFirst = false;
-                        }
-                        memberNameSerializer.serialize(writer, memberName);
-                        writer.append(NAME_SEPARATOR);
-                        manager.getSerializer(memberValue).serialize(writer, memberValue);
+                        isFirst = false;
                     }
+                    memberNameSerializer.serialize(writer, memberName);
+                    writer.append(NAME_SEPARATOR);
+                    manager.getSerializer(memberValue).serialize(writer, memberValue);
                 }
             }
         }
