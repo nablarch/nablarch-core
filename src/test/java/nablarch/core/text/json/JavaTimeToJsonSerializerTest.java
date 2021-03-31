@@ -73,7 +73,7 @@ public class JavaTimeToJsonSerializerTest {
     }
 
     @Test
-    public void Java8以上のとき指定クラスが対象オブジェクトとして判定できること() throws Exception {
+    public void Java8以上のときDateTimeAPIの指定クラスが対象オブジェクトとして判定できること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
         serializer.initialize(new JsonSerializationSettings());
@@ -82,7 +82,7 @@ public class JavaTimeToJsonSerializerTest {
     }
 
     @Test
-    public void 指定クラス以外を対象オブジェクトではないと判定できること() throws Exception {
+    public void DateTimeAPIのクラス以外を対象オブジェクトではないと判定できること() throws Exception {
         // note この判定はJavaのバージョンに依存せずに実行できる必要あり
 
         serializer.initialize(new JsonSerializationSettings());
@@ -93,7 +93,7 @@ public class JavaTimeToJsonSerializerTest {
     }
 
     @Test
-    public void Java8以降のときLocalDateTimeがシリアライズできること() throws Exception {
+    public void Java8以降のときDateTimeAPIの指定クラスがシリアライズできること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
         serializer.initialize(new JsonSerializationSettings());
@@ -105,7 +105,7 @@ public class JavaTimeToJsonSerializerTest {
     }
 
     @Test
-    public void Java8以降でLocalDateTimeが書式指定がエラーのとき例外がスローされること() throws Exception {
+    public void Java8以降でDateTimeAPIの書式指定がエラーのとき例外がスローされること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
         Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
@@ -135,7 +135,7 @@ public class JavaTimeToJsonSerializerTest {
     }
 
     @Test
-    public void Java8以降で書式指定がLocalDateTimeでエラーとなるとき例外がスローされること() throws Exception {
+    public void Java8以降で書式指定がDateTimeAPIの指定クラスでエラーとなるとき例外がスローされること() throws Exception {
         assumeTrue(isRunningOnJava8OrHigher());
 
         Exception e = assertThrows(IllegalArgumentException.class, new ThrowingRunnable() {
