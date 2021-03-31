@@ -25,7 +25,7 @@ import static org.junit.Assume.assumeTrue;
  *
  * @author Shuji Kitamura
  */
-public class JsonSerializationManagerTest {
+public class BasicJsonSerializationManagerTest {
 
     BasicJsonSerializationManager manager;
 
