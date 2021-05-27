@@ -220,14 +220,10 @@ public class RequestPathMatchingHelper {
                         : StringUtil.isNullOrEmpty(resourceName);
             }
         } else if ("*".equals(this.resourceName)) {
-            // パターンが"*"終わり
-            // "/"終わりまたはドットを含むものは除外
-            if ((directoryPath.length() > 2 && (directoryPath.endsWith("/"))
-                    || (StringUtil.hasValue(resourceName) && resourceName.contains(".")))) {
-                return false;
-            }
-            // 除外後、ディレクトリパスの前方一致で判定
-            return directoryPath.startsWith(this.directoryPath);
+            // リソース名のパターンが "*" だけの場合
+
+            // ディレクトリパスが一致していて、かつリソース名に "." が含まれていない場合はマッチ
+            return directoryPath.equals(this.directoryPath) && !resourceName.contains(".");
         } else {
             // その他
             // ディレクトリパスはパターンマッチ
