@@ -211,19 +211,20 @@ public class RequestPathMatchingHelper {
                 // パターンが"//"終わり＋リソース名あり
                 // ディレクトリパスの前方一致＋リソース名で判定
                 if (!directoryPath.startsWith(this.directoryPath)) {
-                    //isAppliedToメソッド内でリクエストパスの正規化が行われるため、通常ここには到達しない。
                     return false;
                 }
-                //このブロックは「リソース名あり」の場合に実行されるため、以下の評価結果がfalseになることは通常無い。
-                return hasResourceNamePattern
-                        ? resourceNamePattern.matcher(resourceName).matches()
-                        : StringUtil.isNullOrEmpty(resourceName);
+
+                if ("*".equals(this.resourceName)) {
+                    return !resourceName.contains(".");
+                } else {
+                    return resourceNamePattern.matcher(resourceName).matches();
+                }
             }
         } else if ("*".equals(this.resourceName)) {
             // リソース名のパターンが "*" だけの場合
 
-            // ディレクトリパスが一致していて、かつリソース名に "." が含まれていない場合はマッチ
-            return directoryPath.equals(this.directoryPath) && !resourceName.contains(".");
+            // ディレクトリパスがマッチしていて、かつリソース名に "." が含まれていない場合はマッチ
+            return directoryPathPattern.matcher(directoryPath).matches() && !resourceName.contains(".");
         } else {
             // その他
             // ディレクトリパスはパターンマッチ
