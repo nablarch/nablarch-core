@@ -1,13 +1,13 @@
 package nablarch.fw;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-import java.net.URISyntaxException;
-import java.util.Map;
-
 import nablarch.core.util.Builder;
 import org.junit.Test;
+
+import java.net.URISyntaxException;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -74,5 +74,25 @@ public class RequestPathMatchingHelperTest {
         RequestPathMatchingHelper helper = new RequestPathMatchingHelper(true);
         helper.setRequestPattern("/hoge//");
         assertThat(helper.toString(), is(expect));
+    }
+
+    @Test
+    public void testNormalizeRequestPath_isReplaceDotIsTrue() {
+        RequestPathMatchingHelper helper = new RequestPathMatchingHelper(true);
+
+        MockRequest request = new MockRequest(" \tfoo.bar.TestAction/FizzBuzz \t");
+        String result = helper.normalizeRequestPath(request);
+
+        assertThat(result, is("/foo/bar/TestAction/FizzBuzz"));
+    }
+
+    @Test
+    public void testNormalizeRequestPath_isReplaceDotIsFalse() {
+        RequestPathMatchingHelper helper = new RequestPathMatchingHelper(false);
+
+        MockRequest request = new MockRequest(" \tfoo.bar.TestAction/FizzBuzz \t");
+        String result = helper.normalizeRequestPath(request);
+
+        assertThat(result, is("/foo.bar.TestAction/FizzBuzz"));
     }
 }
