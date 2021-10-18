@@ -161,10 +161,10 @@ public class RequestPathMatchingHelper {
             //normalizeRequestPathメソッドでリクエストパスの正規化が行われるため、ここには通常到達しない。
             return false;
         }
-        String directoryPath =  m.group(1);
-        String resourceName  = (m.group(2) == null) ? "" : m.group(2);
+        String requestedDirectoryPath =  m.group(1);
+        String requestedResourceName  = (m.group(2) == null) ? "" : m.group(2);
         
-        return matchesWith(directoryPath, resourceName);
+        return matchesWith(requestedDirectoryPath, requestedResourceName);
     }
     
 
