@@ -13,7 +13,7 @@ import java.io.Writer;
  */
 public class StringToJsonSerializer implements JsonSerializer {
 
-    private static final char QUOTATION_MARK = '\"';
+    protected static final char QUOTATION_MARK = '\"';
 
     /**
      * {@inheritDoc}

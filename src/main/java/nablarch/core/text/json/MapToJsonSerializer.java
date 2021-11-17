@@ -20,31 +20,31 @@ import java.util.Map;
 public class MapToJsonSerializer implements JsonSerializer {
 
     /** objectの開始文字 */
-    private static final char BEGIN_OBJECT = '{';
+    protected static final char BEGIN_OBJECT = '{';
 
     /** objectの終了文字 */
-    private static final char END_OBJECT = '}';
+    protected static final char END_OBJECT = '}';
 
     /** nameのセパレータとなる文字 */
-    private static final char NAME_SEPARATOR = ':';
+    protected static final char NAME_SEPARATOR = ':';
 
     /** 値のセパレータとなる文字 */
-    private static final char VALUE_SEPARATOR = ',';
+    protected static final char VALUE_SEPARATOR = ',';
 
     /** 値がNULLのmemberを無視するか否かのプロパティ名 */
-    private static final String IGNORE_NULL_VALUE_MEMBER_PROPERTY = "ignoreNullValueMember";
+    protected static final String IGNORE_NULL_VALUE_MEMBER_PROPERTY = "ignoreNullValueMember";
 
     /** デフォルトの値がNULLのmemberを無視するか否か */
-    private static final boolean DEFAULT_IGNORE_NULL_VALUE_MEMBER = true;
+    protected static final boolean DEFAULT_IGNORE_NULL_VALUE_MEMBER = true;
 
     /** シリアライズ管理クラス */
-    private final JsonSerializationManager manager;
+    protected final JsonSerializationManager manager;
 
     /** nameに使用するシリアライザ */
-    private JsonSerializer memberNameSerializer;
+    protected JsonSerializer memberNameSerializer;
 
     /** 値がNULLのmemberを無視するか否か */
-    private boolean isIgnoreNullValueMember;
+    protected boolean isIgnoreNullValueMember;
 
     /**
      * コンストラクタ。

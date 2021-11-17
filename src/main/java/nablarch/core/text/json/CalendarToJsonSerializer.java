@@ -15,13 +15,13 @@ import java.util.Calendar;
 public class CalendarToJsonSerializer implements JsonSerializer {
 
     /** 日時フォーマット */
-    private String datePattern;
+    protected String datePattern;
 
     /** シリアライズ管理クラス */
-    private final JsonSerializationManager manager;
+    protected final JsonSerializationManager manager;
 
     /** stringシリアライザ */
-    private JsonSerializer stringSerializer;
+    protected JsonSerializer stringSerializer;
 
     /**
      * コンストラクタ。

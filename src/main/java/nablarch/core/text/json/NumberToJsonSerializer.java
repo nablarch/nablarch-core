@@ -30,10 +30,10 @@ import java.io.Writer;
 public class NumberToJsonSerializer implements JsonSerializer {
 
     /** シリアライズ管理クラス */
-    private final JsonSerializationManager manager;
+    protected final JsonSerializationManager manager;
 
     /** stringシリアライザ */
-    private JsonSerializer stringSerializer;
+    protected JsonSerializer stringSerializer;
 
     /**
      * コンストラクタ。

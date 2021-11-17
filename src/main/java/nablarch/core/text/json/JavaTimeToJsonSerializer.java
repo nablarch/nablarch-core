@@ -20,19 +20,19 @@ import java.lang.reflect.Method;
 public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
 
     /** 日時のフォーマット */
-    private String datePattern;
+    protected String datePattern;
 
     /** 日時のフォーマッタ */
-    private Object formatter;
+    protected Object formatter;
 
     /** 日時のフォーマットに使用するメソッド */
-    private Method formatMethod;
+    protected Method formatMethod;
 
     /** シリアライズ管理クラス */
-    private final JsonSerializationManager manager;
+    protected final JsonSerializationManager manager;
 
     /** stringシリアライザ */
-    private JsonSerializer stringSerializer;
+    protected JsonSerializer stringSerializer;
 
     /**
      * コンストラクタ。

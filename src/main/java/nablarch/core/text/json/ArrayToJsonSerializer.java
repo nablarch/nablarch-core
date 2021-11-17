@@ -13,16 +13,16 @@ import java.lang.reflect.Array;
 public class ArrayToJsonSerializer implements JsonSerializer {
 
     /** 配列の開始文字 */
-    private static final char BEGIN_ARRAY = '[';
+    protected static final char BEGIN_ARRAY = '[';
 
     /** 配列の終了文字 */
-    private static final char END_ARRAY = ']';
+    protected static final char END_ARRAY = ']';
 
     /** 値のセパレータとなる文字 */
-    private static final char VALUE_SEPARATOR = ',';
+    protected static final char VALUE_SEPARATOR = ',';
 
     /** シリアライズ管理クラス */
-    private final JsonSerializationManager manager;
+    protected final JsonSerializationManager manager;
 
     /**
      * コンストラクタ。
