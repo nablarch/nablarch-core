@@ -72,7 +72,7 @@ public class ObjectToJsonSerializerTest {
             }
         });
 
-        assertThat(e.getMessage(), is(nullValue()));
+        assertThat(e.getMessage(), is("value must not be null."));
     }
 
 }
