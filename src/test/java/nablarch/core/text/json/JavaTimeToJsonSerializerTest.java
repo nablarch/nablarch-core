@@ -37,7 +37,7 @@ public class JavaTimeToJsonSerializerTest {
 
             @Override
             protected String getDatePattern(JsonSerializationSettings settings) {
-                return datePattern;
+                return JavaTimeToJsonSerializerTest.this.datePattern;
             }
 
             @Override
