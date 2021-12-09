@@ -47,6 +47,9 @@ public class ObjectToJsonSerializer implements JsonSerializer {
      */
     @Override
     public void serialize(Writer writer, Object value) throws IOException {
+        if (value == null) {
+            throw new NullPointerException("value must not be null.");
+        }
         stringSerializer.serialize(writer, value.toString());
     }
 
