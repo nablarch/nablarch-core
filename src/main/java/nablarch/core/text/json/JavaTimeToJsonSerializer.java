@@ -133,8 +133,18 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
      */
     @Override
     public boolean isTarget(Class<?> valueClass) {
-        return formatMethod != null && valueClass.getName().equals(getValueClassName());
-        // (coverage) Java7以前の場合に formatMethod != null が成立する
+        if (formatMethod == null) {
+            // formatMethod が取得できないのは Java 7 以下で Date&Time API が存在しない環境なので
+            // 常に対象外と判定する
+            return false;
+        }
+
+        try {
+            final Class<?> supportedClass = Class.forName(getValueClassName());
+            return supportedClass.isAssignableFrom(valueClass);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
