@@ -71,13 +71,23 @@ public class StringToJsonSerializer implements JsonSerializer {
             return;
         }
 
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
+        // 1文字ずつ append すると性能が大きく劣化するため、
+        // エスケープ不要な文字は可能な限りまとめて append するようにしている
+        int index = 0;
+        int startIndexOfNoEscape = 0;
+        for (; index < s.length(); index++) {
+            char c = s.charAt(index);
             if (needsEscape(c)) {
+                if (startIndexOfNoEscape != index) {
+                    writer.append(s, startIndexOfNoEscape, index);
+                }
                 writer.append(escape(c));
-            } else {
-                writer.append(c);
+                startIndexOfNoEscape = index + 1;
             }
+        }
+
+        if (startIndexOfNoEscape != index) {
+            writer.append(s, startIndexOfNoEscape, index);
         }
     }
 
