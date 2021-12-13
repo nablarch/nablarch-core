@@ -71,59 +71,55 @@ public class StringToJsonSerializer implements JsonSerializer {
             return;
         }
 
-        int pos;
-        char c;
-        int len = s.length();
-        boolean needEscape = false;
-        String hexValue;
-
-        for (pos = 0; pos < len; pos++) {
-            c = s.charAt(pos);
-            if (c < 0x20 || c == 0x22 || c == 0x5c) {
-                needEscape = true;
-                break;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (needsEscape(c)) {
+                writer.append(escape(c));
+            } else {
+                writer.append(c);
             }
         }
-        if (needEscape) {
-            int start = 0;
-            for (; pos < len; pos++) {
-                c = s.charAt(pos);
-                if (c < 0x20 || c == '\\' || c == '"') {
-                    if (start != pos) {
-                        writer.append(s, start, pos);
-                    }
-                    switch (c) {
-                        case '\\':
-                        case '"':
-                            writer.append('\\').append(c);
-                            break;
-                        case '\b':
-                            writer.append("\\b");
-                            break;
-                        case '\f':
-                            writer.append("\\f");
-                            break;
-                        case '\n':
-                            writer.append("\\n");
-                            break;
-                        case '\r':
-                            writer.append("\\r");
-                            break;
-                        case '\t':
-                            writer.append("\\t");
-                            break;
-                        default:
-                            hexValue = "000" + Integer.toHexString(c);
-                            writer.append("\\u").append(hexValue,hexValue.length() - 4, hexValue.length());
-                    }
-                    start = pos + 1;
-                }
-            }
-            if (start != pos) {
-                writer.append(s, start, pos);
-            }
-        } else {
-            writer.append(s);
+    }
+
+    /**
+     * 指定された文字が、エスケープが必要な文字かどうか判定する。
+     * <p>
+     * 以下のいずれかの文字が、エスケープが必要な文字に該当する。
+     * <ul>
+     *   <li>制御文字 (ASCIIコード上、半角スペースより前の文字)</li>
+     *   <li>バックスラッシュ ('\')</li>
+     *   <li>ダブルクォーテーション ('"')</li>
+     * </ul>
+     * </p>
+     * @param c 判定対象の文字
+     * @return エスケープが必要な場合は true
+     */
+    private boolean needsEscape(char c) {
+        return c < ' ' || c == '\\' || c == '"';
+    }
+
+    /**
+     * 指定された文字をエスケープする。
+     * @param c エスケープ対象の文字
+     * @return エスケープ後の文字列
+     */
+    private String escape(char c) {
+        switch (c) {
+            case '\\':
+            case '"':
+                return "\\" + c;
+            case '\b':
+                return "\\b";
+            case '\f':
+                return "\\f";
+            case '\n':
+                return "\\n";
+            case '\r':
+                return "\\r";
+            case '\t':
+                return "\\t";
+            default:
+                return String.format("\\u%04x", (int)c);
         }
     }
 }

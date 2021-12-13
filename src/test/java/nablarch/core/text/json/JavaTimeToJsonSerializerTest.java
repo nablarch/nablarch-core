@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -169,4 +170,35 @@ public class JavaTimeToJsonSerializerTest {
         assertThat(e.getMessage(), is(nullValue()));
     }
 
+    @Test
+    public void Java8以降でgetValueClassNameが存在しない型を返す場合_isTargetは例外をスローすること() {
+        assumeTrue(isRunningOnJava8OrHigher());
+
+        JsonSerializationManager manager = new BasicJsonSerializationManager();
+        manager.initialize();
+
+        final JavaTimeToJsonSerializer sut = new JavaTimeToJsonSerializer(manager) {
+
+            @Override
+            protected String getDatePattern(JsonSerializationSettings settings) {
+                return JavaTimeToJsonSerializerTest.this.datePattern;
+            }
+
+            @Override
+            protected String getValueClassName() {
+                return "unknown.type";
+            }
+        };
+
+        sut.initialize(new JsonSerializationSettings());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, new ThrowingRunnable() {
+            @Override
+            public void run() {
+                sut.isTarget(Object.class);
+            }
+        });
+
+        assertThat(exception.getCause(), is(instanceOf(ClassNotFoundException.class)));
+    }
 }

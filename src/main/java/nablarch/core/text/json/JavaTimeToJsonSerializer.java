@@ -64,11 +64,11 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
      */
     private Object getFormatter(JsonSerializationSettings settings) {
         datePattern = getDatePattern(settings);
-        Object formatter = null;
+        Object dateTimeFormatter = null;
         try {
             Class<?> clazz = Class.forName("java.time.format.DateTimeFormatter");
             Method method = clazz.getDeclaredMethod("ofPattern", String.class);
-            formatter = method.invoke(null, datePattern);
+            dateTimeFormatter = method.invoke(null, datePattern);
         } catch (ClassNotFoundException e) {
             // (coverage) Java7以前の場合に通過する
             // NOOP この例外は想定の動作の為、何もしない
@@ -90,7 +90,7 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
             throw new RuntimeException(e);
         }
 
-        return formatter;
+        return dateTimeFormatter;
     }
 
     /**
@@ -106,9 +106,9 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
      * @return フォーマットメソッド
      */
     private Method getFormatMethod(Class<?> clazz) {
-        Method formatMethod;
+        Method dateFormatMethod;
         try {
-            formatMethod = clazz.getMethod("format", Class.forName("java.time.temporal.TemporalAccessor"));
+            dateFormatMethod = clazz.getMethod("format", Class.forName("java.time.temporal.TemporalAccessor"));
         } catch (ClassNotFoundException e) {
             // (coverage) 到達しえない例外
             // java.time.temporal.TemporalAccessor は
@@ -125,7 +125,7 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
             throw new RuntimeException(e);
         }
 
-        return formatMethod;
+        return dateFormatMethod;
     }
 
     /**
@@ -133,8 +133,18 @@ public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
      */
     @Override
     public boolean isTarget(Class<?> valueClass) {
-        return formatMethod != null && valueClass.getName().equals(getValueClassName());
-        // (coverage) Java7以前の場合に formatMethod != null が成立する
+        if (formatMethod == null) {
+            // formatMethod が取得できないのは Java 7 以下で Date&Time API が存在しない環境なので
+            // 常に対象外と判定する
+            return false;
+        }
+
+        try {
+            final Class<?> supportedClass = Class.forName(getValueClassName());
+            return supportedClass.isAssignableFrom(valueClass);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
