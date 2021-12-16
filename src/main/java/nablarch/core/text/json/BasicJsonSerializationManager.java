@@ -1,5 +1,7 @@
 package nablarch.core.text.json;
 
+import nablarch.core.util.annotation.Published;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Map;
  * {@link JsonSerializationManager}の基本実装クラス。
  * @author Shuji Kitamura
  */
+@Published(tag = "architect")
 public class BasicJsonSerializationManager implements JsonSerializationManager {
 
     /** 使用可能なシリアライザのリスト */

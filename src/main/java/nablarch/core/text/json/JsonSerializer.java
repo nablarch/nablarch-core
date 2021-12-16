@@ -1,5 +1,7 @@
 package nablarch.core.text.json;
 
+import nablarch.core.util.annotation.Published;
+
 import java.io.IOException;
 import java.io.Writer;
 
@@ -8,6 +10,7 @@ import java.io.Writer;
  * 受入れ可能なオブジェクトを特定したクラスを実装する。<br>
  * @author Shuji Kitamura
  */
+@Published(tag = "architect")
 public interface JsonSerializer {
 
     /**
