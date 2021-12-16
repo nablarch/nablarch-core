@@ -1,9 +1,12 @@
 package nablarch.core.text.json;
 
+import nablarch.core.util.annotation.Published;
+
 /**
  * {@link JsonSerializer}を管理、提供するインターフェース。
  * @author Shuji Kitamura
  */
+@Published(tag = "architect")
 public interface JsonSerializationManager {
 
     /**

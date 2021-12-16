@@ -1,5 +1,7 @@
 package nablarch.core.text.json;
 
+import nablarch.core.util.annotation.Published;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,7 @@ import java.lang.reflect.Method;
  * </p>
  * @author Shuji Kitamura
  */
+@Published(tag = "architect")
 public abstract class JavaTimeToJsonSerializer implements JsonSerializer {
 
     /** 日時のフォーマット */
