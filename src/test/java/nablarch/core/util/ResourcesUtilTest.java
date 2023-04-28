@@ -78,7 +78,7 @@ public class ResourcesUtilTest {
     public void getResourcesType_specifiedPackageInJarFile() throws Exception {
         ResourcesUtil.Resources[] result = ResourcesUtil.getResourcesTypes("org.junit");
 
-        assertThat("junitの2jarが対象", result, arrayWithSize(1));
+        assertThat("junitの1jarが対象", result, arrayWithSize(1));
 
         final ArrayList<ClassHolder> classes = new ArrayList<ClassHolder>();
         for (ResourcesUtil.Resources resources : result) {
