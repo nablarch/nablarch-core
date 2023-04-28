@@ -1,10 +1,8 @@
 package nablarch.core.util;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.emptyArray;
-import static org.hamcrest.Matchers.isIn;
-import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
-import static org.junit.Assert.assertThat;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,12 +10,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import mockit.Expectations;
-import mockit.Mocked;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.emptyArray;
+import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * {@link ResourcesUtil}のテストクラス。
@@ -79,7 +78,7 @@ public class ResourcesUtilTest {
     public void getResourcesType_specifiedPackageInJarFile() throws Exception {
         ResourcesUtil.Resources[] result = ResourcesUtil.getResourcesTypes("org.junit");
 
-        assertThat("jmockitとjunitの2jarが対象", result, arrayWithSize(2));
+        assertThat("junitの1jarが対象", result, arrayWithSize(1));
 
         final ArrayList<ClassHolder> classes = new ArrayList<ClassHolder>();
         for (ResourcesUtil.Resources resources : result) {
@@ -100,15 +99,12 @@ public class ResourcesUtilTest {
      * 指定したパッケージがzipファイル内にある場合でもそのクラスが取得出来ること
      */
     @Test
-    public void getResourcesType_specifiedPackageInZipFile(@Mocked final URL mockUrl) throws Exception {
+    public void getResourcesType_specifiedPackageInZipFile() throws Exception {
+        final URL mockUrl = mock(URL.class);
 
         // zipプロトコルのURLを作れないため、モックを使う。
-        new Expectations() {{
-            mockUrl.getProtocol();
-            result = "zip";
-            mockUrl.getPath();
-            result = "src/test/java/nablarch/core/util/classes/Test.zip!/package2";
-        }};
+        when(mockUrl.getProtocol()).thenReturn("zip");
+        when(mockUrl.getPath()).thenReturn("src/test/java/nablarch/core/util/classes/Test.zip!/package2");
 
         // ClassLoaderをモックにできないため、テスト中だけ入れ替える。
         final ClassLoader originalCurrentLoader = Thread.currentThread().getContextClassLoader();
@@ -149,13 +145,11 @@ public class ResourcesUtilTest {
      * 指定したパッケージがzipファイル内にある場合でもそのクラスが取得出来ること
      */
     @Test
-    public void getResourcesType_unsupportedProtocol(@Mocked final URL mockUrl) throws Exception {
+    public void getResourcesType_unsupportedProtocol() throws Exception {
+        final URL mockUrl = mock(URL.class);
 
         // zipプロトコルのURLを作れないため、モックを使う。
-        new Expectations() {{
-            mockUrl.getProtocol();
-            result = "hoge";
-        }};
+        when(mockUrl.getProtocol()).thenReturn("hoge");
 
         // ClassLoaderをモックにできないため、テスト中だけ入れ替える。
         final ClassLoader originalCurrentLoader = Thread.currentThread().getContextClassLoader();
