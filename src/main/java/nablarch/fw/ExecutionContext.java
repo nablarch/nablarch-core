@@ -339,6 +339,8 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     /**
      * データリーダを取得する。
      * <p>
+     * データリーダが{@link ThreadSafeDataReader}を実装している場合はそのまま設定する。
+     * 実装していない場合は、{@link SynchronizedDataReaderWrapper}で包んだものを設定する。
      * データリーダが設定されていない場合は、データリーダファクトリを使用してリーダを生成する。
      * 生成したデータリーダが{@link ThreadSafeDataReader}を実装している場合は生成したものをそのまま返却する。
      * 実装していない場合は、{@link SynchronizedDataReaderWrapper}で包んで返却する。
@@ -350,13 +352,24 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     @SuppressWarnings("unchecked")
     public <TData> DataReader<TData> getDataReader() {
         if (reader != null) {
+            if (reader instanceof ThreadSafeDataReader) {
+                return (DataReader<TData>) reader;
+            }
+            if (reader instanceof SynchronizedDataReaderWrapper) {
+                return (DataReader<TData>) reader;
+            }
+            reader = new SynchronizedDataReaderWrapper<>(reader);
             return (DataReader<TData>) reader;
         }
         if (readerFactory != null) {
             DataReader<TData> originalReader = (DataReader<TData>) readerFactory.createReader(this);
-            reader = originalReader instanceof ThreadSafeDataReader<TData>
-                    ? originalReader
-                    : new SynchronizedDataReaderWrapper<>(originalReader);
+            if (originalReader instanceof ThreadSafeDataReader) {
+                return originalReader;
+            }
+            if (originalReader instanceof SynchronizedDataReaderWrapper) {
+                return originalReader;
+            }
+            reader = new SynchronizedDataReaderWrapper<>(originalReader);
             return (DataReader<TData>) reader;
         }
         return null;
@@ -364,18 +377,13 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
 
     /**
      * データリーダを設定する。
-     * <p>
-     * データリーダが{@link ThreadSafeDataReader}を実装している場合はそのまま設定する。
-     * 実装していない場合は、{@link SynchronizedDataReaderWrapper}で包んだものを設定する。
      *
      * @param <TData> データリーダが読み込むデータ型
      * @param reader データリーダ
      * @return このオブジェクト自体
      */
     public <TData> ExecutionContext setDataReader(DataReader<TData> reader) {
-        this.reader = reader instanceof ThreadSafeDataReader<TData>
-                ? reader
-                : new SynchronizedDataReaderWrapper<>(reader);
+        this.reader = reader;
         return this;
     }
 
