@@ -401,12 +401,30 @@ public class ExecutionContextTest {
 
         assertThat(context.getDataReader(), instanceOf(ThreadSafeDataReader.class));
         context.closeReader();
+
+        // SynchronizedDataReaderWrapperを返却するDataReaderFactoryを設定した場合は、
+        // そのままSynchronizedDataReaderWrapperが返却されること。
+        context = new ExecutionContext();
+        context.setDataReaderFactory(ctx -> new SynchronizedDataReaderWrapper<>(new DataReader<>() {
+
+            @Override
+            public Object read(ExecutionContext ctx) {
+                return null;
+            }
+
+            @Override
+            public boolean hasNext(ExecutionContext ctx) {
+                return false;
+            }
+
+            @Override
+            public void close(ExecutionContext ctx) {
+            }
+        }));
+
+        assertThat(context.getDataReader(), instanceOf(SynchronizedDataReaderWrapper.class));
+        context.closeReader();
     }
-
-
-
-
-
 
     /**
      * ExecutionContextがコピーできることを確認する。

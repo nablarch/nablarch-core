@@ -18,25 +18,16 @@ public class SynchronizedDataReaderWrapper<TData> implements DataReader<TData> {
 
     @Override
     public synchronized TData read(ExecutionContext ctx) {
-        if(originalReader == null) {
-            return null;
-        }
         return originalReader.read(ctx);
     }
 
     @Override
     public synchronized boolean hasNext(ExecutionContext ctx) {
-        if(originalReader == null) {
-            return false;
-        }
         return originalReader.hasNext(ctx);
     }
 
     @Override
     public synchronized void close(ExecutionContext ctx) {
-        if(originalReader == null) {
-            return;
-        }
         originalReader.close(ctx);
     }
 }

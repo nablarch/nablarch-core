@@ -105,7 +105,14 @@ public class SynchronizedDataReaderWrapperTest {
         });
         assertEquals(ArrayIndexOutOfBoundsException.class, rr.getCause().getClass());
         assertEquals("Index 1 out of bounds for length 1", rr.getCause().getMessage());
+    }
 
+    @SuppressWarnings("DataFlowIssue")
+    @Test
+    public void nullのデータリーダを設定した場合例外が発生すること() {
+        IllegalArgumentException result = assertThrows(IllegalArgumentException.class,
+                () -> sut = new SynchronizedDataReaderWrapper<>(null));
+        assertEquals("originalReader must not be null.", result.getMessage());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -179,6 +186,4 @@ public class SynchronizedDataReaderWrapperTest {
             }
         }
     }
-
-
 }
