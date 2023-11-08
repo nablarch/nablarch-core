@@ -45,13 +45,13 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     private DataReaderFactory<?> readerFactory = null;
 
     /** セッションスコープ上の変数を格納したMap */
-    private Map<String, Object> sessionScopeMap = null;
+    private Map<String, Object> sessionScopeMap;
 
     /** セッションストア上の変数を格納したMap */
-    private Map<String, Object> sessionStoreMap = null;
+    private Map<String, Object> sessionStoreMap;
 
     /** リクエストスコープ上の変数を格納するMap */
-    private Map<String, Object> requestScopeMap = null;
+    private Map<String, Object> requestScopeMap;
 
     /** この実行コンテキストによって最後に読み込まれたデータ */
     private Object lastReadData = null;
@@ -90,7 +90,7 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     throws NoMoreHandlerException, ClassCastException {
         Object previous = getCurrentRequestObject();
         setCurrentRequestObject(data);
-        TResult result = null;
+        TResult result;
         try {
             result = (TResult) getNextHandler().handle(data, this);
         } finally {
@@ -134,8 +134,7 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <T> T findHandler(Object data, Class<T> targetType, Class<?> stopType) {
-       List<Object> handlers = new ArrayList<Object>();
-       handlers.addAll(getHandlerQueue());
+        List<Object> handlers = new ArrayList<>(getHandlerQueue());
 
        while (!handlers.isEmpty()) {
            Object handler = handlers.remove(0);
@@ -146,8 +145,7 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
                return null;
            }
            // HandlerWrapperの内容を展開する。
-           if (handler instanceof HandlerWrapper) {
-               HandlerWrapper wrapper = (HandlerWrapper) handler;
+           if (handler instanceof HandlerWrapper wrapper) {
                handlers.addAll(0, wrapper.getDelegates(data, this));
            }
        }
@@ -169,10 +167,9 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <T> List<T>
     selectHandlers(Object data, Class<T> targetType, Class<?> stopType) {
-        List<Object> handlers = new ArrayList<Object>();
-        handlers.addAll(getHandlerQueue());
+        List<Object> handlers = new ArrayList<>(getHandlerQueue());
 
-        List<T> results = new ArrayList<T>();
+        List<T> results = new ArrayList<>();
 
         while (!handlers.isEmpty()) {
             Object handler = handlers.remove(0);
@@ -183,8 +180,7 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
                 return results;
             }
             // HandlerWrapperの内容を展開する。
-            if (handler instanceof HandlerWrapper) {
-                HandlerWrapper wrapper = (HandlerWrapper) handler;
+            if (handler instanceof HandlerWrapper wrapper) {
                 handlers.addAll(0, wrapper.getDelegates(data, this));
             }
         }
@@ -195,13 +191,12 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     /**
      * デフォルトコンストラクタ
      */
-    @SuppressWarnings("rawtypes")
     @Published(tag = "architect")
     public ExecutionContext() {
-        handlerQueue    = new ArrayList<Handler>();
-        requestScopeMap = new HashMap<String, Object>();
-        sessionStoreMap = new HashMap<String, Object>();
-        sessionScopeMap = new HashMap<String, Object>();
+        handlerQueue    = new ArrayList<>();
+        requestScopeMap = new HashMap<>();
+        sessionStoreMap = new HashMap<>();
+        sessionScopeMap = new HashMap<>();
     }
 
     /**
@@ -219,12 +214,12 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ExecutionContext(ExecutionContext original) {
         handlerQueue    = (ArrayList<Handler>) original.handlerQueue.clone();
-        requestScopeMap = new HashMap<String, Object>();
+        requestScopeMap = new HashMap<>();
         sessionStoreMap = original.sessionStoreMap;
         sessionScopeMap = original.sessionScopeMap;
         reader          = original.reader;
         readerFactory   = original.readerFactory;
-        setMethodBinder(original.<Object, Object>getMethodBinder());
+        setMethodBinder(original.getMethodBinder());
     }
 
     /***
@@ -338,15 +333,15 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
      */
     public boolean hasNextData() {
         DataReader<?> reader = getDataReader();
-        return (reader == null) ? false
-                                : reader.hasNext(this);
+        return reader != null && reader.hasNext(this);
     }
 
     /**
      * データリーダを取得する。
-     *<p/>
-     * データリーダが設定されていない場合は、
-     * データリーダファクトリを使用してリーダを生成し、その結果を返す。
+     * <p>
+     * データリーダが設定されていない場合は、データリーダファクトリを使用してリーダを生成する。
+     * 生成したデータリーダが{@link ThreadSafeDataReader}を実装している場合は生成したものをそのまま返却する。
+     * 実装していない場合は、{@link SynchronizedDataReaderWrapper}で包んで返却する。
      * ファクトリも設定されていない場合はnullを返す。
      *
      * @param <TData> データリーダが読み込むデータ型
@@ -358,7 +353,10 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
             return (DataReader<TData>) reader;
         }
         if (readerFactory != null) {
-            reader = readerFactory.createReader(this);
+            DataReader<TData> originalReader = (DataReader<TData>) readerFactory.createReader(this);
+            reader = originalReader instanceof ThreadSafeDataReader<TData>
+                    ? originalReader
+                    : new SynchronizedDataReaderWrapper<>(originalReader);
             return (DataReader<TData>) reader;
         }
         return null;
@@ -366,13 +364,18 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
 
     /**
      * データリーダを設定する。
+     * <p>
+     * データリーダが{@link ThreadSafeDataReader}を実装している場合はそのまま設定する。
+     * 実装していない場合は、{@link SynchronizedDataReaderWrapper}で包んだものを設定する。
      *
      * @param <TData> データリーダが読み込むデータ型
      * @param reader データリーダ
      * @return このオブジェクト自体
      */
     public <TData> ExecutionContext setDataReader(DataReader<TData> reader) {
-        this.reader = reader;
+        this.reader = reader instanceof ThreadSafeDataReader<TData>
+                ? reader
+                : new SynchronizedDataReaderWrapper<>(reader);
         return this;
     }
 
@@ -482,7 +485,7 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     /**
      * 現在処理中のリクエストオブジェクトを取得する。
      * <p/>
-     * 本メソッドは、{@ref InboundHandleable}または{@ref OutboundHandleable}の処理中にリクエストオブジェクトを取得する際に使用する。
+     * 本メソッドは、{@link InboundHandleable}または{@link OutboundHandleable}の処理中にリクエストオブジェクトを取得する際に使用する。
      *
      * @return 現在処理中のリクエストオブジェクト
      */
@@ -701,7 +704,7 @@ public class ExecutionContext extends HandlerQueueManager<ExecutionContext> {
     /**
      * データリーダが、現時点で物理的に読み込んでいるレコードのレコード番号を返却する。
      * <p/>
-     * 本メソッドは、{@link nablarch.fw.reader.FileDataReader}を使用してファイルを読み込んでいる場合にのみ値を返却する。
+
      * FileDataReader以外を使用している場合は0を返す。
      *
      * @return 現時点で物理的に読み込んでいるレコードのレコード番号
