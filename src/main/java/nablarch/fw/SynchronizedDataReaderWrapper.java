@@ -7,8 +7,15 @@ package nablarch.fw;
  */
 public class SynchronizedDataReaderWrapper<TData> implements DataReader<TData> {
 
+    /**
+     * {@code synchronized}付与前の{@link DataReader}オブジェクト
+     */
     private final DataReader<TData> originalReader;
 
+    /**
+     * コンストラクタ。
+     * @param originalReader {@link DataReader}オブジェクト
+     */
     public SynchronizedDataReaderWrapper(DataReader<TData> originalReader) {
         if(originalReader == null) {
             throw new IllegalArgumentException("originalReader must not be null.");
@@ -29,5 +36,14 @@ public class SynchronizedDataReaderWrapper<TData> implements DataReader<TData> {
     @Override
     public synchronized void close(ExecutionContext ctx) {
         originalReader.close(ctx);
+    }
+
+    /**
+     * {@code synchronized}付与前の{@link DataReader}オブジェクトを返却する。
+     *
+     * @return {@code synchronized}付与前の{@link DataReader}オブジェクト
+     */
+    public DataReader<TData> getOriginalReader() {
+        return originalReader;
     }
 }

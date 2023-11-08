@@ -115,6 +115,14 @@ public class SynchronizedDataReaderWrapperTest {
         assertEquals("originalReader must not be null.", result.getMessage());
     }
 
+    @Test
+    public void synchronized付与前のDataReaderオブジェクトを取得できること() {
+        DataReader<Integer> originalReader = new MockDataReader(0,null,null,0);
+        sut = new SynchronizedDataReaderWrapper<>(originalReader);
+
+        assertEquals(originalReader, ((SynchronizedDataReaderWrapper<Integer>)sut).getOriginalReader());
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static class MockDataReader implements DataReader<Integer> {
 
