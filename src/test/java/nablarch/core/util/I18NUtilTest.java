@@ -16,7 +16,6 @@ import org.hamcrest.CoreMatchers;
 
 import nablarch.core.ThreadContext;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 
