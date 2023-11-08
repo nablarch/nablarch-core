@@ -18,7 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-class SynchronizedDataReaderWrapperTest {
+@SuppressWarnings("NonAsciiCharacters")
+public class SynchronizedDataReaderWrapperTest {
 
     private DataReader<Integer> sut;
 
@@ -45,7 +46,6 @@ class SynchronizedDataReaderWrapperTest {
         }
 
         assertEquals(2, actual.size());
-        System.out.println(actual);
         assertTrue(actual.containsAll(List.of(0,1)));
     }
 
