@@ -10,7 +10,6 @@ import org.hamcrest.CoreMatchers;
 
 import nablarch.core.util.StringUtil;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
