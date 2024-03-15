@@ -2,8 +2,11 @@ package nablarch.core.date;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.TimeZone;
 
+import nablarch.core.ThreadContext;
 import nablarch.core.repository.SystemRepository;
 import nablarch.core.util.annotation.Published;
 
@@ -54,6 +57,17 @@ public final class SystemTimeUtil {
     }
 
     /**
+     * システム日時を取得する。
+     *
+     * @return システム日時
+     */
+    public static LocalDateTime getLocalDateTime(){
+        TimeZone tz = getTimeZone();
+
+        return getTimestamp().toInstant().atZone(tz.toZoneId()).toLocalDateTime();
+    }
+
+    /**
      * システム日付を yyyyMMdd 形式の文字列で取得する。
      *
      * @return システム日付
@@ -98,5 +112,20 @@ public final class SystemTimeUtil {
                     "specified " + TIME_PROVIDER + " is not registered in SystemRepository.");
         }
         return provider;
+    }
+
+    /**
+     * タイムゾーンを取得する。
+     *
+     * <p>設定されているタイムゾーンを取得する。
+     *
+     * @return スレッドコンテキストに設定されているタイムゾーン。スレッドコンテキストにタイムゾーンが設定されていない場合は、システムデフォルトのタイムゾーン。
+     */
+    private static TimeZone getTimeZone(){
+        TimeZone timeZone = ThreadContext.getTimeZone();
+        if (timeZone != null) {
+            return timeZone;
+        }
+        return TimeZone.getDefault();
     }
 }
