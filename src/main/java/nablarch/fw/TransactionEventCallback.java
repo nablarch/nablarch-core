@@ -41,7 +41,7 @@ public interface TransactionEventCallback<TData> {
      * 
      * @param <TData> ハンドラの入力データの型
      */
-    public abstract static class Provider<TData> {        
+    abstract class Provider<TData> {
         /**
          * ハンドラキューの内容を走査し、
          * {@link TransactionEventCallback}を実装した後続ハンドラを返す。
