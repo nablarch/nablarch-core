@@ -1,5 +1,7 @@
 package nablarch.fw;
 
+import nablarch.core.util.annotation.Published;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  * @param <TData>ハンドラへの入力データ
  * @author hisaaki sioiri
  */
+@Published(tag = "architect")
 public interface TransactionEventCallback<TData> {
 
     /** リクエストデータを示すキー */
