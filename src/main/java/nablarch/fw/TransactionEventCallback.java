@@ -1,5 +1,7 @@
 package nablarch.fw;
 
+import nablarch.core.util.annotation.Published;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  * @param <TData>ハンドラへの入力データ
  * @author hisaaki sioiri
  */
+@Published(tag = "architect")
 public interface TransactionEventCallback<TData> {
 
     /** リクエストデータを示すキー */
@@ -38,7 +41,7 @@ public interface TransactionEventCallback<TData> {
      * 
      * @param <TData> ハンドラの入力データの型
      */
-    public abstract static class Provider<TData> {        
+    abstract class Provider<TData> {
         /**
          * ハンドラキューの内容を走査し、
          * {@link TransactionEventCallback}を実装した後続ハンドラを返す。
