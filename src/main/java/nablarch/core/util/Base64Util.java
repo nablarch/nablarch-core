@@ -7,7 +7,10 @@ import nablarch.core.util.annotation.Published;
 
 /**
  * Base64エンコーディングを行うユーティリティクラス。
- * 
+ * <p>
+ * 本クラスは、<a href="https://www.ietf.org/rfc/rfc4648.txt">RFC4648</a>に準拠したBase64エンコーディングを行う。
+ * エンコード及びデコード操作には、RFC4648の表1に記載されたBase64アルファベットを使用する。
+ *
  * @author Kiyohito Itoh
  */
 @Published(tag = "architect")
@@ -42,7 +45,8 @@ public final class Base64Util {
      * バイト配列をBase64でエンコードする。
      * <p/>
      * 引数にnullが渡された場合、nullを返す。<br/>
-     * 引数の長さが0の場合、空文字を返す。
+     * 引数の長さが0の場合、空文字を返す。 <br/>
+     * 本メソッドは、エンコード結果に改行文字を追加しない。
      * 
      * @param b バイト配列
      * @return エンコード結果の文字列
