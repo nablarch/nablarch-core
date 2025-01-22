@@ -1,6 +1,7 @@
 package nablarch.core.util;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import nablarch.core.util.annotation.Published;
@@ -29,9 +30,7 @@ public final class Base64Util {
     private static final byte[] DECODING = new byte[124];
     
     static {
-        for (int i = 0; i < DECODING.length; i++) {
-            DECODING[i] = 0x00;
-        }
+        Arrays.fill(DECODING, (byte) 0x00);
         for (int i = 0; i < ENCODING.length; i++) {
             DECODING[ENCODING[i]] = (byte) i;
         }
@@ -105,7 +104,7 @@ public final class Base64Util {
         if (base64 == null) {
             return null;
         }
-        if (base64.length() == 0) {
+        if (base64.isEmpty()) {
             return new byte[0];
         }
         
@@ -115,7 +114,7 @@ public final class Base64Util {
                 String.format("length of base64 was invalid. base64 = [%s], length = [%s]", base64, length));
         }
         
-        if (base64.substring(0, length - 2).indexOf("=") != -1
+        if (base64.substring(0, length - 2).contains("=")
                 || ('=' == base64.charAt(length - 2) && '=' != base64.charAt(length - 1))) {
             throw new IllegalArgumentException(
                     String.format("position of '=' in base64 was invalid. base64 = [%s]", base64));
@@ -137,11 +136,11 @@ public final class Base64Util {
             
             byte b1 = DECODING[c1];
             
-            byte b2 = 0x00;
+            byte b2;
             b2 = DECODING[c2];
             baos.write((byte) ((b1 & 0x3F) << 2 | (b2 >>> 4) & 0x03));
             
-            byte b3 = 0x00;
+            byte b3;
             if (c3 != '=') {
                 b3 = DECODING[c3];
                 baos.write((byte) ((b2 & 0x0F) << 4 | (b3 >>> 2) & 0x0F));
