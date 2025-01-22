@@ -11,6 +11,8 @@ import nablarch.core.util.annotation.Published;
  * <p>
  * 本クラスは、<a href="https://www.ietf.org/rfc/rfc4648.txt">RFC4648</a>に準拠したBase64エンコーディングを行う。
  * エンコード及びデコード操作には、RFC4648の表1に記載されたBase64アルファベットを使用する。
+ * <p>
+ * Java8以降は、標準APIの{@link java.util.Base64}がBase64エンコーディングをサポートしており、本クラスは後方互換のために提供されている。
  *
  * @author Kiyohito Itoh
  */
