@@ -2,7 +2,6 @@ package nablarch.core.util;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.StringTokenizer;
 
 import nablarch.core.util.annotation.Published;
@@ -12,7 +11,7 @@ import nablarch.core.util.annotation.Published;
  * <p>
  * 本クラスは、<a href="https://www.ietf.org/rfc/rfc4648.txt">RFC4648</a>の「4. Base 64 Encoding」に準拠したBase64エンコーディングを行う。
  * <p>
- * Java8以降は、標準APIの{@link Base64#getEncoder()}及び{@link Base64#getDecoder()}で取得するエンコーダ・デコーダが本クラスと同等のBase64エンコーディング機能を提供しており、本クラスは後方互換のために存在している。
+ * Java8以降は、標準APIの{@link java.util.Base64#getEncoder()}及び{@link java.util.Base64#getDecoder()}で取得するエンコーダ・デコーダが本クラスと同等のBase64エンコーディング機能を提供しており、本クラスは後方互換のために存在している。
  *
  * @author Kiyohito Itoh
  */
