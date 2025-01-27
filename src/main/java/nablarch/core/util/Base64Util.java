@@ -137,9 +137,7 @@ public final class Base64Util {
             char c4 = base64.charAt(i++);
             
             byte b1 = DECODING[c1];
-            
-            byte b2;
-            b2 = DECODING[c2];
+            byte b2 = DECODING[c2];
             baos.write((byte) ((b1 & 0x3F) << 2 | (b2 >>> 4) & 0x03));
             
             byte b3;
