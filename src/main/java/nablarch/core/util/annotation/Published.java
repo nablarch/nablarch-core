@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Nablarchが後方互換性を維持するAPIのことを公開APIと呼ぶ。<br/>
  * 本アノテーションを付けたAPIは、javadocにより仕様が公開される。<br/>
- * 本アノテーションをクラス宣言に付けた場合は、クラスのpublicなメンバが全て公開APIとなる。<br/>
+ * クラスの全APIを公開する場合は、本アノテーションをクラス宣言に付ける。<br/>
  * 特定のメソッドのみを公開APIとする場合は、本アノテーションをメソッド宣言に付ける。<br/>
  *
  * @author Masayuki Fujikuma
