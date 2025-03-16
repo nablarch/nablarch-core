@@ -1,10 +1,13 @@
 package nablarch.fw;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,9 +23,11 @@ import org.junit.rules.ExpectedException;
 
 public class ExecutionContextTest {
     
+    @SuppressWarnings("deprecation")
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    @SuppressWarnings("unchecked")
     @Test
     public void handlerQueue() throws Exception {
 
@@ -120,7 +125,7 @@ public class ExecutionContextTest {
 
         RuntimeException runtimeException = new RuntimeException("runtime_test");
         context.setException(runtimeException);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(runtimeException));
+        assertThat(context.getException(), CoreMatchers.is(runtimeException));
         assertThat(context.getApplicationException(), nullValue());
 
         // ApplicationExceptionが設定された場合
@@ -129,7 +134,7 @@ public class ExecutionContextTest {
 
         ApplicationException applicationException = new ApplicationException();
         context.setException(applicationException);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(applicationException));
+        assertThat(context.getException(), CoreMatchers.is(applicationException));
         assertThat(context.getApplicationException(), is(applicationException));
 
         // RuntimeException->RuntimeExceptionの順に設定された場合
@@ -138,12 +143,12 @@ public class ExecutionContextTest {
 
         RuntimeException runtimeException1st = new RuntimeException("runtime_test_1st");
         context.setException(runtimeException1st);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(runtimeException1st));
+        assertThat(context.getException(), CoreMatchers.is(runtimeException1st));
         assertThat(context.getApplicationException(), nullValue());
 
         RuntimeException runtimeException2nd = new RuntimeException("runtime_test_2nd");
         context.setException(runtimeException2nd);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(runtimeException2nd));
+        assertThat(context.getException(), CoreMatchers.is(runtimeException2nd));
         assertThat(context.getApplicationException(), nullValue());
 
         // RuntimeException->ApplicationExceptionの順に設定された場合
@@ -152,12 +157,12 @@ public class ExecutionContextTest {
 
         runtimeException = new RuntimeException("runtime_test");
         context.setException(runtimeException);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(runtimeException));
+        assertThat(context.getException(), CoreMatchers.is(runtimeException));
         assertThat(context.getApplicationException(), nullValue());
 
         applicationException = new ApplicationException();
         context.setException(applicationException);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(applicationException));
+        assertThat(context.getException(), CoreMatchers.is(applicationException));
         assertThat(context.getApplicationException(), is(applicationException));
 
         // ApplicationException->ApplicationExceptionの順に設定された場合
@@ -166,12 +171,12 @@ public class ExecutionContextTest {
 
         ApplicationException applicationException1st = new ApplicationException();
         context.setException(applicationException1st);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(applicationException1st));
+        assertThat(context.getException(), CoreMatchers.is(applicationException1st));
         assertThat(context.getApplicationException(), is(applicationException1st));
 
         ApplicationException applicationException2nd = new ApplicationException();
         context.setException(applicationException2nd);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(applicationException2nd));
+        assertThat(context.getException(), CoreMatchers.is(applicationException2nd));
         assertThat(context.getApplicationException(), is(applicationException2nd));
 
         // ApplicationException->RuntimeExceptionの順に設定された場合
@@ -180,12 +185,12 @@ public class ExecutionContextTest {
 
         applicationException = new ApplicationException();
         context.setException(applicationException);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(applicationException));
+        assertThat(context.getException(), CoreMatchers.is(applicationException));
         assertThat(context.getApplicationException(), is(applicationException));
 
         runtimeException = new RuntimeException("runtime_test");
         context.setException(runtimeException);
-        assertThat(context.getException(), CoreMatchers.<Throwable>is(runtimeException)); // ApplicationException以外が設定された場合は上書きされる。
+        assertThat(context.getException(), CoreMatchers.is(runtimeException)); // ApplicationException以外が設定された場合は上書きされる。
         assertThat(context.getApplicationException(), is(applicationException));
     }
 
@@ -219,12 +224,14 @@ public class ExecutionContextTest {
         assertThat("リーダが設定されていないのでnull", context.readNextData(), is(nullValue()));
         context.closeReader();
 
-        context.setDataReader(new DataReader<Object>() {
+        context.setDataReader(new DataReader<>() {
             boolean hasNext = true;
+
             @Override
             public Object read(ExecutionContext ctx) {
                 return "hoge";
             }
+
             @Override
             public boolean hasNext(ExecutionContext ctx) {
                 boolean result = hasNext;
@@ -237,10 +244,11 @@ public class ExecutionContextTest {
             }
         });
 
-        assertThat((String) context.readNextData(), is("hoge"));
+        assertThat(context.readNextData(), is("hoge"));
         assertThat(context.readNextData(), is(nullValue()));
+        assertThat(context.getDataReader(), instanceOf(SynchronizedDataReaderWrapper.class));
 
-        context.setDataReader(new DataReader<Object>() {
+        context.setDataReader(new DataReader<>() {
             @Override
             public Object read(ExecutionContext ctx) {
                 return null;
@@ -259,7 +267,7 @@ public class ExecutionContextTest {
         // エラーがでても正常
         context.closeReader();
 
-        context.setDataReader(new DataReader<Object>() {
+        context.setDataReader(new DataReader<>() {
             @Override
             public Object read(ExecutionContext ctx) {
                 return null;
@@ -277,6 +285,26 @@ public class ExecutionContextTest {
         });
         // エラーがでても正常
         context.closeReader();
+
+        // ThreadSafeDataReader実装クラスを設定する場合
+        context.setDataReader(new ThreadSafeDataReader<>() {
+            @Override
+            public Object read(ExecutionContext ctx) {
+                return null;
+            }
+
+            @Override
+            public boolean hasNext(ExecutionContext ctx) {
+                return false;
+            }
+
+            @Override
+            public void close(ExecutionContext ctx) {
+                throw new RuntimeException();
+            }
+        });
+        assertThat(context.getDataReader(), instanceOf(ThreadSafeDataReader.class));
+        context.closeReader();
     }
 
     @Test
@@ -284,7 +312,7 @@ public class ExecutionContextTest {
         ExecutionContext context = new ExecutionContext();
 
         assertThat(context.getRequestScopeMap().isEmpty(), is(true));
-        context.setRequestScopeMap(new HashMap<String, Object>() {{
+        context.setRequestScopeMap(new HashMap<>() {{
             put("1", "2");
         }});
         assertThat(context.getRequestScopeMap().isEmpty(), is(false));
@@ -296,7 +324,7 @@ public class ExecutionContextTest {
 
         assertThat(context.getSessionScopeMap().isEmpty(), is(true));
         
-        context.setSessionScopeMap(new HashMap<String, Object>() {{
+        context.setSessionScopeMap(new HashMap<>() {{
             put("1", "2");
         }});
         assertThat(context.getSessionScopeMap().isEmpty(), is(false));
@@ -308,12 +336,94 @@ public class ExecutionContextTest {
     public void testSessionStoreMap() {
         ExecutionContext ctx = new ExecutionContext();
         assertThat(ctx.getSessionStoreMap().isEmpty(), is(true));
-        ctx.setSessionStoreMap(new HashMap<String, Object>() {{
+        ctx.setSessionStoreMap(new HashMap<>() {{
             put("3", "4");
         }});
         assertThat(ctx.getSessionStoreMap().size(), is(1));
         ctx.setSessionStoredVar("5", "6");
         assertThat(ctx.getSessionStoreMap().size(), is(2));
+    }
+
+
+    /**
+     * データリーダー取得が正しく実行されることをテストする。
+     * <p>
+     * {@code reader}にすでにオブジェクトが設定sれている場合のテストは、{@link this#testReader()}で実施している。
+     */
+    @Test
+    public void testGetDataReader() {
+        ExecutionContext context = new ExecutionContext();
+        // readerもreaderFactoryも設定されていない場合は、nullが返却されること。
+        assertThat(context.getDataReader(), is(nullValue()));
+        context.closeReader();
+
+        // DataReaderを返却するDataReaderFactoryを設定した場合は、SynchronizedDataReaderWrapperでラップされること。
+        context = new ExecutionContext();
+        context.setDataReaderFactory(ctx -> new DataReader<>() {
+
+            @Override
+            public Object read(ExecutionContext ctx) {
+                return null;
+            }
+
+            @Override
+            public boolean hasNext(ExecutionContext ctx) {
+                return false;
+            }
+
+            @Override
+            public void close(ExecutionContext ctx) {
+            }
+        });
+
+        assertThat(context.getDataReader(), instanceOf(SynchronizedDataReaderWrapper.class));
+        context.closeReader();
+
+        // ThreadSafeDataReaderを返却するDataReaderFactoryを設定した場合は、
+        // そのままThreadSafeDataReaderが返却されること。
+        context = new ExecutionContext();
+        context.setDataReaderFactory(ctx -> new ThreadSafeDataReader<>() {
+
+            @Override
+            public Object read(ExecutionContext ctx) {
+                return null;
+            }
+
+            @Override
+            public boolean hasNext(ExecutionContext ctx) {
+                return false;
+            }
+
+            @Override
+            public void close(ExecutionContext ctx) {
+            }
+        });
+
+        assertThat(context.getDataReader(), instanceOf(ThreadSafeDataReader.class));
+        context.closeReader();
+
+        // SynchronizedDataReaderWrapperを返却するDataReaderFactoryを設定した場合は、
+        // そのままSynchronizedDataReaderWrapperが返却されること。
+        context = new ExecutionContext();
+        context.setDataReaderFactory(ctx -> new SynchronizedDataReaderWrapper<>(new DataReader<>() {
+
+            @Override
+            public Object read(ExecutionContext ctx) {
+                return null;
+            }
+
+            @Override
+            public boolean hasNext(ExecutionContext ctx) {
+                return false;
+            }
+
+            @Override
+            public void close(ExecutionContext ctx) {
+            }
+        }));
+
+        assertThat(context.getDataReader(), instanceOf(SynchronizedDataReaderWrapper.class));
+        context.closeReader();
     }
 
     /**
@@ -325,12 +435,12 @@ public class ExecutionContextTest {
 
         //コピー後について、requestScopeMapについては、新規オブジェクトが生成されていることを確認したい。
         //確認できるようにするため、コピー元に中身の詰まったmapを設定する。
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("hoge","hoge");
         orgCtx.setRequestScopeMap(map);
 
         //テスト用のダミー実装をおこなったdataReader
-        final DataReader<Object> dataReader = new DataReader<Object>(){
+        final DataReader<Object> dataReader = new ThreadSafeDataReader<>() {
 
             @Override
             public Object read(ExecutionContext ctx) {
@@ -348,12 +458,9 @@ public class ExecutionContextTest {
             }
         };
 
-        orgCtx.setDataReaderFactory(new DataReaderFactory<Object>() {
-            @Override
-            public DataReader<Object> createReader(ExecutionContext context) {
-                //同一のDataReaderFactoryのインスタンスを使用すると、同一のdataReaderが返るように実装
-                return dataReader;
-            }
+        orgCtx.setDataReaderFactory(context -> {
+            //同一のDataReaderFactoryのインスタンスを使用すると、同一のdataReaderが返るように実装
+            return dataReader;
         });
 
         ExecutionContext newCtx = orgCtx.copy();
@@ -364,7 +471,46 @@ public class ExecutionContextTest {
         assertThat(newCtx.getMethodBinder(), is(orgCtx.getMethodBinder()));
         //requestScopeMapについては、新規オブジェクトが生成されているはず。空であることを確認する。
         assertThat(newCtx.getRequestScopeMap().isEmpty(), is(true));
-        //readerFactoryの確認（dataReaderが同一であれば、readerFactoryも同一である）
+        //readerFactoryの確認（readerについては別ケースで確認）
+        assertThat(newCtx.getDataReader(), is(orgCtx.getDataReader()));
+    }
+
+    /**
+     * ExecutionContextのコピーで、readerがコピーされていることを確認する。
+     */
+    @Test
+    public void testCopyReader() {
+        ExecutionContext orgCtx = new ExecutionContext();
+
+        //テスト用のダミー実装をおこなったdataReader
+        final DataReader<Object> dataReader = new DataReader<>() {
+
+            @Override
+            public Object read(ExecutionContext ctx) {
+                return null;
+            }
+
+            @Override
+            public boolean hasNext(ExecutionContext ctx) {
+                return false;
+            }
+
+            @Override
+            public void close(ExecutionContext ctx) {
+
+            }
+        };
+
+        orgCtx.setDataReaderFactory(context -> {
+            //同一のDataReaderFactoryのインスタンスを使用すると、同一のdataReaderが返るように実装
+            return dataReader;
+        });
+
+        // dataReaderFactoryでdataReaderを設定するため、まずgetDataReader()を実行する。
+        orgCtx.getDataReader();
+
+        ExecutionContext newCtx = orgCtx.copy();
+        //readerの確認
         assertThat(newCtx.getDataReader(), is(orgCtx.getDataReader()));
     }
 
