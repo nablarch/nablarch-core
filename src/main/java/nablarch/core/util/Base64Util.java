@@ -1,13 +1,18 @@
 package nablarch.core.util;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import nablarch.core.util.annotation.Published;
 
 /**
  * Base64エンコーディングを行うユーティリティクラス。
- * 
+ * <p>
+ * 本クラスは、<a href="https://www.ietf.org/rfc/rfc4648.txt">RFC4648</a>の「4. Base 64 Encoding」に準拠したBase64エンコーディングを行う。
+ * <p>
+ * Java8以降は、標準APIの{@link java.util.Base64#getEncoder()}及び{@link java.util.Base64#getDecoder()}で取得するエンコーダ・デコーダが本クラスと同等のBase64エンコーディング機能を提供しており、本クラスは後方互換のために存在している。
+ *
  * @author Kiyohito Itoh
  */
 @Published(tag = "architect")
@@ -26,9 +31,7 @@ public final class Base64Util {
     private static final byte[] DECODING = new byte[124];
     
     static {
-        for (int i = 0; i < DECODING.length; i++) {
-            DECODING[i] = 0x00;
-        }
+        Arrays.fill(DECODING, (byte) 0x00);
         for (int i = 0; i < ENCODING.length; i++) {
             DECODING[ENCODING[i]] = (byte) i;
         }
@@ -42,7 +45,8 @@ public final class Base64Util {
      * バイト配列をBase64でエンコードする。
      * <p/>
      * 引数にnullが渡された場合、nullを返す。<br/>
-     * 引数の長さが0の場合、空文字を返す。
+     * 引数の長さが0の場合、空文字を返す。 <br/>
+     * 本メソッドは、エンコード結果に改行文字を追加しない。
      * 
      * @param b バイト配列
      * @return エンコード結果の文字列
@@ -101,7 +105,7 @@ public final class Base64Util {
         if (base64 == null) {
             return null;
         }
-        if (base64.length() == 0) {
+        if (base64.isEmpty()) {
             return new byte[0];
         }
         
@@ -111,7 +115,7 @@ public final class Base64Util {
                 String.format("length of base64 was invalid. base64 = [%s], length = [%s]", base64, length));
         }
         
-        if (base64.substring(0, length - 2).indexOf("=") != -1
+        if (base64.substring(0, length - 2).contains("=")
                 || ('=' == base64.charAt(length - 2) && '=' != base64.charAt(length - 1))) {
             throw new IllegalArgumentException(
                     String.format("position of '=' in base64 was invalid. base64 = [%s]", base64));
@@ -132,12 +136,10 @@ public final class Base64Util {
             char c4 = base64.charAt(i++);
             
             byte b1 = DECODING[c1];
-            
-            byte b2 = 0x00;
-            b2 = DECODING[c2];
+            byte b2 = DECODING[c2];
             baos.write((byte) ((b1 & 0x3F) << 2 | (b2 >>> 4) & 0x03));
             
-            byte b3 = 0x00;
+            byte b3;
             if (c3 != '=') {
                 b3 = DECODING[c3];
                 baos.write((byte) ((b2 & 0x0F) << 4 | (b3 >>> 2) & 0x0F));
