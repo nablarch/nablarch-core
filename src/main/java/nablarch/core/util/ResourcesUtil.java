@@ -6,7 +6,7 @@
  *
  * 上記ファイルを取り込み、修正を加えた。
  *
- * Copyright 2016 TIS Inc.
+ * Copyright 2016 TISI Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
