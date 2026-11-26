@@ -241,7 +241,7 @@ public class DateUtilTest {
 
         // フォーマット通り
         assertThat(DateUtil.isValid("20110909", "yyyyMMdd"), CoreMatchers.is(true));
-        assertThat(DateUtil.isValid("14 11 2012", "dd MMM yyyy"), CoreMatchers.is(true));
+        assertThat(DateUtil.isValid("14 11月 2012", "dd MMM yyyy"), CoreMatchers.is(true));
         assertThat(DateUtil.isValid("14 Nov 2012", "dd MMM yyyy", Locale.ENGLISH), CoreMatchers.is(true));
 
         // フォーマット通りではない
@@ -311,7 +311,7 @@ public class DateUtilTest {
         }
 
         // ロケールを指定しない場合
-        assertThat(DateUtil.formatDate(date, format), is("2012-11-13"));
+        assertThat(DateUtil.formatDate(date, format), is("2012-11月-13"));
 
         // ロケールを指定した場合。
         assertThat(DateUtil.formatDate(date, format, locale), is("2012-Nov-13"));

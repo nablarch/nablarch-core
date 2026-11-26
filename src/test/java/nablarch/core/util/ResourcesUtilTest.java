@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -175,7 +176,7 @@ public class ResourcesUtilTest {
     public void toJarFile_unsupportedType() throws Exception {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("url must be JarURLConnection class. specified url class=[java.net.URL]");
-        ResourcesUtil.toJarFile(new URL("file://."));
+        ResourcesUtil.toJarFile(new File(".").toURI().toURL());
     }
 
     /**
